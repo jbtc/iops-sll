@@ -1,0 +1,104 @@
+﻿/* Client Selectors*/
+.Header-ClientID 
+{
+    margin: 0px 5px;
+    /*position: absolute added for Safari compatibility*/
+}
+.Header-ClientID p 
+{
+    /*color: #074987;*/
+    font-size: 20px;
+    font-weight: bold;
+    max-height: 34px;
+    overflow: hidden;
+}
+
+.Header-ClientID-WebLink
+{
+    /*TODO POINT images to clients logos*/
+    color: #0853ea;
+    background-image: url('Images/Omanlogo.gif');
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 40px 27px;
+    padding-left: 65px;
+}
+
+.Header-ClientID-WebLink:hover
+{
+    background-image: url('Images/Omanlogo_mouseover.gif') /*Images/eia-logo_mouseover.png*/;
+    text-decoration: none;
+    color: #333;
+}
+
+.Header-ClientID-WebLink .HCW-Abbreviation 
+{
+    display: none;
+    visibility: hidden;
+}
+
+.Header-ClientID-WebLink .HCW-Dash 
+{
+}
+
+.Header-ClientID-WebLink .HCW-Name 
+{
+}
+
+/* iOps Statistic Selectors*/
+.Header-iOpsStats 
+{
+    margin: 0px 5px;
+    /*position: absolute;*/
+}
+.Header-iOpsStats ul
+{
+    display:table;
+    width: 100%;
+    align-self: baseline;
+}
+.Header-iOpsStats ul li
+{
+    width: 14%;
+    display: table-cell;
+    text-align: center;
+    padding-top: 20px;
+}
+.Header-iOpsStats ul li p
+{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 1px dotted #D9D9D9;
+    height: 44px;
+    margin-bottom: 0px;
+    overflow: hidden;
+}
+.Header-iOpsStats ul li p.No-Border 
+{
+    border: none;
+}
+
+.Header-iOpsStats ul li #MasterAlarmCount {
+    color: red;
+}
+.Header-iOpsStats ul li #MasterWarningCount
+{
+    color: #D2D108;
+}
+.Header-iOpsStats ul li .pDock
+{
+    color: green;
+}
+
+.Header-iOpsStats-Data
+{
+    align-self:baseline;
+    width: 14%;
+    border: 1px solid red;
+    display: inline-block;
+    text-align: center;
+    height: 45px;
+    min-height: 45px;
+    max-height: 45px;
+}

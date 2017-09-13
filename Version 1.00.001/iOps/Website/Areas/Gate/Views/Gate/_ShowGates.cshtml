@@ -1,0 +1,816 @@
+﻿@using iOps.Service.Security;
+
+<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/OPCHTML/js/lib/jquery.numberformatter-1.2.3.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var tags = [];
+        // set up gate prefix
+        OPC.tags = [];
+        OPC_config.watch_tags = [];
+        OPC_config.tag_prefix = 'Airport.' + '@TempData["ClientAbbr"]' + '.Term1.Zone' + '@TempData["ZoneNumber"]' + '.Gate' + '@TempData["GateNumber"]' + '.PBB.';
+        OPC_config.refresh_callback = opc_gate_callback;
+        OPC_config.watch_tags = tags;
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "GateAlarms",
+                callback: updateGateAlarms,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["@TempData["GateNumber"]" + "_PBB_ALARMS"]
+                },
+                columns: [
+		        	{ name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+		            { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+		            { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+		            { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+		            { name: "Text", text: "Text", type: "string", visible: true },
+		            { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+		            { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "GateWarnings",
+                callback: updateGateWarnings,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["@TempData["GateNumber"]" + "_PBB_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "GateMasterAlarms",
+                callback: updateMasterGateAlarms,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["A5_PBB_ALARMS", "B25L1_PBB_ALARMS", "B27_PBB_ALARMS", "A5_GPU_ALARMS", "B25L1_GPU_ALARMS", "B27_GPU_ALARMS", "A5_PBB_WARNINGS", "B25L1_PBB_WARNINGS", "B27_PBB_WARNINGS", "A5_GPU_WARNINGS", "B25L1_GPU_WARNINGS", "B27_GPU_WARNINGS"]
+
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            }
+        ];
+
+        tags.push("PBBREMOTECONTROL.Value");
+        tags.push("RTURemoteCntrl.Value");
+        tags.push("RemoteLightingCNTL.Value");
+        tags.push("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value");
+
+        //OPC.toggle_refresh(true);
+        OPC.init(); //re-initialize HTML HMI engine after updating prefix
+
+        $('#menuItemUserAdmin').css('display', ('@TempData["AuthLevel"]' > 3 ? 'list-item' : 'none'));
+        $("#menuItemRTUAutoOnSP").css('display', ('@TempData["AuthLevel"]' > 3 ? 'list-item' : 'none'));
+
+        $('#imageinfoid').css('visibility', 'hidden');
+
+        //Setup the main Kendo Window inside splitter-main
+        $("#GateWindow").kendoWindow({
+            title: "Gate @TempData["GateLabel"]",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded CSW20150707: Check to see if this is why the UserAdmin window stays open
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('#GateWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#GateWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).find('span').css("background-image", "url('#')"); //??? csw20160217:
+            $(this).attr('id', 'gateWindowLink' + index);
+        });
+
+        //up arrow (Zone screen)
+        $('#gateWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowAirport", "Airport", new { area = "Airport" })',
+                type: "GET",
+                data: {
+                    clientName: "SLL",
+                    numberOfScreens: 0
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                    ChangeIcons(1);
+
+                }
+            });
+        });
+
+        //regular text link(to GPU)
+        $('#btnRemoteBridgeControl').attr('visibility', (@TempData["AuthLevel"] > 0 ? 'visible' : 'hidden'));
+
+        $('#showServiceCounters').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowServiceCounters", "ServiceCounters", new { area = "ServiceCounters" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('#gpuLinkButtonInGateScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        //regular text link (to PCA)
+        $('#pcaLinkButtonInGateScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowPCA", "PCA", new { area= "PCA" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        CreateGateAlarmWindow();
+
+        CreateGateWarningWindow();
+
+
+        $('#btnRemoteBridgeControl').prop('disabled', (@TempData["AuthLevel"] > 3 ? false : true));
+        $('#btnRemoteBridgeControl').click(function () {
+            if (get_bool("PBBREMOTECONTROL.Value")) {
+                OPC.set_value(OPC.tag_prefix + 'PBBREMOTECONTROL.Value', 'False');
+            }
+            else {
+                OPC.set_value(OPC.tag_prefix + 'PBBREMOTECONTROL.Value', 'True');
+            }
+        })
+
+        $('#btnRoofTopACUnits').prop('disabled', (@TempData["AuthLevel"] > 3 ? false : true));
+        $('#btnRoofTopACUnits').click(function () {
+            OPC.set_value(OPC.tag_prefix + 'RTURemoteCntrl.Value', 'True');
+        })
+
+        $('#btnBridgeLighting').prop('disabled', (@TempData["AuthLevel"] > 3 ? false : true));
+        $('#btnBridgeLighting').click(function () {
+            OPC.set_value(OPC.tag_prefix + 'RemoteLightingCNTL.Value', 'True');
+        })
+
+    })
+
+
+    // ***************************************************************************************
+    // MAIN WINDOW
+    // ***************************************************************************************
+    function CloseKendoGate() {
+        if ($('#GateWindow').is(':visible')) {
+            $('#GateWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    // ***************************************************************************************
+    // ALARM POP-UP WINDOW
+    // ***************************************************************************************
+    function CreateGateAlarmWindow() {
+        var gateAlarmWindow = $('#GateAlarmWindow');
+        if (!gateAlarmWindow.data('kendoWindow')) {
+            gateAlarmWindow.kendoWindow({
+                resizable: true,
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateLabel"] Alarms',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+    }
+
+    @*$('#GateAlarmWindow').kendoWindow({
+        width: '400px',
+        height: '650px',
+        animation: false,
+        modal: false,
+        draggable: true,
+        title: 'Gate @TempData["GateNumber"] Alarms',
+        visible: false,
+        actions: ["Custom"]
+    });*@
+
+    function CloseGateAlarmWindow() {
+        $('#GateAlarmWindow').data('kendoWindow').destroy();
+        $('#GateAlarms').empty();
+        return false;
+    }
+
+    $('#btnAlarms').click(function () {
+        CreateGateAlarmWindow();
+        $('#GateAlarmWindow').data('kendoWindow').open();
+        $('#GateAlarmWindow').closest(".k-window").css({ top: 90, left: 250 });
+        $('#GateAlarmWindow').closest(".k-window").addClass('KendoWindowToTop');
+
+        //add custom background image to custom kendo button
+        var gateAlarmWindow = $('#GateAlarmWindow').data('kendoWindow');
+        var buttonWrapper = gateAlarmWindow.wrapper.find('.k-i-custom');
+        buttonWrapper.css({ 'background': "url('/Content/Themes/SLL/Ver 1.0.0/Images/awe_icons.png') -38px -31px no-repeat", "cursor": "pointer" });
+        buttonWrapper.attr('id', 'btnAlarmClose');
+    })
+
+    //because the ID btnAlarmClose was added dynamically, jquery event delegation
+    //must be used to register the event handler
+    $(document).on('click', '#btnAlarmClose', function () {
+        if ($('#GateAlarmWindow').is(':visible')) {
+            $('#GateAlarmWindow').data('kendoWindow').close();
+        }
+        return false;
+    })
+
+    function updateMasterGateAlarms() {
+        var PriorityCol = -1;
+        var alarmCnt = 0;
+        var warningCnt = 0;
+        PriorityCol = $('#GateMasterAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GateMasterAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    alarmCnt = (cellData == 100) ? alarmCnt + 1 : alarmCnt;
+                    warningCnt = (cellData == 0) ? warningCnt + 1 : warningCnt;
+                }
+            });
+        }
+        $("#MasterAlarmCount").html(alarmCnt + " Active<br /> Alarms");
+        $("#MasterWarningCount").html(warningCnt + " Active<br /> Warnings");
+    };
+
+    function updateGateAlarms() {
+        var PriorityCol = -1;
+        var alarmCnt = 0;
+        $("#btnAlarms").html("Alarms (" + alarmCnt + ")");
+        $("#btnAlarms").attr('class', 'btnInvisible');
+        PriorityCol = $('#GateAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GateAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    alarmCnt = (cellData == 100) ? alarmCnt + 1 : alarmCnt;
+                    $('#GateAlarmWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow"); //.addClass("HideAlarmNotificationRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+            $("#btnAlarms").html("Alarms (" + alarmCnt + ")");
+            $("#btnAlarms").attr('class', (alarmCnt > 0) ? 'redFlashingBackground' : 'btnInvisible');
+        }
+    };
+
+    // ***************************************************************************************
+    // WARNING POP-UP WINDOW
+    // ***************************************************************************************
+    function CreateGateWarningWindow() {
+        var gateWarningWindow = $('#GateWarningWindow');
+        //var btnWarnings = $('#btnWarnings').bind('click', function () {
+        //    gateWarningWindow.data('kendoWindow').open();
+        //});
+
+        if (!gateWarningWindow.data('kendoWindow')) {
+            gateWarningWindow.kendoWindow({
+                resizable: true,
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateLabel"] Warnings',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+    }
+
+    $('#GateWarningWindow').kendoWindow({
+        width: '400px',
+        height: '650px',
+        animation: false,
+        modal: false,
+        draggable: true,
+        title: 'Gate @TempData["GateLabel"] Warnings',
+        visible: false,
+        actions: ["Custom"]
+    });
+
+    function CloseGateWarningWindow() {
+        $('#GateWarningWindow').data('kendoWindow').destroy();
+        $('#GateWarnings').empty();
+        return false;
+    }
+
+    $('#btnWarnings').click(function () {
+        CreateGateWarningWindow();
+        $('#GateWarningWindow').data('kendoWindow').open();
+        $('#GateWarningWindow').closest(".k-window").css({ top: 90, left: 250 });
+        $('#GateWarningWindow').closest(".k-window").addClass('KendoWindowToTop');
+
+        //add custom background image to custom kendo button
+        var gateWarningWindow = $('#GateWarningWindow').data('kendoWindow');
+        var buttonWrapper = gateWarningWindow.wrapper.find('.k-i-custom');
+        buttonWrapper.css({ 'background': "url('/Content/Themes/SLL/Ver 1.0.0/Images/awe_icons.png') -38px -31px no-repeat", "cursor": "pointer" });
+        buttonWrapper.attr('id', 'btnWarningClose');
+    })
+
+    $(document).on('click', '#btnWarningClose', function () {
+        if ($('#GateWarningWindow').is(':visible')) {
+            $('#GateWarningWindow').data('kendoWindow').close();
+        }
+        return false;
+    })
+
+    function updateGateWarnings() {
+        var PriorityCol = -1;
+        PriorityCol = $('#GateWarningWindow th:contains("Priority")').index();
+        var warningCnt = 0;
+        $("#btnWarnings").html("Notifications (" + warningCnt + ")");
+        $("#btnWarnings").attr('class', 'btnInvisible');
+        if (PriorityCol > -1) {
+            $('#GateWarningWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    warningCnt = (cellData == 0) ? warningCnt + 1 : warningCnt;
+                    $('#GateWarningWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow").addClass("HideAlarmNotificationRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        $("#btnWarnings").html("Notifications (" + warningCnt + ")");
+        $("#btnWarnings").attr('class', (warningCnt > 0) ? 'yellowFlashingBackground' : 'btnInvisible');
+
+    };
+
+    // ***************************************************************************************
+    // TAGS
+    // ***************************************************************************************
+    function get_value(tag) {
+        return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+
+    function get_bool(tag) {
+        var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        return (b && b == "True") ? true : false;
+    }
+
+    function update_labels() {
+        // AUTO_LEVEL_MODE = AUTOLEVELMODEFLAG=1 && AUTOLEVELKEY=1 = "Auto Level"
+        // MANUAL_MODE = OPERATEKEY=1 && MANUALMODEFLAG=1 = "Manual Mode"
+        // LOGGED OFF
+
+        // Get required tag values
+        var autolevelmode = get_bool("AIRCRAFTDOCKEDCALCULATION.Value");
+        var operatekey = get_bool("OPERATEKEY.Value");
+        var manualmode = get_bool("MANUALMODEFLAG.Value");
+        var autolevelok = get_bool("AUTOLEVELOK.Value");
+        var vertupok = get_bool("VERTUPOK.Value");
+        var vertdnok = get_bool("VERTDNOK.Value");
+        var horizextlimit = get_value("HORIZ_EXT_LIMIT_FLAG.Value");
+        //var horizretlimit = get_value("HORIZ_RET_LIMIT_FLAG.Value");
+        var horizextult = get_value("Alarm.HORIZ_EXT_ULT.Value");
+        //var horizretult = get_value("Alarm.HORIZ_RET_ULT.Value");
+
+        // PBB Mode
+        if (autolevelmode) { $("#btnPBBMode").html("Auto Level"); }
+        else if (operatekey && manualmode) { $("#btnPBBMode").html("Manual Mode"); }
+        else { $("#btnPBBMode").html("Logged Off"); }
+
+        //Auto Level
+        if (autolevelmode) { $("#btnAutoLevel").html("Activated"); }
+        else if (autolevelok) { $("#btnAutoLevel").html("Ready/OK"); }
+        else { $("#btnAutoLevel").html("Not Ready"); }
+
+        //Vertical Movement
+        if (vertupok || vertdnok) { $("#btnVerticalMvt").html("Ready/OK"); }
+        else { $("#btnVerticalMvt").html("Not Ready"); }
+
+        //Horizontal Movement
+        if (horizextlimit && horizextult) { $("#btnHorizontalMvt").html("Ready/OK"); }
+        else { $("#btnHorizontalMvt").html("Not Ready"); }
+    }
+
+    function opc_gate_callback(data, cid) {
+        // put any other js here that needs to be executed on every server tag update
+        update_labels();
+        $('#imageinfoid').css('visibility', 'visible');
+    }
+
+</script>
+
+<!--Because jquery syntax does not like razor tags, input will be used instead-->
+<!--NOTE: OPC tag values that are BOOLEANS will show a button image; all other values will show text-->
+<input type="hidden" id="txtScreenNumber" value='@TempData["CIDMaxScreens"]' />
+<div id="GateWindow" opc-tag-bkg='{"type":"group","all_f":{"cls":"AutoLevelingFalse"},"bad_q":{"cls":"AutoLevelingFalse"},"group":[
+            {"tag":"AIRCRAFTDOCKEDCALCULATION.Value","config":{"cls":"AutoLevelingTrue"}}
+
+     ]}'>
+    <div class="gatesPageDividerLeft">
+        <table>
+            <tr>
+                <td>
+                    <table class="pointsTable" id="tblPoints">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader" colspan="2" style="text-align:left;">Point</th>
+                        </tr>
+                        <tr>
+                            <td>Remote Bridge Control</td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRemoteBridgeControl"
+                                        class="btn btnGray"
+                                        opc-tag-bkg='{"type":"group",
+                                            "all_f":{"cls":"btnGreen"},
+                                            "bad_q":{"cls":"btnGray"},
+                                            "group":[{"tag":"PBBREMOTECONTROL.Value","config":{"cls":"btnRed"}}]}'
+                                        opc-tag-txt='{"tag":"Remote Bridge Control.Value", "config":{"bad_q":"Bad Data"}}'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PBB Status</td>
+                            <td class="pointsTableDataCells" id="lblPBBStatus"
+                                opc-tag-txt='{"tag":"PBBSTATUS.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Operation Mode</td>
+                            <td class="pointsTableDataCells" id="lblPBBOperatingMode"
+                                opc-tag-txt='{"tag":"PBB Operating Mode.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>E-Stop</td>
+                            <td class="pointsTableDataCells" id="lblE_Stop"
+                                opc-tag-txt='{"tag":"E_Stop.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Autolevel</td>
+                            <td class="pointsTableDataCells" id="lblAutoLevel"
+                                opc-tag-txt='{"tag":"Auto Level Function.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Autolevel (Backup)</td>
+                            <td class="pointsTableDataCells" id="lblAutoLevelBackup"
+                                opc-tag-txt='{"tag":"Auto Level Backup.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canopy</td>
+                            <td class="pointsTableDataCells" id="lblCanopyPosition"
+                                opc-tag-txt='{"tag":"Canopy Position.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Vertical Movement</td>
+                            <td class="pointsTableDataCells" id="lblVerticalMovement"
+                                opc-tag-txt='{"tag":"Vertical Movement.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Up/Down/Limit</td>
+                            <td class="pointsTableDataCells" id="lblVerticalUpDownLimit"
+                                opc-tag-txt='{"tag":"Vertical Up Down Limit.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Position</td>
+                            <td class="pointsTableDataCells" id="lblVerticalPosition"
+                                opc-tag-txt='{"tag":"Height.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Upper Limit</td>
+                            <td class="pointsTableDataCells" id="lblVertUpLimit"
+                                opc-tag-txt='{"tag":"VertUpLimDisp.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Lower Limit</td>
+                            <td class="pointsTableDataCells" id="lblVertDnLimit"
+                                opc-tag-txt='{"tag":"VertDnLimDisp.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Horizontal Movement</td>
+                            <td class="pointsTableDataCells" id="lblHorizMovement"
+                                opc-tag-txt='{"tag":"Horizontal Movement.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Position(X/Y)</td>
+                            <td class="pointsTableDataCells" id="lblHorizPosition"
+                                opc-tag-txt='{"tag":"Position.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>... Speed</td>
+                            <td class="pointsTableDataCells" id="lblHorizSpeed"
+                                opc-tag-txt='{"tag":"HorizSpeedToDisp_mpm.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Tunnel Length (Feet/Meters)</td>
+                            <td class="pointsTableDataCells" id="lblHorizLength"
+                                opc-tag-txt='{"tag":"HorizToDisp.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Front Shutter / Doors</td>
+                            <td class="pointsTableDataCells" id="lblSwingDoors"
+                                opc-tag-txt='{"tag":"SwingDoors.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Roof Top AC Units</td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRoofTopACUnits"
+                                        class="btnGray"
+                                        opc-tag-bkg='{"type":"group",
+                                            "all_f":{"cls":"btnRed"},
+                                            "bad_q":{"cls":"btnGray"},
+                                            "group":[{"tag":"RTUOnIndicator.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Rooftop AC.Value", "config":{"bad_q":"Bad Data"}}'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bridge Lighting</td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnBridgeLighting"
+                                        class="btnGray"
+                                        opc-tag-bkg='{"type":"group",
+                                            "all_f":{"cls":"btnRed"},
+                                            "bad_q":{"cls":"btnGray"},
+                                            "group":[{"tag":"RemoteLightingInd.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Remote Bridge Lighting.Value", "config":{"bad_q":"Bad Data"}}'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Fire Alarm System</td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFireAlarmystem"
+                                        class="btnGray"
+                                        opc-tag-bkg='{"type":"group",
+                                        "all_f":{"cls":"redFlashingBackground"},
+                                        "bad_q":{"cls":"btnGray"},
+                                        "group":[
+                                            {"tag":"Alarm.SmokeDetector.Value", "config":{"cls":"btnGray"}}
+                                         ]}'
+                                        opc-tag-txt='{"tag":"Fire Alarm.Value", "config":{"bad_q":"Bad Data"}}'>
+                                    Alarm
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>VDGS Interlock</td>
+                            <td class="pointsTableDataCells" id="lblVDGSInterlock"
+                                opc-tag-txt='{"tag":"VDGS.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PCA Pit</td>
+                            <td class="pointsTableDataCells" id="lblPCAPit"
+                                opc-tag-txt='{"tag":"PCA Pit.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PCA Center Pit</td>
+                            <td class="pointsTableDataCells" id="lblPCACenterPit"
+                                opc-tag-txt='{"tag":"PCA Center Pit.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>400Hz Pit</td>
+                            <td class="pointsTableDataCells" id="lbl400HzPit"
+                                opc-tag-txt='{"tag":"400 Hz Pit.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>400Hz Center Pit</td>
+                            <td class="pointsTableDataCells" id="lbl400HzCenterPit"
+                                opc-tag-txt='{"tag":"400 HZ Center Pit.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Aircraft Type</td>
+                            <td class="pointsTableDataCells" id="lblAircraftType"
+                                opc-tag-txt='{"tag":"AircraftType.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Aircraft Position</td>
+                            <td class="pointsTableDataCells" id="lblAircraftPosition"
+                                opc-tag-txt='{"tag":"AircraftPosition.Value", "config":{"bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dock Time</td>
+                            <td class="pointsTableDataCells" id="lblDockTime"
+                                opc-tag-txt='{"tag":"DockTime.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Boarding Time</td>
+                            <td class="pointsTableDataCells" id="lblBoardingTime"
+                                opc-tag-txt='{"tag":"Boarding Time.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Un-dock Time</td>
+                            <td class="pointsTableDataCells" id="lblUnDockTime"
+                                opc-tag-txt='{"tag":"UnDockTime.Value", "config":{"formats":{"float":"0.00"}, "bad_q":"Bad Data"}}'>
+                                Loading...
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    @*<button id="btnAlarms" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                            "bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}}
+                            ]}' opc-tag-txt='{"tag":"Alarm._Count.Value","config":{"formats":{"bad_q":"Alarms (Bad Data)","string":"Alarms ({0})"}}}'>
+                        Alarms
+                    </button>*@
+                    <button id="btnAlarms" class="btnInvisible" >
+                        Alarms
+                    </button>
+                    @*<button id="btnWarnings" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                            "bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                            ]}' opc-tag-txt='{"tag":"Warning._Count.Value","config":{"formats":{"bad_q":"Warnings (Bad Data)","string":"Warnings ({0})"}}}'>
+                        Warnings
+                    </button>*@
+                    <button id="btnWarnings" class="btnInvisible">
+                        Warnings
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="gatesPageDividerRight">
+        <button id="showServiceCounters">Service Counters</button>
+    </div>
+    <div id="GateAlarmWindow">
+        <div id="GateAlarms"></div>
+    </div>
+    <div id="GateWarningWindow">
+        <div id="GateWarnings"></div>
+    </div>
+    <div id="GateMasterAlarmWindow" style="display: none">
+        <div id="GateMasterAlarms"></div>
+    </div>
+</div>

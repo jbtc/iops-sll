@@ -1,0 +1,14 @@
+﻿@using System.Globalization
+@model iOps.Data.Weather
+
+<div class="Header-Weather-Layout">
+
+    @if (!Model.Empty && !String.IsNullOrEmpty(Model.WeatherValue))
+    {
+        @Html.Raw("<table width='100%'><tr><td><img src='" + "http://openweathermap.org/img/w/" + Model.WeatherIcon + ".png' alt='" + Model.WeatherValue + "' height='42px' width='42px'></td><td>" + Math.Round(Convert.ToDouble(Model.TemperatureAvg)) + "&deg;F</td></tr><tr><td colspan='2' align='center' class='Header-Weather-Text'>" + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Model.WeatherValue) + "</td></tr></table>")
+    }
+    else
+    {
+        @Html.Raw("<table width='100%' style='padding-top:10px;font-weight:bold'><tr><td>-</td></tr></table>")
+    }
+</div>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="fe3be374c3c34c0db81c595d274879c2" Name="Diagram1">
+        <EntityTypeShape EntityType="iopsModel.Country" Width="1.5" PointX="7.5" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Feedback" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.History" Width="1.5" PointX="0.75" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Organization" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Organizations_ContactInformation" Width="1.5" PointX="12.75" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Salutation" Width="1.5" PointX="5.25" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Screen" Width="1.5" PointX="10.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.SecurityGroup" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.SecurityRole" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.SecurityTask" Width="1.5" PointX="5.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.User" Width="1.5" PointX="7.5" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.Users_ContactInformation" Width="1.5" PointX="9.75" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="iopsModel.UsersXrefScreen" Width="1.5" PointX="12.75" PointY="5.125" IsExpanded="true" />
+        <AssociationConnector Association="iopsModel.FK_Organizations_ContactInformation_Countries" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_Users_ContactInformation_Countries" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_Organizations_ContactInformation_Organizations" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_Users_Salutations1" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_UsersXrefScreens_Screens" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_Users_ContactInformation_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_UsersXrefScreens_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.OrganizationsXrefUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.SecurityGroupsXrefSecurityRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.SecurityGroupsXrefSecurityTasks" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.SecurityRolesXrefSecurityTasks" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.UsersXrefSecurityGroups" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.UsersXrefSecurityRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.UsersXrefSecurityTasks" ManuallyRouted="false" />
+        <AssociationConnector Association="iopsModel.FK_Users_Users" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

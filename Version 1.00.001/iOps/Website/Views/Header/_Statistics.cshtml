@@ -1,0 +1,68 @@
+﻿@using System.Web.Configuration;
+
+<div class="Header-FlexGroup FlexContainer Flex-Column">
+    <div class="Header-ClientID FlexItem FlexItem-FlexOn FlexItem-AlignCenter">
+        <p>
+            <a class="Header-ClientID-WebLink" href='@System.Web.Configuration.WebConfigurationManager.AppSettings["ClientWebsite"]' target="_blank">
+                <span class="HCW-Abbreviation">@WebConfigurationManager.AppSettings["ClientAbbreviation"]</span>
+                <span class="HCW-Dash">-</span>
+                <span class="HCW-Name">@WebConfigurationManager.AppSettings["ClientName"]</span>&nbsp;-&nbsp;@WebConfigurationManager.AppSettings["ClientShortName"]
+            </a>
+        </p>
+    </div>
+    <div class="Header-iOpsStats FlexItem FlexItem-FlexOn FlexItem-AlignCenter">
+       @{
+
+            var db = new iOps.Core.Model.SLL_IOPS_ReportingEntities();
+            var dateStart = DateTime.Now.AddDays(-2).Date;
+            var dateEnd = DateTime.Now.AddDays(-1).Date;
+
+            string[] test = db.SLL_PBB_DockTime_DataLogging.Where(w => (w.DateAndTime >= dateStart && w.DateAndTime < dateEnd)).Select(w => w.Value).ToArray();
+            string[] test1 = db.SLL_PBB_UnDockTime_DataLogging.Where(w => (w.DateAndTime >= dateStart && w.DateAndTime < dateEnd)).Select(w => w.Value).ToArray();
+
+            var noOfRecordsinDockedTable = test.Length;
+            var noOfRecordsinUnDockedTable = test1.Length;
+
+            // Average without rows with 0 values
+            //var dbData1 = db.SLL_PBB_DockTime_DataLogging.Where(w => (w.DateAndTime >= dateStart && w.DateAndTime < dateEnd && w.Airport_JFK_Term4_ZoneA1_GateA5_PBB_DOCKTIME_Value != "0")).Select(w => w.Airport_JFK_Term4_ZoneA1_GateA5_PBB_DOCKTIME_Value).AsEnumerable().Average(output => { decimal Value; Decimal.TryParse(output, out Value); return Value; });
+
+            var dbData1x = 0.0;
+            var dbData2x = 0.0;
+            var dbData1 = 0.0;
+            var dbData2 = 0.0;
+
+            if (noOfRecordsinDockedTable != 0)
+            {
+                dbData1x = db.SLL_PBB_DockTime_DataLogging.Where(w => (w.DateAndTime >= dateStart && w.DateAndTime < dateEnd)).Select(w => w.Value).AsEnumerable().Average(output => { Double Value; Double.TryParse(output, out Value); return Value; });
+                dbData1 = Math.Round(dbData1x, 2);
+            }
+
+            if (noOfRecordsinUnDockedTable != 0)
+            {
+                dbData2x = db.SLL_PBB_UnDockTime_DataLogging.Where(w => (w.DateAndTime >= dateStart && w.DateAndTime < dateEnd)).Select(w => w.Value).AsEnumerable().Average(output => { Double Value; Double.TryParse(output, out Value); return Value; });
+                dbData2 = Math.Round(dbData2x, 2);
+            }
+        }
+        <ul>
+            <li>
+                <p class="No-Border" id="MasterAlarmCount">-</p>
+            </li>
+            <li>
+                <p class="No-Border" id="MasterWarningCount">-</p>
+            </li>
+            <li>
+                <p class="pDock">
+                    AVG DOCK <br />TIME :@Html.Raw(dbData1)
+                </p>
+            </li>
+            <li>
+                <p class="pDock">
+                    AVG UNDOCK <br />TIME :@Html.Raw(dbData2)
+                </p>
+            </li>
+            <li><p>-</p></li>
+            <li><p>-</p></li>
+            <li><p>-</p></li>
+        </ul>
+    </div>
+</div>

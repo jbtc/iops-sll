@@ -1,0 +1,285 @@
+﻿.ServiceCounters-Window {
+    height: 860px;
+    /*background-image: url(Images/Jetway-Bridge.png);*/
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+    margin: auto auto;
+    display: block;
+}
+
+.k-window {
+    z-index: 100 !important;
+}
+
+.k-window-titlebar {
+    background-color: #BFBFBF !important;
+}
+
+.k-window-title {
+    font-weight: bold !important;
+    margin-left: 10px;
+}
+
+/*changes background link for icons in Kendo Window*/
+#serviceCountersWindowLink0 {
+    background-image: url('Images/upArrow.gif');
+}
+
+
+/*CSS for PCA image link*/
+#ServiceCountersWindow ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hoverLinks{
+    position: absolute;
+    text-indent: -1000em; /*hides the linked copy within the li tags to the left of the window */
+}
+
+.hoverLinks a:hover{
+    cursor: pointer;
+    -moz-box-shadow: 0 0 0 5px #f2e3e3;
+    -webkit-box-shadow: 0 0 0 5px #f2e3e3;
+    box-shadow: 0 0 0 5px #f2e3e3;
+    -moz-transition: -moz-box-shadow .3s;
+    -webkit-transition: -webkit-box-shadow .3s;
+    transition: box-shadow .3s;
+}
+
+#gateLinkButtonInServiceCountersScreen {
+    color: blue;
+    position: relative;
+    top: 5px;
+    left: 15%;
+    font-size: 20px;
+    width: 122px;
+    background: transparent;
+}
+
+
+#gateLink {
+    color:blue;
+    position: relative;
+    top: 2%;
+    left: 10%;
+    font-size: x-large;
+    width: 122px
+}
+
+#showServiceCounters {
+    color: blue;
+    position: relative;
+    top: 5px;
+    left: 24%;
+    font-size: 20px;
+    width: 128px;
+    background: transparent;
+}
+
+/*Kendo tooltip styles*/
+.k-widget.k-tooltip.k-popup.k-group.k-reset {
+    width: 20px;
+    height: 20px;
+    background: black;
+    color: white;
+}
+
+.serviceCountersPageDividerLeft {
+    float:left
+}
+
+.serviceCountersPageDividerRight {
+    width: 51%;
+    float: right
+}
+
+#ServiceCountersWindow #tblPoints .pointsTableRowHeader{
+    background-color: #5d892b;
+    color: #FFF;
+    height: 30px;
+}
+
+#ServiceCountersWindow #tblPoints .pointsTableHeader{
+    text-align: left;
+    padding:5px 10px;
+}
+
+#ServiceCountersWindow #tblPoints{
+    border-collapse: collapse;
+    width: 500px
+}
+
+#ServiceCountersWindow #tblPoints th,#ServiceCountersWindow #tblPoints td{
+    border: 1px solid #8ed43e;
+    padding: 5px 10px;
+}
+
+
+#ServiceCountersWindow .pointsTable tr:nth-child(even){
+    background-color:#dcdcdc;
+}
+
+#ServiceCountersWindow .pointsTable tr:nth-child(odd){
+    background-color:#fff
+}
+
+#ServiceCountersWindow .pointsTableDataCells {
+    text-align: center;
+    width: 241px;
+    font-weight:bold;
+    height: 30px;
+}
+
+#ServiceCountersWindow .btnRed {
+    -moz-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    -webkit-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #FEA1A1), color-stop(1, #B30602));
+    background: -moz-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -webkit-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -o-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -ms-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: linear-gradient(to bottom, #FEA1A1 10%, #B30602 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEA1A1', endColorstr='#B30602',GradientType=0);
+    background-color: #FEA1A1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 47px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+#ServiceCountersWindow .btnRed:active {
+	position:relative;
+	top:1px;
+}
+
+/* Red Button Layout */
+#ServiceCountersWindow .btnGreen {
+    -moz-box-shadow: 3px 4px 0px 0px #E1ED8C;
+    -webkit-box-shadow: 3px 4px 0px 0px #E1ED8C;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #E1ED8C), color-stop(1, #63A143));
+    background: -moz-linear-gradient(top, #E1ED8C 10%, #63A143 100%);
+    background: -webkit-linear-gradient(top, #E1ED8C 10%, #63A143 100%);
+    background: -o-linear-gradient(top, #E1ED8C 10%, #63A143 100%);
+    background: -ms-linear-gradient(top, #E1ED8C 10%, #63A143 100%);
+    background: linear-gradient(to bottom, #E1ED8C 10%, #63A143 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E1ED8C', endColorstr='#63A143',GradientType=0);
+    background-color: #E1ED8C;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 50px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+#ServiceCountersWindow .btnGreen:active {
+	position:relative;
+	top:1px;
+}
+
+/* Blue button Layout */
+#ServiceCountersWindow .btnBlue {
+    -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+#ServiceCountersWindow .btnBlue:active {
+	position:relative;
+	top:1px;
+}
+
+/* Gray Button Layout */
+#ServiceCountersWindow .btnGray {
+    -moz-box-shadow: 3px 4px 0px 0px #ffffff;
+    -webkit-box-shadow: 3px 4px 0px 0px #ffffff;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #ffffff), color-stop(1, #bbb1b1));
+    background: -moz-linear-gradient(top, #ffffff 10%, #bbb1b1 100%);
+    background: -webkit-linear-gradient(top, #ffffff 10%, #bbb1b1 100%);
+    background: -o-linear-gradient(top, #ffffff 10%, #bbb1b1 100%);
+    background: -ms-linear-gradient(top, #ffffff 10%, #bbb1b1 100%);
+    background: linear-gradient(to bottom, #ffffff 10%, #bbb1b1 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#bbb1b1',GradientType=0);
+    background-color: #ffffff;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: pointer;
+    color: #6B6A6A;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #ABABAB;
+}
+
+#ServiceCountersWindow .btnGray:active {
+	position:relative;
+	top:1px;
+}
+
+
+#ServiceCountersWindow .redFlashingBackground {
+    background-image: url('Images/red-black-flashing-image.gif');
+    color: #FFF;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 18px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 280px;
+    height: 21px;
+}

@@ -1,0 +1,23 @@
+@model PagedList.IPagedList<iOps.Core.Model.Screen>
+@using PagedList.Mvc;
+
+o.OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
+
+@*@foreach (var o in Model)
+{
+    <li data-val="@o.ID" class="iOps-li" id="Screen_@(o.ID)">
+        <div class="fl">
+            
+        </div>
+        <div class="fr">
+            <div class="act">
+                <a ></a>
+                <button class="awe-btn" onclick="@(Url.Awe().PopupFormAction().Name("editCountry").Url(Url.Action("Edit", "Country", new { o.ID })).Success("edit").Height(200))">
+                    <span class="ico-edit"></span>
+                </button>
+                &nbsp;
+                @Html.Partial("deletebtn", new DelBtn { Id = o.ID, IsDeleted = o.IsDeleted, Controller = "Country" })
+            </div>
+        </div>
+    </li>
+}*@

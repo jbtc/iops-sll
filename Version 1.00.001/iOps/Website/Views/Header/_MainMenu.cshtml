@@ -1,0 +1,218 @@
+﻿@using System.Xml.Linq;
+@using iOps.Core.Model;
+
+@{
+    var authLevel = 0;
+    if(HttpContext.Current.User.Identity.IsAuthenticated)
+    { 
+        iopsContext db = new iopsContext();
+        User user = db.Users.Single(u => u.Username.Equals(HttpContext.Current.User.Identity.Name) && u.Organizations.Any(o => o.Designator.Equals("SLL")) && !u.IsDeleted); 
+        if (user.SecurityRoles.Any(r => r.Name.Equals("Admin"))) { authLevel = 4; }
+        if (user.SecurityRoles.Any(r => r.Name.Equals("Maintenance2"))) { authLevel = 3; }
+        if (user.SecurityRoles.Any(r => r.Name.Equals("Maintenance1"))) { authLevel = 2; }
+        if (user.SecurityRoles.Any(r => r.Name.Equals("User"))) { authLevel = 1; }
+    }
+    @Html.Hidden("MainMenuAuthLevel", authLevel)
+}
+
+<script>
+    $(document).ready(function () {
+//        debugger;
+        var tags = [];
+        OPC.tags = [];
+        OPC_config.watch_tags = [];
+        OPC_config.tag_prefix = '';
+        OPC_config.refresh_callback = opc_mainmenu_callback;
+        OPC_config.watch_tags = tags;
+        tags.push("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value");
+        OPC.init();
+
+        var userWindow = $("#UserAdminData"),
+            userLink = $("#UserAdminLink").bind('click', function (e) {
+                userWindow.data('kendoWindow').open().toFront();
+                return false;
+            });
+
+        var onClose = function (e) {
+            $("body").find(".k-window").each(function () {
+                if (!$(this).find(".k-window-content[id*='Alarm']").length && !$(this).find(".k-window-content[id*='Warning']").length) {
+                    $(this).css({ display: 'block' });
+                }
+            });
+            userWindow.closest('.k-window').hide();
+            return false;
+        };
+
+        if (!userWindow.data('kendoWindow')) {
+            userWindow.kendoWindow({
+                title: 'User Administration',
+                animation: false,
+                width: $("#splitter").width() - 244,
+                height: $(".splitter-main").height() - 33,
+                position: {
+                    top: $("#Header").height() + 4,
+                    left: 246
+                },
+                resizable: false,
+                draggable: false,
+                visible: false,
+                actions: ["Close"],
+                content: { url: '@Url.Action("Index", "Users", new { area = "Users" })' },
+                close: onClose,
+                autoFocus: true,
+                //deactivate: onDeactivate,
+                open: function (e) {
+                    $("body").find(".k-window").each(function () {
+                        $(this).css({ display: 'none' });
+                    });
+                    $('.k-window-titlebar').find('.k-window-actions').css('visibility', 'visible');
+                    return false;
+                }
+            })
+        }
+        //UserAdminLink tooltip
+        $('#UserAdminLink').kendoTooltip({
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function (e) {
+                this.refresh();
+            }
+        });
+
+        function close_accordion_section() {
+            $('.rtusp-accordion .rtusp-accordion-section-title').removeClass('active');
+            $('.rtusp-accordion .rtusp-accordion-section-content').slideUp(300).removeClass('open');
+        }
+
+        $('.rtusp-accordion-section-title').click(function (e) {
+            // Grab current anchor value
+            var currentAttrValue = $(this).attr('href');
+
+            if ($(e.target).is('.active')) {
+                close_accordion_section();
+                $("#menuItemGroup").height("145px");
+            } else {
+                close_accordion_section();
+
+                // Add active class to section title
+                $(this).addClass('active');
+                // Open up the hidden content panel
+                $('.rtusp-accordion ' + currentAttrValue).slideDown(300).addClass('open');
+                $("#menuItemGroup").height("195px");
+
+            }
+
+            e.preventDefault();
+        });
+
+        $('#rtuspUpdate').click(function () {
+            debugger;
+            var old_watch_tags = OPC_config.watch_tags;
+            var old_tag_prefix = OPC_config.tag_prefix;
+            var old_refresh_callback = OPC_config.refresh_callback;
+            var testValue = 0;
+            OPC.refresh('false');
+            OPC.tags = [];
+            OPC_config.watch_tags = [];
+            OPC_config.tag_prefix = '';
+            OPC_config.refresh_callback = '';
+            OPC_config.watch_tags.push("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value");
+            OPC.init();
+            OPC.set_value('Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value', parseInt($("#rtuspNewValue").val()));
+            $('#rtuAutoOnLeadTime_current').html($("#rtuspNewValue").val());
+            $("#rtuspNewValue").val('');
+            $('.rtusp-accordion-section-title').trigger('click');
+            OPC.refresh('false');
+            OPC.tags = [];
+            OPC_config.watch_tags = old_watch_tags;
+            OPC_config.tag_prefix = old_tag_prefix;
+            OPC_config.refresh_callback = old_refresh_callback;
+            OPC.init();
+        })
+
+    });
+
+    function get_value(tag) {
+        return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+
+    function get_bool(tag) {
+        var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        return (b && b == "True") ? true : false;
+    }
+
+    function opc_mainmenu_callback(data, cid) {
+        // put any other js here that needs to be executed on every server tag update
+        $('#rtuAutoOnLeadTime_current').html(get_value("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value"));
+    }
+
+    // customize the _show method to call options.beforeShow
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+</script>
+
+<ul id="menu">
+    <li>
+        <div id="menuIcon" class="Header-FlexGroup FlexContainer Flex-Column">
+        </div>
+        <ul id="menuItemGroup" style="right: 15px; width: 300px;top:7px;height:145px">
+            <li>
+                <div style="height:87%; padding: 10px; -ms-word-break: normal; word-break: normal; white-space: normal;background-color:#FFF6E8;border: 1px ridge black">
+                    <h1><strong>Welcome to iOps</strong></h1>
+                    <ul id="menuItems">
+                        <li id="menuItemShowTooltips">
+                            Show Tooltips <input id="showTooltips" type="checkbox" checked />
+                        </li>
+                        <li id="menuItemReports">
+                            <a href="/home/Reporting" target="_blank">Reports</a><br />
+                        </li>
+                        <li id="menuItemLogOut">
+                            @Html.ActionLink("Log out", "SignOff", "account")
+                        </li>
+                        <li id="menuItemUserAdmin">
+                            <a id="UserAdminLink" title="User Administration Page">User Admin</a>
+                        </li>
+                        <li id="menuItemRTUAutoOnSP">
+                            RTU Auto-On Lead Time: <span id="rtuAutoOnLeadTime_current" >-0-</span>
+                            <div class="rtusp-accordion">
+                                <div class="rtusp-accordion-section">
+                                    <a class="rtusp-accordion-section-title" href="#rtusp-accordion-1">Modify setpoint</a>
+
+                                    <div id="rtusp-accordion-1" class="rtusp-accordion-section-content">
+                                        New Lead Time: <input id="rtuspNewValue" class="rtusp-input" type="text" name="rtuNewLeadTime">&nbsp;&nbsp;&nbsp;
+                                        <input id="rtuspUpdate" class="rtusp-button" type="button" value="Update">
+                                    </div><!--end .rtusp-accordion-section-content-->
+                                </div><!--end .rtusp-accordion-section-->
+                            </div><!--end .rtusp-accordion-->
+                        </li>
+                    </ul>
+                    <div id="UserAdminData" style="display:none"></div>
+                </div>
+            </li>
+        </ul>
+    </li> 
+</ul>

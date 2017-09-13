@@ -1,0 +1,749 @@
+﻿<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script>
+    var tags = [];
+    $(document).ready(function () {
+        OPC.tags = [];
+        OPC_config.watch_tags = [];
+        OPC_config.tag_prefix = 'Airport.SLL.Term1.Zone1.GateC' + '@TempData["GateNumber"]' + '.GPU.';
+        OPC_config.refresh_callback = refresh_update;
+        OPC_config.watch_tags = tags;
+        //OPC_config.callback_timeout = 5000;
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "GPUAlarms",
+                callback: update_alarms,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                //networkNodes: ["RemoteSCADAHosting.localhost.RemoteSCADAHost.Airport-CID"],
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["C" + "@TempData["GateNumber"]" + "_GPU_ALARMS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "GPUWarnings",
+                callback: update_warnings,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                //networkNodes: ["RemoteSCADAHosting.localhost.RemoteSCADAHost.Airport-CID"],
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["C" + "@TempData["GateNumber"]" + "_GPU_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "GPUMasterAlarms",
+                callback: updateMasterGPUAlarms,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["A5_PBB_ALARMS", "B25L1_PBB_ALARMS", "B27_PBB_ALARMS", "A5_GPU_ALARMS", "B25L1_GPU_ALARMS", "B27_GPU_ALARMS", "A5_PBB_WARNINGS", "B25L1_PBB_WARNINGS", "B27_PBB_WARNINGS", "A5_GPU_WARNINGS", "B25L1_GPU_WARNINGS", "B27_GPU_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            }
+        ];
+
+        tags.push("RVINA.Value");                  // aircraft is docked
+        tags.push("RVINB.Value");                  // show green
+        tags.push("RVINC.Value");            // show yellow
+        tags.push("RVOUTA.Value");                 // show orange
+        tags.push("RVOUTB.Value");                 // show orange
+        tags.push("RVOUTC.Value");                 // show orange
+        tags.push("RAOUTA.Value");                     // show red
+        tags.push("RAOUTB.Value");                     // show red
+        tags.push("RAOUTC.Value");                     // show red
+
+        //OPC.toggle_refresh(true);
+        OPC.init(); //required for ajax calls in OPC
+
+        //Setup the main Kendo Window inside splitter-main
+        $("#GPUWindow").kendoWindow({
+            title: "Gate @TempData["GateNumber"] - GPU",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom", "Custom", "Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('#GPUWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#GPUWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).attr('id', 'gpuWindowLink' + index);
+        });
+
+        //left arrow click (go to PCA)
+        $('#gpuWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowPCA", "PCA", new { area = "PCA" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGPUAlarmWindow();
+                    CloseGPUWarningWindow();
+                    CloseKendoGPU();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        //up arrow (go back to the Gates screen)
+        //by default, user will be shown gate 1 (get clarified)
+        $('#gpuWindowLink1').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGPUAlarmWindow();
+                    CloseGPUWarningWindow();
+                    CloseKendoGPU();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        //regular text link (to go to the PCA screen)
+        $('#pcaLinkButtonInGPUScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowPCA", "PCA", new { area= "PCA" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGPUAlarmWindow();
+                    CloseGPUWarningWindow();
+                    CloseKendoGPU();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('#gateLinkButtonInGPUScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates","Gate",new {area = "Gate"})',
+                type: "GET",
+                contentType: 'text/html',
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                success: function (data) {
+                    CloseGPUAlarmWindow();
+                    CloseGPUWarningWindow();
+                    CloseKendoGPU();
+                    $('#main-body').html(data);
+                }
+            });
+        })
+
+        var gpuAlarmWindow = $('#GPUAlarmWindow');
+        if (!gpuAlarmWindow.data('kendoWindow')) {
+            gpuAlarmWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] - GPU Alarms',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+        $('#btnAlarms').click(function () {
+            $('#GPUAlarmWindow').data('kendoWindow').open();
+            $('#GPUAlarmWindow').closest(".k-window").css({ top: 90, left: 250 });
+        })
+
+        var gpuWarningWindow = $('#GPUWarningWindow');
+        if (!gpuWarningWindow.data('kendoWindow')) {
+            gpuWarningWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] - GPU Warnings',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+        $('#btnWarnings').click(function () {
+            $('#GPUWarningWindow').data('kendoWindow').open();
+            $('#GPUWarningWindow').closest(".k-window").css({ top: 90, left: 250 });
+        })
+
+        // Create the Gauge Objects
+        createGauges();
+    });
+
+    function CloseKendoGPU() {
+        if ($('#GPUWindow').is(':visible')) {
+            $('#GPUWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function CloseGPUAlarmWindow() {
+        $('#GPUAlarmWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    function CloseGPUWarningWindow() {
+        $('#GPUWarningWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    function get_value(tag) {
+        return OPC.get_value(tag);
+        //return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+
+    function get_bool(tag) {
+        var b = OPC.get_value(tag);
+        //var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    function Update_Tagged_Controls() {
+        var pre = OPC_config.tag_prefix;
+        var gauge = $("#gaugeVoltsIn").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "RVINA.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "RVINB.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "RVINC.Value")));
+
+        gauge = $("#gaugeVoltsOut").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "RVOUTA.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "RVOUTB.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "RVOUTC.Value")));
+
+        gauge = $("#gaugeAmpsOut").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "RAOUTA.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "RAOUTB.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "RAOUTC.Value")));
+    }
+
+    function update_alarms() {
+        var PriorityCol = -1;
+        PriorityCol = $('#GPUAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GPUAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $('#GPUAlarmWindow').find('td').eq(PriorityCol)[0].innerText;
+                $('#GPUAlarmWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow").addClass("HideAlarm");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function update_warnings() {
+        var PriorityCol = -1;
+        PriorityCol = $('#GPUWarningWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GPUWarningWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $('#GPUWarningWindow').find('td').eq(PriorityCol)[0].innerText;
+                $('#GPUWarningWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow").addClass("HideAlarm");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function refresh_update(data, cid) {
+        Update_Tagged_Controls();
+    }
+
+    function createGauges() {
+        $("#gaugeVoltsIn").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#66aaf7",
+            }],
+            scale: {
+                minorUnit: 20,
+                startAngle: -30,
+                endAngle: 210,
+                max: 600,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 0,
+                        to: 432,
+                        color: "#c20000"
+                    }, {
+                        from: 432,
+                        to: 450,
+                        color: "#ffd400"
+                    }, {
+                        from: 450,
+                        to: 510,
+                        color: "#00c000"
+                    }, {
+                        from: 510,
+                        to: 538,
+                        color: "#ffd400"
+                    }, {
+                        from: 538,
+                        to: 600,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugeVoltsOut").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#ffc700",
+            }],
+            scale: {
+                minorUnit: 20,
+                startAngle: -30,
+                endAngle: 210,
+                max: 600,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 0,
+                        to: 432,
+                        color: "#c20000"
+                    }, {
+                        from: 432,
+                        to: 450,
+                        color: "#ffd400"
+                    }, {
+                        from: 450,
+                        to: 510,
+                        color: "#00c000"
+                    }, {
+                        from: 510,
+                        to: 538,
+                        color: "#ffd400"
+                    }, {
+                        from: 538,
+                        to: 600,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugeAmpsOut").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#ffc700",
+            }],
+            scale: {
+                minorUnit: .25,
+                startAngle: -30,
+                endAngle: 210,
+                max: 15,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 0,
+                        to: 9,
+                        color: "#00c000"
+                    }, {
+                        from: 8,
+                        to: 10,
+                        color: "#ffd400"
+                    }, {
+                        from: 10,
+                        to: 15,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+    }
+</script>
+
+<div id="GPUWindow" class="Window-Container GPU-Window">
+    <div class="gpuPageDividerLeft">
+        <table id="pointTableContainer">
+            <tr>
+                <th class="pointTableContainerCol"></th>
+                <th class="pointTableContainerSeperator"></th>
+                <th class="pointTableContainerCol"></th>
+            </tr>
+            <tr>
+                <td rowspan="2">
+                    <table class="pointsTable" id="tblPointsLeft">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader">Point</th>
+                            <th class="pointsTableHeader">Value</th>
+                        </tr>
+                        <tr>
+                            <td><span id='spnGPUSTATUSSTitle' opc-tag-txt='{"tag":"GPUSTATUS.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnGPUSTATUSS"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"GPUSTATUS.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnGPUSTATUSS" opc-tag-txt='{"tag":"GPUSTATUS.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Retracted","bool_t":"Extended","string":"{0}"}}}'>Loading...</span>
+
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnSTATUSTitle" opc-tag-txt='{"tag":"STATUS_TEXT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnSTATUS" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGreen"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"STATUS_TEXT.Value","config":{"cls":"btnGreen"}}]}'>
+                                    <span id="spnSTATUS" opc-tag-txt='{"tag":"STATUS_TEXT.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnINTRLCK400HZTitle" opc-tag-txt='{"tag":"INTRLCK400HZ.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnINTRLCK400HZ" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"INTRLCK400HZ.Value","config":{"cls":"btnGreen"}}]}'><span id="spnINTRLCK400HZ" opc-tag-txt='{"tag":"INTRLCK400HZ.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnGPU28VTitle" opc-tag-txt='{"tag":"GPU28V.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnGPU28V" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"GPU28V.Value","config":{"cls":"btnGreen"}}]}'><span id="spnGPU28V" opc-tag-txt='{"tag":"GPU28V.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnHZ400CABLEDEPLOYEDTitle" opc-tag-txt='{"tag":"HZ400CABLEDEPLOYED.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHZ400CABLEDEPLOYED" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HZ400CABLEDEPLOYED.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHZ400CABLEDEPLOYED" opc-tag-txt='{"tag":"HZ400CABLEDEPLOYED.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Ready/OK","bool_t":"Retracted"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnHZ400EMERGPWRINTRLCKTitle" opc-tag-txt='{"tag":"HZ400EMERGPWRINTRLCK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHZ400EMERGPWRINTRLCK" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HZ400EMERGPWRINTRLCK.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHZ400EMERGPWRINTRLCK" opc-tag-txt='{"tag":"HZ400EMERGPWRINTRLCK.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnBKVASETTitle" opc-tag-txt='{"tag":"KVASET_TEXT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnBKVASET" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BKVASET.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBKVASET" opc-tag-txt='{"tag":"KVASET_TEXT.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRKVATitle" opc-tag-txt='{"tag":"RKVA.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                @* CSW20151008: What is going on with the tag in this button, it is trying to read from the PBB I think, but it is not formatted correction *@
+                                <button id="btnRKVA" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Airport.SLL.Term1.Zone1.GateC@TempData["GateNumber"]&#046;GPURKVA.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRKVA" opc-tag-txt='{"tag":"RKVA.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRAKWHTitle" opc-tag-txt='{"tag":"RAKWH.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRAKWH" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RAKWH.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRAKWH" opc-tag-txt='{"tag":"RAKWH.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRDCAMPSTitle" opc-tag-txt='{"tag":"RDCAMPS.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRDCAMPS" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RDCAMPS.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRDCAMPS" opc-tag-txt='{"tag":"RDCAMPS.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRDCVOLTSTitle" opc-tag-txt='{"tag":"RDCVOLTS.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRDCVOLTS" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RDCVOLTS.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRDCVOLTS" opc-tag-txt='{"tag":"RDCVOLTS.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRFREQTitle" opc-tag-txt='{"tag":"RFREQ.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRFREQ" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RFREQ.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRFREQ" opc-tag-txt='{"tag":"RFREQ.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRAOCONT1Title" opc-tag-txt='{"tag":"RAOCONT1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRAOCONT1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RAOCONT1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRAOCONT1" opc-tag-txt='{"tag":"RAOCONT1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnRAOCONT2Title" opc-tag-txt='{"tag":"RAOCONT2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnRAOCONT2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RAOCONT2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRAOCONT2" opc-tag-txt='{"tag":"RAOCONT2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td><span id="spnRVINAVGTitle" opc-tag-txt='{"tag":"RVINAVG.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVINAVG" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVINAVG.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVINAVG" opc-tag-txt='{"tag":"RVINAVG.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVINATitle" opc-tag-txt='{"tag":"RVINA.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVINA" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVINA.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVINA" opc-tag-txt='{"tag":"RVINA.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVINBTitle" opc-tag-txt='{"tag":"RVINB.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVINB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVINB.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVINB" opc-tag-txt='{"tag":"RVINB.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVINCTitle" opc-tag-txt='{"tag":"RVINC.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVINC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVINC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVINC" opc-tag-txt='{"tag":"RVINC.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVOUTAVGTitle" opc-tag-txt='{"tag":"RVOUTAVG.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVOUTAVG" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVOUTAVG.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVOUTAVG" opc-tag-txt='{"tag":"RVOUTAVG.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVOUTATitle" opc-tag-txt='{"tag":"RVOUTA.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVOUTA" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVOUTA.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVOUTA" opc-tag-txt='{"tag":"RVOUTA.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVOUTBTitle" opc-tag-txt='{"tag":"RVOUTB.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVOUTB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVOUTB.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVOUTB" opc-tag-txt='{"tag":"RVOUTB.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id="spnRVOUTCTitle" opc-tag-txt='{"tag":"RVOUTC.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnRVOUTC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"RVOUTC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnRVOUTC" opc-tag-txt='{"tag":"RVOUTC.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                                </td>
+                            </tr>*@
+                    </table>
+                    @*<button id="btnAlarms" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                                "bad_q":{"cls":"btnGray"},
+                                "group":[
+                                    {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}},
+                                    {"tag":"Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                                ]}' opc-tag-txt='{"tag":"Alarm._Count.Value","config":{"formats":{"bad_q":"Alarms (Bad Data)","string":"Alarms ({0})"}}}'>
+                                Alarms
+                        </button><br />*@
+                    <button id="btnAlarms" opc-tag-bkg='{
+                        "type":"group",
+                        "all_f":{"cls":"btnInvisible"},
+                        "bad_q":{"cls":"btnGray"},
+                        "group":[
+                            {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}}
+                        ]}' opc-tag-txt='{"tag":"Alarm._Count.Value","config":{"formats":{"bad_q":"Alarms (Bad Data)","string":"Alarms ({0})"}}}'>
+                        Alarms
+                    </button>
+                    <button id="btnWarnings" opc-tag-bkg='{
+                        "type":"group",
+                        "all_f":{"cls":"btnInvisible"},
+                        "bad_q":{"cls":"btnGray"},
+                        "group":[
+                            {"tag":"Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                        ]}' opc-tag-txt='{"tag":"Warning._Count.Value","config":{"formats":{"bad_q":"Warnings (Bad Data)","string":"Warnings ({0})"}}}'>
+                        Warnings
+                    </button>
+                </td>
+                <td colspan="2">
+                    <div class="gpuPageDividerRight">
+                        <button id="gateLinkButtonInGPUScreen">Go to Gate</button>
+                        <button id="pcaLinkButtonInGPUScreen">Go to PCA</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <table class="pointsTable" id="tblPointsRight">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader">Volts In</th>
+                            <th class="pointsTableHeader">Volts Out</th>
+                            <th class="pointsTableHeader">Amps Out</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="gaugeVoltsIn-container" class="gauge-container">
+                                    <div id="gaugeVoltsIn" class="gauge"></div>
+                                    <span id="jqsdVoltsInAvg" class="SegmentDisplay" opc-tag-txt='{"tag":"RVINAVG.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>...Loading</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="gaugeVoltsOut-container" class="gauge-container">
+                                    <div id="gaugeVoltsOut" class="gauge"></div>
+                                    <span id="jqsdVoltsOutAvg" class="SegmentDisplay" opc-tag-txt='{"tag":"RVOUTAVG.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>...Loading</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="gaugeAmpsOut-container" class="gauge-container">
+                                    <div id="gaugeAmpsOut" class="gauge"></div>
+                                    <span id="jqsdAmpsOutAvg" class="SegmentDisplay" opc-tag-txt='{"tag":"RAOUTAVG.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>...Loading</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="gaugeVoltsIn-Legend">
+                                <table id="gaugeVoltsIn-Legend">
+                                    <tr><div class="gaugeLegend-Pointer1">Phase 1 - Volts In</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer2">Phase 2 - Volts In</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer3">Phase 3 - Volts In</div></tr>
+                                </table>
+                            </td>
+                            <td id="gaugeVoltsOut-Legend">
+                                <table id="gaugeVoltsOut-Legend">
+                                    <tr><div class="gaugeLegend-Pointer1">Phase 1 - Volts Out</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer2">Phase 2 - Volts Out</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer3">Phase 3 - Volts Out</div></tr>
+                                </table>
+                            </td>
+                            <td id="gaugeAmpsOut-Legend">
+                                <table id="gaugeAmpsOut-Legend">
+                                    <tr><div class="gaugeLegend-Pointer1">Phase 1 - Amps Out</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer2">Phase 2 - Amps Out</div></tr>
+                                    <tr><div class="gaugeLegend-Pointer3">Phase 3 - Amps Out</div></tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+            </tr>
+
+        </table>
+    </div>
+    <div id="GPUAlarmWindow">
+        <div id="GPUAlarms"></div>
+
+    </div>
+    <div id="GPUWarningWindow">
+        <div id="GPUWarnings"></div>
+    </div>
+</div>

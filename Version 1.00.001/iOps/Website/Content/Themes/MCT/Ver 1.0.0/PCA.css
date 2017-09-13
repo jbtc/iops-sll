@@ -1,0 +1,493 @@
+﻿.PCA-Window {
+    height: 860px;
+    background-image: url(Images/PCAire-rev-20150114-1024x792.jpg);
+    background-repeat: no-repeat;
+    background-size: 60% 60%;
+    background-position: right 75px;
+    margin: auto auto;
+    display: block;
+}
+
+.PCA-Window table
+{
+    width: 50%;
+}
+.k-window 
+{
+    z-index:100 !important;
+}
+.k-window-titlebar 
+{
+    background-color: #b8ce93 !important; 
+}
+.k-window-title 
+{
+    font-weight: bold !important;
+}
+
+
+/*changes background image for the Kendo Window icons*/
+#pcaWindowLink0 {
+    background-image: url('Images/leftArrow.gif')
+}
+
+#pcaWindowLink1 {
+    background-image: url('Images/upArrow.gif')
+}
+
+#pcaWindowLink2 {
+    background-image: url('Images/settings.gif')
+}
+
+#gateLinkButtonInPCAScreen {
+    position: absolute;
+    top: 1%;
+    left: 68%;
+}
+
+#gpuLinkButtonInPCAScreen {
+    position: absolute;
+    top: 1%;
+    left: 78%;
+}
+
+#gateLinkButtonInPCAScreen, #gpuLinkButtonInPCAScreen {
+    -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+
+    /*color: blue;
+    position: relative;
+    top: 5px;
+    left: 15%;
+    font-size: 20px;
+    width: 122px;
+    background: transparent;*/
+}
+
+.pcaPageDividerLeft {
+    float: left
+}
+
+.pcaPageDividerRight {
+    width: 51%;
+    float: right;
+}
+
+#PCAWindow #btnAlarms {
+    position: absolute;
+    top: 84%;
+    left: 5%;
+    margin-top: 400px;
+}
+
+#PCAWindow #pointTableContainer .pointTableContainerCol {
+    width: 40%;
+} 
+
+#PCAWindow #pointTableContainer .pointTableContainerSeperator {
+    width: 20%;
+}
+ 
+#PCAWindow #tblPointsLeft .pointsTableRowHeader,
+#PCAWindow #tblPointsRight .pointsTableRowHeader {
+    background-color: #e3e3e3;
+    color: #2e2e2e;
+    height: 30px;
+}
+
+#PCAWindow #tblPointsLeft .pointsTableHeader,
+#PCAWindow #tblPointsRight .pointsTableHeader {
+    text-align: center;
+}
+
+#PCAWindow #tblPointsLeft{
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    border-collapse: collapse;
+    width: 500px;
+    opacity: .8
+}
+#PCAWindow #tblPointsRight{
+    position: absolute;
+    top: 72%;
+    left: 60%;
+    border-collapse: collapse;
+    width: 500px;
+    opacity: .8
+}
+
+#PCAWindow #tblPointsLeft th,
+#PCAWindow #tblPointsLeft td,
+#PCAWindow #tblPointsRight th,
+#PCAWindow #tblPointsRight td{
+    border: 1px solid #c5c5c5;
+}
+
+#PCAWindow .pointsTable tr:nth-child(even){
+    background-color:#f5f5f5;
+}
+
+#PCAWindow .pointsTable tr:nth-child(odd){
+    background-color:#fff
+}
+
+#PCAWindow .pointsTableDataCells {
+     text-align: center;
+    width: 231px;
+    font-weight:bold;
+    height: 25px;
+}
+
+div.k-widget.k-window.KendoWindowToTop {
+    z-index: 500 !important;
+}
+
+#PCAAlarmWindow tr.AlarmRow, #GateWarningWindow tr.AlarmRow{
+	background-color: #f00 !important;
+	color: #fff !important;
+	font-weight: bold !important;
+	border-color: #fff !important;
+}
+
+#PCAAlarmWindow tr.AlarmRow a { color:#fff !important; }
+#PCAAlarmWindow tr.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#PCAAlarmWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#PCAAlarmWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#PCAAlarmWindow tr.WarningRow, #GateWarningWindow tr.WarningRow {
+	background-color: #ff0 !important;
+	color: #000 !important;
+	font-weight: normal !important;
+	border-color: #fff !important;
+}
+#PCAAlarmWindow tr.WarningRow a { color:#000 !important; }
+#PCAAlarmWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#PCAAlarmWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#PCAAlarmWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+#PCAWarningWindow tr.AlarmRow a { color:#fff !important; }
+#PCAWarningWindow.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#PCAWarningWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#PCAWarningWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#PCAWarningWindow tr.WarningRow a { color:#000 !important; }
+#PCAWarningWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#PCAWarningWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#PCAWarningWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+/*ALARM POPUP DISPLAY*/
+#PCAAlarmWindow #tblAlarms{
+    border-collapse: collapse;
+    width:300px;
+    top:200px;
+    left: 400px;
+}
+
+#PCAAlarmWindow #tblAlarms .rowHeader{
+    background-color:#e3e3e3;
+    color:#2e2e2e;
+}
+
+#PCAAlarmWindow #tblAlarms .alarmTableHeader{
+    text-align:center;
+}
+
+#PCAAlarmWindow #tblAlarms th, #PCAAlarmWindow #tblAlarms td{
+    border: 1px solid #c5c5c5;
+}
+
+#PCAAlarmWindow .alarmTable tr:nth-child(even){
+    background-color:#f5f5f5;
+}
+
+#PCAAlarmWindow .alarmTable tr:nth-child(odd){
+    background-color:#FFF;
+}
+
+#PCAAlarmWindow #tblAlarms .alarmDataCells{
+    text-align:center;
+}
+
+/*Hide*/
+#PCAWindow .btnInvisible, #PCAAlarmWindow .btnInvisible, #PCAWarningWindow .btnInvisible {
+    visibility:hidden
+}
+
+#PCAWindow .btnRed, #PCAAlarmWindow .btnRed {
+    -moz-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    -webkit-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #FEA1A1), color-stop(1, #B30602));
+    background: -moz-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -webkit-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -o-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -ms-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: linear-gradient(to bottom, #FEA1A1 10%, #B30602 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEA1A1', endColorstr='#B30602',GradientType=0);
+    background-color: #FEA1A1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 47px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+/*#PCAWindow .btnRed:hover, #PCAAlarmWindow .btnRed:hover, #PCAWarningWindow .btnRed:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #8b0d0d), color-stop(1, #FAB4B4));
+    background:-moz-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-webkit-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-o-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-ms-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:linear-gradient(to bottom, #8b0d0d 5%, #FAB4B4 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8b0d0d', endColorstr='#FAB4B4',GradientType=0);
+    background-color:#8b0d0d;
+}*/
+
+#PCAWindow .btnRed:active, #PCAAlarmWindow .btnRed:active, #PCAWarningWindow .btnRed:active {
+    position:relative;
+    top:1px;
+}
+
+/* Red Button Layout */
+#PCAWindow .btnGreen, #PCAAlarmWindow .btnGreen, #PCAWarningWindow .btnGreen {
+    color: green;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+}
+
+/*#PCAWindow .btnGreen:hover, #PCAAlarmWindow .btnGreen:hover, #PCAWarningWindow .btnGreen:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #568d39), color-stop(1, #E6EEAA));
+    background:-moz-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-webkit-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-o-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-ms-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:linear-gradient(to bottom, #568d39 5%, #E6EEAA 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#568d39', endColorstr='#E6EEAA',GradientType=0);
+    background-color:#568d39;
+}*/
+
+#PCAWindow .btnGreen:active, #PCAAlarmWindow .btnGreen:active, #PCAWarningWindow .btnGreen:active {
+    position:relative;
+    top:1px;
+}
+
+/* Blue button Layout */
+#PCAWindow .btnBlue, #PCAAlarmWindow .btnBlue, #PCAWarningWindow .btnBlue {
+    -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+/*#PCAWindow .btnBlue:hover, #PCAAlarmWindow .btnBlue:hover, #PCAWarningWindow .btnBlue:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4aa0f7), color-stop(1, #dcecfb));
+    background:-moz-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-webkit-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-o-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-ms-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:linear-gradient(to bottom, #4aa0f7 5%, #dcecfb 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4aa0f7', endColorstr='#dcecfb',GradientType=0);
+    background-color:#4aa0f7;
+}*/
+
+#PCAWindow .btnBlue:active, #PCAAlarmWindow .btnBlue:active, #PCAWarningWindow .btnBlue:active {
+    position:relative;
+    top:1px;
+}
+
+#PCAWindow .btnsBlue, #PCAAlarmWindow .btnsBlue {
+    color: blue;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+#PCAWindow .btnsRed, #PCAAlarmWindow .btnsRed {
+    color: red;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+/* Gray Button Layout */
+#PCAWindow .btnGray, #PCAAlarmWindow .btnGray, #PCAWarningWindow .btnGray {
+    color: slategray;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+}
+
+/*#PCAWindow .btnGray:hover, #PCAAlarmWindow .btnGray:hover, #PCAWarningWindow .btnGray:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bbb1b1), color-stop(1, #ffffff));
+    background:-moz-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-webkit-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-o-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-ms-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:linear-gradient(to bottom, #bbb1b1 5%, #ffffff 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bbb1b1', endColorstr='#ffffff',GradientType=0);
+    background-color:#bbb1b1;
+}*/
+
+#PCAWindow .btnGray:active, #PCAAlarmWindow .btnGray:active, #PCAWarningWindow .btnGray:active {
+    position:relative;
+    top:1px;
+}
+
+
+#PCAWindow .redFlashingBackground {
+    background-image: url('Images/red-black-flashing-image.gif');
+    color: #FFF;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 18px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 280px;
+    height: 21px;
+}
+
+#PCAWindow .yellowFlashingBackground {
+    background-image: url('Images/yellow-black-flashing-image.gif');
+    color: #3A3A12;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 16px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 200px;
+    height: 20px;
+}
+
+
+#PCAAlarmWindow .HideAlarm {
+    display: none;
+    visibility: hidden;
+}
+
+#PCAAlarmWindow .ShowAlarm {
+    display: table-row;
+    visibility: visible;
+}
+
+#PCAAlarmWindow .RingBellAlarmGrayBackground, #PCAWarningWindow .RingBellAlarmGrayBackground {
+    background-image: url('Images/RingBellButton-Gray-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+
+#PCAAlarmWindow .RingBellAlarmBadQualityBackground, #PCAWarningWindow .RingBellAlarmBadQualityBackground {
+    background-image: url('Images/RingBellButton-BadQuality-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+
+#PCAAlarmWindow .RingBellAlarmFlashingBackground, #PCAWarningWindow .RingBellAlarmFlashingBackground {
+    background-image: url('Images/RingBellButton-RedFlashing-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+
+#PCAWindow .SegmentDisplay {
+  font-family: 'digital-7regular','Arial', sans-serif;
+  font-size: 23pt;
+  top: -20px;
+  position: relative;
+  color: #33AB0B;
+}
+
+#PCAWindow .gauge-container {
+    background: transparent url('Images/gauge/gauge-container-partial001.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    margin: 0 auto 10px auto;
+}
+
+#PCAWindow .gauge {
+    width: 190px;
+    height: 165px;
+    margin: 0 auto 0; 
+}

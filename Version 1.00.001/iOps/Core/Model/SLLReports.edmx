@@ -1,0 +1,897 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SLL_Airport_SCADAEntities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL Network Monitoring Bool' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL Network Monitoring Bool">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+            <PropertyRef Name="ms" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="ms" Type="int" Nullable="false" />
+          <Property Name="TagName" Type="nvarchar" MaxLength="255" />
+          <Property Name="DataValue" Type="bit" />
+          <Property Name="Gate" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockedTime_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_UnDockTime_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL_PBB_AlarmLogging' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL_PBB_AlarmLogging">
+          <Key>
+            <PropertyRef Name="Terminal" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="AlarmID" Type="nvarchar" MaxLength="255" />
+          <Property Name="AlarmType" Type="nvarchar" MaxLength="255" />
+          <Property Name="AlarmGroup" Type="nvarchar" MaxLength="255" />
+          <Property Name="Priority" Type="int" />
+          <Property Name="AlarmText" Type="nvarchar" MaxLength="255" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="Acked" Type="bit" />
+          <Property Name="TimeDelay" Type="int" />
+          <Property Name="AlarmValue" Type="float" />
+          <Property Name="ClearedValue" Type="float" />
+          <Property Name="AlarmLimit" Type="float" />
+          <Property Name="AlarmDateTime" Type="datetime" />
+          <Property Name="ClearedDateTime" Type="datetime" />
+          <Property Name="AckedDateTime" Type="datetime" />
+          <Property Name="AckedUser" Type="nvarchar" MaxLength="255" />
+          <Property Name="Units" Type="nvarchar" MaxLength="255" />
+          <Property Name="Document" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Terminal" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Gate" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_DailyAircraftDocked">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL_PBB_DataLogging' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL_PBB_DataLogging">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+            <PropertyRef Name="TERMINAL" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="TagName" Type="nvarchar" MaxLength="255" />
+          <Property Name="DataValue" Type="nvarchar" MaxLength="100" />
+          <Property Name="TERMINAL" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Gate" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL_PBB_WarningLogging' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL_PBB_WarningLogging">
+          <Key>
+            <PropertyRef Name="Terminal" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="AlarmID" Type="nvarchar" MaxLength="255" />
+          <Property Name="AlarmType" Type="nvarchar" MaxLength="255" />
+          <Property Name="AlarmGroup" Type="nvarchar" MaxLength="255" />
+          <Property Name="Priority" Type="int" />
+          <Property Name="AlarmText" Type="nvarchar" MaxLength="255" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="Acked" Type="bit" />
+          <Property Name="TimeDelay" Type="int" />
+          <Property Name="AlarmValue" Type="float" />
+          <Property Name="ClearedValue" Type="float" />
+          <Property Name="AlarmLimit" Type="float" />
+          <Property Name="AlarmDateTime" Type="datetime" />
+          <Property Name="ClearedDateTime" Type="datetime" />
+          <Property Name="AckedDateTime" Type="datetime" />
+          <Property Name="AckedUser" Type="nvarchar" MaxLength="255" />
+          <Property Name="Units" Type="nvarchar" MaxLength="255" />
+          <Property Name="Document" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Terminal" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Gate" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="100" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL_PBB_DockTime_DataLogging' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL_PBB_DockTime_DataLogging">
+          <Key>
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="Gate" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'SLL_Airport_SCADA.dbo.SLL_PBB_UnDockTime_DataLogging' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SLL_PBB_UnDockTime_DataLogging">
+          <Key>
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="Gate" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="DateAndTime" Type="datetime" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityContainer Name="SLL_Airport_SCADAEntitiesStoreContainer">
+          <EntitySet Name="SLL_PBB_1A_DockTime" EntityType="Self.SLL_PBB_1A_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_1A_UnDockTime" EntityType="Self.SLL_PBB_1A_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_1B_DockTime" EntityType="Self.SLL_PBB_1B_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_1B_UnDockTime" EntityType="Self.SLL_PBB_1B_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_2A_DockTime" EntityType="Self.SLL_PBB_2A_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_2A_UnDockTime" EntityType="Self.SLL_PBB_2A_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_2B_DockTime" EntityType="Self.SLL_PBB_2B_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_2B_UnDockTime" EntityType="Self.SLL_PBB_2B_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_3A_DockTime" EntityType="Self.SLL_PBB_3A_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_3A_UnDockTime" EntityType="Self.SLL_PBB_3A_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_3B_DockTime" EntityType="Self.SLL_PBB_3B_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_3B_UnDockTime" EntityType="Self.SLL_PBB_3B_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_4A_DockTime" EntityType="Self.SLL_PBB_4A_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_4A_UnDockTime" EntityType="Self.SLL_PBB_4A_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_4B_DockTime" EntityType="Self.SLL_PBB_4B_DockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_4B_UnDockTime" EntityType="Self.SLL_PBB_4B_UnDockTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL_PBB_DailyAircraftDocked" EntityType="Self.SLL_PBB_DailyAircraftDocked" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SLL Network Monitoring Bool" EntityType="Self.SLL Network Monitoring Bool" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL Network Monitoring Bool].[DateAndTime] AS [DateAndTime], 
+    [SLL Network Monitoring Bool].[ms] AS [ms], 
+    [SLL Network Monitoring Bool].[TagName] AS [TagName], 
+    [SLL Network Monitoring Bool].[DataValue] AS [DataValue], 
+    [SLL Network Monitoring Bool].[Gate] AS [Gate], 
+    [SLL Network Monitoring Bool].[Tag] AS [Tag]
+    FROM [dbo].[SLL Network Monitoring Bool] AS [SLL Network Monitoring Bool]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SLL_PBB_AlarmLogging" EntityType="Self.SLL_PBB_AlarmLogging" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL_PBB_AlarmLogging].[AlarmID] AS [AlarmID], 
+    [SLL_PBB_AlarmLogging].[AlarmType] AS [AlarmType], 
+    [SLL_PBB_AlarmLogging].[AlarmGroup] AS [AlarmGroup], 
+    [SLL_PBB_AlarmLogging].[Priority] AS [Priority], 
+    [SLL_PBB_AlarmLogging].[AlarmText] AS [AlarmText], 
+    [SLL_PBB_AlarmLogging].[Active] AS [Active], 
+    [SLL_PBB_AlarmLogging].[Acked] AS [Acked], 
+    [SLL_PBB_AlarmLogging].[TimeDelay] AS [TimeDelay], 
+    [SLL_PBB_AlarmLogging].[AlarmValue] AS [AlarmValue], 
+    [SLL_PBB_AlarmLogging].[ClearedValue] AS [ClearedValue], 
+    [SLL_PBB_AlarmLogging].[AlarmLimit] AS [AlarmLimit], 
+    [SLL_PBB_AlarmLogging].[AlarmDateTime] AS [AlarmDateTime], 
+    [SLL_PBB_AlarmLogging].[ClearedDateTime] AS [ClearedDateTime], 
+    [SLL_PBB_AlarmLogging].[AckedDateTime] AS [AckedDateTime], 
+    [SLL_PBB_AlarmLogging].[AckedUser] AS [AckedUser], 
+    [SLL_PBB_AlarmLogging].[Units] AS [Units], 
+    [SLL_PBB_AlarmLogging].[Document] AS [Document], 
+    [SLL_PBB_AlarmLogging].[Comment] AS [Comment], 
+    [SLL_PBB_AlarmLogging].[Terminal] AS [Terminal], 
+    [SLL_PBB_AlarmLogging].[Zone] AS [Zone], 
+    [SLL_PBB_AlarmLogging].[Gate] AS [Gate], 
+    [SLL_PBB_AlarmLogging].[Tag] AS [Tag]
+    FROM [dbo].[SLL_PBB_AlarmLogging] AS [SLL_PBB_AlarmLogging]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SLL_PBB_DataLogging" EntityType="Self.SLL_PBB_DataLogging" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL_PBB_DataLogging].[DateAndTime] AS [DateAndTime], 
+    [SLL_PBB_DataLogging].[TagName] AS [TagName], 
+    [SLL_PBB_DataLogging].[DataValue] AS [DataValue], 
+    [SLL_PBB_DataLogging].[TERMINAL] AS [TERMINAL], 
+    [SLL_PBB_DataLogging].[Zone] AS [Zone], 
+    [SLL_PBB_DataLogging].[Gate] AS [Gate], 
+    [SLL_PBB_DataLogging].[Tag] AS [Tag]
+    FROM [dbo].[SLL_PBB_DataLogging] AS [SLL_PBB_DataLogging]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SLL_PBB_WarningLogging" EntityType="Self.SLL_PBB_WarningLogging" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL_PBB_WarningLogging].[AlarmID] AS [AlarmID], 
+    [SLL_PBB_WarningLogging].[AlarmType] AS [AlarmType], 
+    [SLL_PBB_WarningLogging].[AlarmGroup] AS [AlarmGroup], 
+    [SLL_PBB_WarningLogging].[Priority] AS [Priority], 
+    [SLL_PBB_WarningLogging].[AlarmText] AS [AlarmText], 
+    [SLL_PBB_WarningLogging].[Active] AS [Active], 
+    [SLL_PBB_WarningLogging].[Acked] AS [Acked], 
+    [SLL_PBB_WarningLogging].[TimeDelay] AS [TimeDelay], 
+    [SLL_PBB_WarningLogging].[AlarmValue] AS [AlarmValue], 
+    [SLL_PBB_WarningLogging].[ClearedValue] AS [ClearedValue], 
+    [SLL_PBB_WarningLogging].[AlarmLimit] AS [AlarmLimit], 
+    [SLL_PBB_WarningLogging].[AlarmDateTime] AS [AlarmDateTime], 
+    [SLL_PBB_WarningLogging].[ClearedDateTime] AS [ClearedDateTime], 
+    [SLL_PBB_WarningLogging].[AckedDateTime] AS [AckedDateTime], 
+    [SLL_PBB_WarningLogging].[AckedUser] AS [AckedUser], 
+    [SLL_PBB_WarningLogging].[Units] AS [Units], 
+    [SLL_PBB_WarningLogging].[Document] AS [Document], 
+    [SLL_PBB_WarningLogging].[Comment] AS [Comment], 
+    [SLL_PBB_WarningLogging].[Terminal] AS [Terminal], 
+    [SLL_PBB_WarningLogging].[Zone] AS [Zone], 
+    [SLL_PBB_WarningLogging].[Gate] AS [Gate], 
+    [SLL_PBB_WarningLogging].[Tag] AS [Tag]
+    FROM [dbo].[SLL_PBB_WarningLogging] AS [SLL_PBB_WarningLogging]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SLL_PBB_DockTime_DataLogging" EntityType="Self.SLL_PBB_DockTime_DataLogging" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL_PBB_DockTime_DataLogging].[Gate] AS [Gate], 
+    [SLL_PBB_DockTime_DataLogging].[DateAndTime] AS [DateAndTime], 
+    [SLL_PBB_DockTime_DataLogging].[Value] AS [Value]
+    FROM [dbo].[SLL_PBB_DockTime_DataLogging] AS [SLL_PBB_DockTime_DataLogging]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SLL_PBB_UnDockTime_DataLogging" EntityType="Self.SLL_PBB_UnDockTime_DataLogging" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SLL_PBB_UnDockTime_DataLogging].[Gate] AS [Gate], 
+    [SLL_PBB_UnDockTime_DataLogging].[DateAndTime] AS [DateAndTime], 
+    [SLL_PBB_UnDockTime_DataLogging].[Value] AS [Value]
+    FROM [dbo].[SLL_PBB_UnDockTime_DataLogging] AS [SLL_PBB_UnDockTime_DataLogging]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SLL_Airport_SCADAEntities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="SLL_PBB_1A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockedTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_1B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DockTime_Value" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DockTime_Value" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_2B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DockTime_Value" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_3B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4A_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4A_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4B_DockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_4B_UnDockTime">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_UnDockTime_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SLL_Network_Monitoring_Bool">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+            <PropertyRef Name="ms" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ms" Type="Int32" Nullable="false" />
+          <Property Name="TagName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DataValue" Type="Boolean" />
+          <Property Name="Gate" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Tag" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_AlarmLogging">
+          <Key>
+            <PropertyRef Name="Terminal" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="AlarmID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AlarmType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AlarmGroup" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="AlarmText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="Acked" Type="Boolean" />
+          <Property Name="TimeDelay" Type="Int32" />
+          <Property Name="AlarmValue" Type="Double" />
+          <Property Name="ClearedValue" Type="Double" />
+          <Property Name="AlarmLimit" Type="Double" />
+          <Property Name="AlarmDateTime" Type="DateTime" Precision="3" />
+          <Property Name="ClearedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="AckedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="AckedUser" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Units" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Document" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Terminal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Zone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Gate" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Tag" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_WarningLogging">
+          <Key>
+            <PropertyRef Name="Terminal" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="AlarmID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AlarmType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AlarmGroup" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="AlarmText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="Acked" Type="Boolean" />
+          <Property Name="TimeDelay" Type="Int32" />
+          <Property Name="AlarmValue" Type="Double" />
+          <Property Name="ClearedValue" Type="Double" />
+          <Property Name="AlarmLimit" Type="Double" />
+          <Property Name="AlarmDateTime" Type="DateTime" Precision="3" />
+          <Property Name="ClearedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="AckedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="AckedUser" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Units" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Document" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Terminal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Zone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Gate" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Tag" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_DockTime_DataLogging">
+          <Key>
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="Gate" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Value" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_UnDockTime_DataLogging">
+          <Key>
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="Gate" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="SLL_IOPS_ReportingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="SLL_PBB_1A_DockTime" EntityType="Self.SLL_PBB_1A_DockTime" />
+          <EntitySet Name="SLL_PBB_1A_UnDockTime" EntityType="Self.SLL_PBB_1A_UnDockTime" />
+          <EntitySet Name="SLL_PBB_1B_DockTime" EntityType="Self.SLL_PBB_1B_DockTime" />
+          <EntitySet Name="SLL_PBB_1B_UnDockTime" EntityType="Self.SLL_PBB_1B_UnDockTime" />
+          <EntitySet Name="SLL_PBB_2A_DockTime" EntityType="Self.SLL_PBB_2A_DockTime" />
+          <EntitySet Name="SLL_PBB_2A_UnDockTime" EntityType="Self.SLL_PBB_2A_UnDockTime" />
+          <EntitySet Name="SLL_PBB_2B_DockTime" EntityType="Self.SLL_PBB_2B_DockTime" />
+          <EntitySet Name="SLL_PBB_2B_UnDockTime" EntityType="Self.SLL_PBB_2B_UnDockTime" />
+          <EntitySet Name="SLL_PBB_3A_DockTime" EntityType="Self.SLL_PBB_3A_DockTime" />
+          <EntitySet Name="SLL_PBB_3A_UnDockTime" EntityType="Self.SLL_PBB_3A_UnDockTime" />
+          <EntitySet Name="SLL_PBB_3B_DockTime" EntityType="Self.SLL_PBB_3B_DockTime" />
+          <EntitySet Name="SLL_PBB_3B_UnDockTime" EntityType="Self.SLL_PBB_3B_UnDockTime" />
+          <EntitySet Name="SLL_PBB_4A_DockTime" EntityType="Self.SLL_PBB_4A_DockTime" />
+          <EntitySet Name="SLL_PBB_4A_UnDockTime" EntityType="Self.SLL_PBB_4A_UnDockTime" />
+          <EntitySet Name="SLL_PBB_4B_DockTime" EntityType="Self.SLL_PBB_4B_DockTime" />
+          <EntitySet Name="SLL_PBB_4B_UnDockTime" EntityType="Self.SLL_PBB_4B_UnDockTime" />
+          <EntitySet Name="SLL_Network_Monitoring_Bools" EntityType="Self.SLL_Network_Monitoring_Bool" />
+          <EntitySet Name="SLL_PBB_AlarmLogging" EntityType="Self.SLL_PBB_AlarmLogging" />
+          <EntitySet Name="SLL_PBB_WarningLogging" EntityType="Self.SLL_PBB_WarningLogging" />
+          <EntitySet Name="SLL_PBB_DockTime_DataLogging" EntityType="Self.SLL_PBB_DockTime_DataLogging" />
+          <EntitySet Name="SLL_PBB_UnDockTime_DataLogging" EntityType="Self.SLL_PBB_UnDockTime_DataLogging" />
+          <EntitySet Name="SLL_PBB_DataLogging" EntityType="SLL_Airport_SCADAEntities.SLL_PBB_DataLogging" />
+          <EntitySet Name="SLL_PBB_DailyAircraftDocked" EntityType="SLL_Airport_SCADAEntities.SLL_PBB_DailyAircraftDocked" />
+        </EntityContainer>
+        <EntityType Name="SLL_PBB_DataLogging">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+            <PropertyRef Name="TERMINAL" />
+            <PropertyRef Name="Zone" />
+            <PropertyRef Name="Gate" />
+            <PropertyRef Name="Tag" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TagName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DataValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TERMINAL" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Zone" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Gate" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Tag" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SLL_PBB_DailyAircraftDocked">
+          <Key>
+            <PropertyRef Name="DateAndTime" />
+          </Key>
+          <Property Name="DateAndTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DAILYAIRCRAFTDOCKED_Value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SLL_Airport_SCADAEntitiesStoreContainer" CdmEntityContainer="SLL_IOPS_ReportingEntities">
+          <EntitySetMapping Name="SLL_PBB_1A_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_1A_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_1A_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1A_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_1A_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_1A_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_1A_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1A_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_1B_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_1B_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_1B_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockedTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockedTime_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1B_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_1B_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_1B_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_1B_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1B_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_2A_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_2A_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_2A_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2A_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_2A_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_2A_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_2A_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2A_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_2B_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_2B_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_2B_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2B_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_2B_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_2B_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_2B_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2B_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_3A_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_3A_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_3A_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3A_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_3A_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_3A_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_3A_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3A_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_3B_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_3B_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_3B_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3B_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_3B_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_3B_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_3B_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3B_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_4A_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_4A_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_4A_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4A_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_4A_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_4A_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_4A_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4A_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_4B_DockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_4B_DockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_4B_DockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4B_PBB_DockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_4B_UnDockTime">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_4B_UnDockTime">
+              <MappingFragment StoreEntitySet="SLL_PBB_4B_UnDockTime">
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_UnDockTime_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4B_PBB_UnDockTime_Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_Network_Monitoring_Bools">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_Network_Monitoring_Bool">
+              <MappingFragment StoreEntitySet="SLL Network Monitoring Bool">
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="ms" ColumnName="ms" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="DataValue" ColumnName="DataValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_AlarmLogging">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_AlarmLogging">
+              <MappingFragment StoreEntitySet="SLL_PBB_AlarmLogging">
+                <ScalarProperty Name="AlarmID" ColumnName="AlarmID" />
+                <ScalarProperty Name="AlarmType" ColumnName="AlarmType" />
+                <ScalarProperty Name="AlarmGroup" ColumnName="AlarmGroup" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="AlarmText" ColumnName="AlarmText" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Acked" ColumnName="Acked" />
+                <ScalarProperty Name="TimeDelay" ColumnName="TimeDelay" />
+                <ScalarProperty Name="AlarmValue" ColumnName="AlarmValue" />
+                <ScalarProperty Name="ClearedValue" ColumnName="ClearedValue" />
+                <ScalarProperty Name="AlarmLimit" ColumnName="AlarmLimit" />
+                <ScalarProperty Name="AlarmDateTime" ColumnName="AlarmDateTime" />
+                <ScalarProperty Name="ClearedDateTime" ColumnName="ClearedDateTime" />
+                <ScalarProperty Name="AckedDateTime" ColumnName="AckedDateTime" />
+                <ScalarProperty Name="AckedUser" ColumnName="AckedUser" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Document" ColumnName="Document" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_WarningLogging">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_WarningLogging">
+              <MappingFragment StoreEntitySet="SLL_PBB_WarningLogging">
+                <ScalarProperty Name="AlarmID" ColumnName="AlarmID" />
+                <ScalarProperty Name="AlarmType" ColumnName="AlarmType" />
+                <ScalarProperty Name="AlarmGroup" ColumnName="AlarmGroup" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="AlarmText" ColumnName="AlarmText" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Acked" ColumnName="Acked" />
+                <ScalarProperty Name="TimeDelay" ColumnName="TimeDelay" />
+                <ScalarProperty Name="AlarmValue" ColumnName="AlarmValue" />
+                <ScalarProperty Name="ClearedValue" ColumnName="ClearedValue" />
+                <ScalarProperty Name="AlarmLimit" ColumnName="AlarmLimit" />
+                <ScalarProperty Name="AlarmDateTime" ColumnName="AlarmDateTime" />
+                <ScalarProperty Name="ClearedDateTime" ColumnName="ClearedDateTime" />
+                <ScalarProperty Name="AckedDateTime" ColumnName="AckedDateTime" />
+                <ScalarProperty Name="AckedUser" ColumnName="AckedUser" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Document" ColumnName="Document" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_DockTime_DataLogging">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_DockTime_DataLogging">
+              <MappingFragment StoreEntitySet="SLL_PBB_DockTime_DataLogging">
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_UnDockTime_DataLogging">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_UnDockTime_DataLogging">
+              <MappingFragment StoreEntitySet="SLL_PBB_UnDockTime_DataLogging">
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_DataLogging">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_DataLogging">
+              <MappingFragment StoreEntitySet="SLL_PBB_DataLogging">
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="Gate" ColumnName="Gate" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="TERMINAL" ColumnName="TERMINAL" />
+                <ScalarProperty Name="DataValue" ColumnName="DataValue" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SLL_PBB_DailyAircraftDocked">
+            <EntityTypeMapping TypeName="SLL_Airport_SCADAEntities.SLL_PBB_DailyAircraftDocked">
+              <MappingFragment StoreEntitySet="SLL_PBB_DailyAircraftDocked">
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4B_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4B_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate4A_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate4A_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3B_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3B_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate3A_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate3A_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2B_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2B_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate2A_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate2A_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1B_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1B_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="Airport_SLL_Term1_Zone1_Gate1A_PBB_DAILYAIRCRAFTDOCKED_Value" ColumnName="Airport_SLL_Term1_Zone1_Gate1A_PBB_DAILYAIRCRAFTDOCKED_Value" />
+                <ScalarProperty Name="DateAndTime" ColumnName="DateAndTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,146 @@
+﻿@model IEnumerable<iOps.Core.Model.User>
+@using Kendo.Mvc.UI;
+
+<script>
+    // Ajax enable row Delete Buttons
+    $(".Ajaxify, .k-grid-header .k-link, .k-grid-pager .k-link").each(function (intIndex) {
+        $(this).bind("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    $('#UserAdminData').html(data);
+                },
+                error: function (jqXHR, error, errorThrown) {
+                    alert(jqXHR.status);
+                    if (jqXHR.status && jqXHR.status == 400) {
+                        alert(jqXHR.responseText);
+                    } else {
+                        alert("Something went wrong");
+                    }
+                }
+            });
+        });
+    });
+
+    $(".k-grid-pager .k-state-disabled").each(function (intIndex) {
+        $(this).off('click');
+    });
+
+    // Create and Ajax Enable Double Click a row for details.
+    $("#GridUsers table tr").dblclick(function (e) {
+        e.preventDefault();
+        var UserID = $(this).find("td")[0].innerText;
+        $.ajax({
+            url: '@Url.Action("Details", "Users", new { area = "Users" })?id=' + UserID,
+            type: "GET",
+            contentType: 'text/html',
+            success: function (data) {
+                $('#UserAdminData').html(data);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // Add User Tooltip
+        $('.hasTooltip').kendoTooltip({
+            position: "center",
+            'text-indent': '-1000em',
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    });
+
+    // customize the _show method to call options.beforeShow 
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+
+
+    $(".k-link").live('click', function (event) {
+        //var hash = this.hash;
+        //$("#Content").load(this.href, function () {
+        //    document.location.hash = hash;
+        //});
+        event.stopImmediatePropagation();
+        event.preventDefault();
+    });
+
+
+
+</script>
+
+<div id="UserAdmin-Container">
+
+    @(Html.Kendo().Grid(Model)
+        .Name("GridUsers")
+        .Columns(columns =>
+        {
+            columns.Bound(u => u.ID).Title("User ID").Hidden();
+            columns.Bound(u => new iOps.Core.Model.ControlData(u.ControlField).Created.TimeStamp).Title("Created")
+                .Sortable(false);
+            columns.Bound(u => u.Username).Title("User Name");
+            columns.Bound(u => u.Approved).Title("Approved")
+                .Template(@<input type="checkbox" checked='@item.Approved' onclick="return false" />);
+            columns.Bound(u => u.Active).Title("Active")
+                .Template(@<input type="checkbox" checked='@item.Active' onclick="return false" />);
+            columns.Bound(u => u.Salutation.Name).Title("Salutation")
+                .Sortable(false);
+            columns.Bound(u => u.FirstName).Title("FirstName");
+            columns.Bound(u => u.LastName).Title("LastName");
+            columns.Bound(u => u.MiddleInitial).Title("MiddleInitial");
+            columns.Bound(u => u.JobTitle).Title("JobTitle");
+            columns.Bound(u => u.Department).Title("Department");
+            columns.Bound(u => u.HireDate).Title("HireDate");
+            columns.Bound(u => u.BirthDate).Title("BirthDate");
+            columns.Bound(u => u.IsDeleted).Title("Deleted");
+            columns.Bound(u => u.ReadyForArchive).Title("ReadyForArchive");
+            columns.Bound(u => u.ID).Title("Operations")
+                .Sortable(false)
+                .Template(@<text>
+                    <input type="button" class="UserDeleteButton Ajaxify hasTooltip" value="Delete" title="Delete this user" user-id="@item.ID" href='@Url.Action("Delete","Users", new { area = "Users", id = @item.ID })' />&nbsp;&nbsp;
+                    <input type="button" class="UserEditButton Ajaxify hasTooltip" value="Edit" title="Edit this user" user-id="@item.ID" href='@Url.Action("Edit","Users", new { area = "Users", id = @item.ID })' />
+                </text>);
+        })
+        .Sortable()
+        .Scrollable()
+        .Pageable()
+        //.Selectable(selectable => selectable.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+        //.DataSource(dataSource => dataSource.Ajax().ServerOperation(true).Model(model => model.Id(item => item.ID)))
+                                
+    )
+
+    <div id="Navigation-Buttons">
+        <p>
+            <input type="button" class="UserAddButton Ajaxify hasTooltip" value="Add User" title="Add a new user" href='@Url.Action("Create", "Users", new { area = "Users" })' />
+        </p>
+    </div>
+</div>

@@ -1,0 +1,249 @@
+@import url('Gates.css');
+@import url('Airport.css');
+.Zones-Window {
+    height: 860px;
+    /*background-image: url(Images/CID-WAC-at-gate.gif);*/
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+    position: relative;
+}
+
+.Zones-Window #zones_container {
+    width:100%;
+    position:relative;
+    box-sizing:border-box;
+}
+
+/*changes background link for icons in Kendo Window*/
+#zoneWindowLink0 {
+    background-image: url('Images/leftArrow.gif');
+}
+#zoneWindowLink1 {
+    background-image: url('Images/upArrow.gif');
+}
+#zoneWindowLink2 {
+    background-image: url('Images/rightArrow.gif');
+}
+
+.Zones-Window #zones_container .img {
+    width:80%;
+    position:absolute;
+    top: 0px;
+    left:0;
+}
+.Zones-Window #zones_container #ZoneA1 { 
+    content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_Rev-0003.png); 
+    width: 100%; 
+    height: 100%; 
+		opacity: 1; 
+		filter: alpha(opacity=100);    
+    position:relative !important;
+       /*float: left;
+    -ms-transform: rotate(15deg); /* IE 9 
+    -webkit-transform: rotate(15deg); /* chrome,opera,Safari 
+    transform: rotate(15deg);*/
+}
+
+.Zones-Window #zones_container #ZoneB1 { 
+    content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_Rev-0003.png); 
+    width: 100%; height: 100%; 
+		opacity: 1; 
+		filter: alpha(opacity=100);    
+    position:relative !important;
+}
+
+.Zones-Window #zones_container #ZoneB2 { 
+    content:url(Images/TermT4/ZoneB2/JFK_T4_ZB2_Rev-0003.png); 
+    width: 100%; height: 100%; 
+		opacity: 1; 
+		filter: alpha(opacity=100);    
+    position:relative !important;
+}
+
+.Zones-Window #zones_container #ZoneB3 { 
+    content:url(Images/TermT4/ZoneB3/JFK_T4_ZB3_Rev-0003.png); 
+    width: 100%; height: 100%; 
+		opacity: 1; 
+		filter: alpha(opacity=100);    
+    position:relative !important;
+}
+
+/* JFK Planes */
+
+/* Zone A1 */
+.Zones-Window #zones_container #gA5_ac { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_Plane_A5_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 200; }
+.Zones-Window #zones_container #gA5_nc { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-NC_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 190; }
+.Zones-Window #zones_container #gA5_idle { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gA5_bq { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-Gray_Rev-0002.png); width: 100%; height: 100%; opacity: .7; filter: alpha(opacity=70); z-index: 195; }
+.Zones-Window #zones_container #gA5_g { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-Green_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gA5_y { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-Yellow_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gA5_o { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-Orange_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gA5_r { content:url(Images/TermT4/ZoneA1/JFK_T4_ZA1_PBB_A5-Red_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+
+/* Zone B1 */
+.Zones-Window #zones_container #gB25L1_ac { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_Plane_B25L1_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 200; }
+.Zones-Window #zones_container #gB25L1_nc { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-NC_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 190; }
+.Zones-Window #zones_container #gB25L1_idle { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB25L1_bq { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-Gray_Rev-0002.png); width: 100%; height: 100%; opacity: .7; filter: alpha(opacity=70); z-index: 195; }
+.Zones-Window #zones_container #gB25L1_g { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-Green_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB25L1_y { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-Yellow_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB25L1_o { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-Orange_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB25L1_r { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B25L1-Red_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+
+.Zones-Window #zones_container #gB27_ac { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_Plane_B27_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 200; }
+.Zones-Window #zones_container #gB27_nc { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-NC_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 190; }
+.Zones-Window #zones_container #gB27_idle { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB27_bq { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-Gray_Rev-0002.png); width: 100%; height: 100%; opacity: .7; filter: alpha(opacity=70); z-index: 195; }
+.Zones-Window #zones_container #gB27_g { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-Green_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB27_y { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-Yellow_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB27_o { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-Orange_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+.Zones-Window #zones_container #gB27_r { content:url(Images/TermT4/ZoneB1/JFK_T4_ZB1_PBB_B27-Red_Rev-0002.png); width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); z-index: 195; }
+
+.Zones-Window #zones_container .status { 
+   /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+  /* IE 5-7 */
+  filter: alpha(opacity=40);
+  /* Netscape */
+  -moz-opacity: 0.4;
+  /* Safari 1.x */
+  -khtml-opacity: 0.4;
+  /* Good browsers */
+  opacity: 0.4;
+}
+
+.Zones-Window #zones_container a.gate_link {
+    position:absolute;
+    white-space:nowrap;
+    border:none;
+    width:auto !important;
+}
+.Zones-Window #zones_container .gate_fire {
+    padding: 3px 5px;
+    background-color: #c00;
+    color: #fff;
+    font-weight: bold;
+    font-size:12px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.1);
+    text-decoration:none !important;
+    margin-top:3px;
+}
+.Zones-Window #zones_container .gate_fire:after {
+    content:"Fire Alarm";
+}
+
+
+.k-window {
+    z-index: 100 !important;
+}
+
+.k-window-titlebar {
+    background-color: #BFBFBF !important;
+}
+
+.k-window-title {
+    font-weight: bold !important;
+}
+
+/*CSS for gate image links*/
+#ZonesWindow ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#ZonesWindow a {
+    /*/text-indent: -1000em;*/
+    position: absolute; /*hides the linked copy within the li tags to the left of the window */
+    width: 50px;
+    height: 25px;
+    font-weight:bold;
+    color:#000000;
+    border: 1px solid yellow
+}
+ 
+#ZonesWindow a:hover {
+    cursor: pointer;
+}
+
+
+#ZonesWindow a.gate_link#gateA5 {
+    top: 22%;
+    left: 44%;
+    z-index: 300;
+
+}
+
+#ZonesWindow a.gate_link#gateB25L1 {
+    top: 36%;
+    left: 28%;
+    z-index: 300;
+}
+
+#ZonesWindow a.gate_link#gateB27 {
+    top: 29%;
+    left: 53%;
+    z-index: 300;
+}
+#ZonesWindow .redFlashingBackground {
+    background-image: url('Images/red-black-flashing-image.gif');
+    color: #FFF;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    font-family: arial;
+    font-size: 18px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 185px;
+    height: 20px;
+   
+}
+
+#ZonesWindow #ZoneA1AlarmWindow, #ZonesWindow #ZoneB1AlarmWindow {
+    position: absolute;
+    min-height: 30% !important;
+    min-width: 47% !important;
+    /*border: 1px solid red;*/
+    top: 60%;
+    left: 52%;
+}
+
+#ZonesWindow #ZoneA1Alarms, #ZonesWindow #ZoneB1Alarms {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    /*border: 1px solid blue;*/
+}
+
+#ZoneA1AlarmWindow tr.AlarmRow, #ZoneB1AlarmWindow tr.AlarmRow {
+	background-color: #f00 !important;
+	color: #fff !important;
+	font-weight: bold !important;
+	border-color: #fff !important;
+}
+
+#ZoneA1AlarmWindow tr.AlarmRow a, #ZoneB1AlarmWindow tr.AlarmRow a { color:#fff !important; }
+#ZoneA1AlarmWindow tr.AlarmRow td[class*='sorting_'], #ZoneB1AlarmWindow tr.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#ZoneA1AlarmWindow tr.AlarmRow:hover, #ZoneB1AlarmWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#ZoneA1AlarmWindow tr.AlarmRow:hover td[class*='sorting_'], #ZoneB1AlarmWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#ZoneA1AlarmWindow tr.WarningRow, #ZoneB1AlarmWindow tr.WarningRow {
+	background-color: #ff0 !important;
+	color: #000 !important;
+	font-weight: normal !important;
+	border-color: #fff !important;
+}
+#ZoneA1AlarmWindow tr.WarningRow a, #ZoneB1AlarmWindow tr.WarningRow a { color:#000 !important; }
+#ZoneA1AlarmWindow tr.WarningRow td[class*='sorting_'], #ZoneB1AlarmWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#ZoneA1AlarmWindow tr.WarningRow:hover, #ZoneB1AlarmWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#ZoneA1AlarmWindow tr.WarningRow:hover td[class*='sorting_'], #ZoneB1AlarmWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+
+/*END OF CSS Image LInk*/

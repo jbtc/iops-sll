@@ -1,0 +1,174 @@
+﻿/*  iOps Ver 1.0.0 - Header.css styleSheet
+    Purpose: Contains the styles for this themes main header section 
+    Author: Crane Whitehead
+    
+    History
+    ---------------------------------------------------------------------------
+    CSW  09-17-2014 - Added for MVC5 and better use of HTML5
+     
+*/
+
+/* Main Header Selectors */
+header {
+
+    color: #555;
+    /*border-bottom: 1px solid black !important;*/
+    text-shadow: 0 1px 0 white;
+    background-color: #FFFFFF;
+    -moz-box-shadow: inset 0 0 1px #fff;
+    -ms-box-shadow: inset 0 0 1px #fff;
+    -webkit-box-shadow: inset 0 0 1px white;
+    box-shadow: inset 0 0 1px white;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#FFFFFC,EndColorStr=#FFFFFF);
+    background-image: -webkit-linear-gradient(top, #FFFFFC 30%, #FFFFFF 100%);
+    background-image: -moz-linear-gradient(top, #FFFFFC, #FFFFFF);
+    background-image: -ms-linear-gradient(top, #FFFFFC, #FFFFFF);
+    background-image: -o-linear-gradient(top, #FFFFFC, #FFFFFF);
+    background-image: linear-gradient(top, #FFFFFC, #FFFFFF);
+    height: 85px;
+}
+
+/* Flexbox Management Selectors */
+.FlexContainer {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.Flex-Row {
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+.Flex-Column {
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.FlexItem {
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.FlexItem-FlexOff {
+    -webkit-flex: 0;
+    -moz-box-flex: 0;
+    -ms-flex: 0;
+    flex: 0;
+}
+
+.FlexItem-FlexOn {
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.FlexItem-AlignCenter {
+    align-items: center;
+}
+
+/* Flexbox Grouping Selectors */
+.Header-FlexGroup {
+    height: 100%;
+}
+
+.Header-FlexItemGroup {
+    width: 100%;
+    height: 75%;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 5px;
+}
+
+.Header-SubFlex {
+}
+
+/* Header Logo Selectors */
+.Header-iOps-logo {
+    -ms-flex: 0 386px !important;
+    -webkit-flex: 0 386px !important;
+    -webkit-box-flex: 0 386px !important;
+    flex: 0 386px !important;
+    width:386px; /*added for safari compatibility*/
+    border-right: 1px dotted #D9D9D9;
+    height: 100%;
+}
+
+    .Header-iOps-logo a {
+        height: 100%;
+        width: 100%;
+    }
+
+    .Header-iOps-logo div {
+        width: 100%;
+        height: 100%;
+        background-image: url(Images/iOpsLogo-Revamp-Planet-008.gif);
+        background-repeat: no-repeat;
+        background-size: 310px 65px;
+        background-position: center center;
+    }
+.Header-iOps-slllogo {
+    -ms-flex: 0 220px !important;
+    -webkit-flex: 0 220px !important;
+    -webkit-box-flex: 0 220px !important;
+    flex: 0 110px !important;
+    /*width:220px; /*added for safari compatibility*/
+    border-right: 1px dotted #D9D9D9;
+    height: 100%;
+    width : 100%;
+    position: relative;
+}
+
+    .Header-iOps-slllogo a {
+        height: 100%;
+        width: 100%;
+    }
+
+    .Header-iOps-slllogo div {
+        width: 100%;
+        height: 100%;
+        background-image: url(Images/SLL_Logo_v1.png);
+        background-repeat: no-repeat;
+        /*background-size: 210px 65px;*/
+        background-position: center center;
+        position: absolute;
+        /*bottom : 15%;*/
+        /*right : 1%;*/
+    }
+.Header-iOps-slllogo-gradient {
+    background-color: #effae8;
+}
+.Header-iOps-logo-gradient {
+    /*background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0.5, #F9F9F9),
+        color-stop(1, #fcfcfc)
+        );
+        background-image: -o-linear-gradient(bottom, #F9F9F9 50%, #fcfcfc 100%);
+        background-image: -moz-linear-gradient(bottom, #F9F9F9 50%, #fcfcfc 100%);
+        background-image: -webkit-linear-gradient(bottom, #F9F9F9 50%, #fcfcfc 100%);
+        background-image: -ms-linear-gradient(bottom, #F9F9F9 50%, #fcfcfc 100%);
+        background-image: linear-gradient(to bottom, #F9F9F9 50%, #fcfcfc 100%);*/
+    background-color: #effae8;
+}
+
+/* Clock Widget Selectors */
+.Header-Clock {
+    -ms-flex: 0 115px !important;
+    -webkit-flex: 0 115px !important;
+    flex: 0 115px !important;
+    align-items: center;
+    height: 100%;
+    padding: 10px 0px;
+}

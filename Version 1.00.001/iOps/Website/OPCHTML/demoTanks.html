@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="js/lib/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="js/lib/json2.js"></script>
+        <script type="text/javascript" src="js/opc-lib-min.js"></script>
+        <link rel="stylesheet" stype="text/css" href="css/tanks-style.css"/>
+        
+        <!-- set up connection to service -->
+        
+		<script type="text/javascript">
+            OPC_config =
+        {
+            auto_start: true,
+        };
+        </script>
+    </head>
+    <body>
+    <div style="visibility:hidden">Ramp Value =  <label id="txt1" opc-tag-txt='{"tag":"Ramp.Value"}' ></label>
+	Pump Value = <label id="txt2" opc-tag-txt='{"tag":"Pump.Value"}' ></label>
+    Valve Value = <label id="txt3" opc-tag-txt='{"tag":"Valve.Value"}' ></label></div>
+	  
+      <!-- Add tanks -->
+       
+	<div id="tanks">
+    <img id="imgTank1" src="image/Tank1 Blue Front.png" width="182" height="478" alt="Tank1" >
+	<img  id="imgTank2" src="image/Tank1 Blue Front.png" width="182" height="478" alt="Tank2">
+    <img id="imgPipeBlue1" src="image/Pipe Green Horz.png" width="50" height="20" alt="PipeBlue1">
+    <img id="imgElbowBlue1" src="image/Elbow Green BottomLeft.png" alt="ElbowBlue1" >
+    
+    <!-- Tank 1 Level -->
+    <label id="tank1label" >TANK 1</label>
+   	<label id="tank1level" opc-tag-txt='{"tag":"Sine2.Value","config":{"formats":{"bad_q":"?????","bool_f":"False","bool_t":"True","float":"0.00 Ft","int":"0","string":"{0}"},"offset":0}}' ><br>####<br></label>
+    
+ <!--   opc-tag-txt='{"tag":"Ramp3.Value","config":{"formats":{"bad_q":"????","bool_f":"False","bool_t":"True","float":"The number is: 000.00","int":"0","string":"Value = {0}", "date":"yyyy-MM-dd HH:mm:ss"}}} -->
+    
+    <!-- Tank 2 Level -->
+    <label id="tank2label" >TANK 2</label>
+    <label id="tank2level" opc-tag-txt='{"tag":"Tank Level.Value","config":{"formats":{"bad_q":"?????","bool_f":"False","bool_t":"True","float":"0.00 Ft","int":"0","string":"{0}"},"offset":0}}'
+ ><br>####<br></label>
+    
+    <!-- Pipes -->
+    
+    <img  id="imgPipeYellow2" src="image/Pipe Yellow Vert.png"  alt="ElbowRed1" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgPipeRed2" src="image/Pipe Red Vert.png" alt="ElbowBlue1" name="imgPipeRed2" height="378"  
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img  id="imgPipeBlue2" src="image/Pipe Green Vert.png"  alt="ElbowRed1" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+    
+    <img src="image/Pipe Yellow Vert.png"  id="imgPipeYellow4" 
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgPipeRed4" src="image/Pipe Red Vert.png"  height="378"  
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img src="image/Pipe Green Vert.png"  id="imgPipeGreen4" 
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+           
+     <img src="image/Pipe Yellow Horz.png"  name="imgPipeYellow3"  id="imgPipeYellow3" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+     <img id="imgPipeRed3"  src="image/Pipe Red Horz.png" name="imgPipeRed2" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img src="image/Pipe Green Horz.png" name="imgPipeBlue3"  id="imgPipeBlue3"
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+     
+     <img id="imgPipeYellow5" src="image/Pipe Yellow Horz.png"  alt="ElbowRed1"    
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+     <img id="imgPipeRed5"  src="image/Pipe Red Horz.png" name="imgPipeRed2" 
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img id="imgPipeBlue5" src="image/Pipe Green Horz.png" name="imgPipeBlue3"  
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+    
+     <img  id="imgPipeYellow6" src="image/Pipe Yellow Vert.png" 
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgPipeRed6" src="image/Pipe Red Vert.png"
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img  id="imgPipeGreen6" src="image/Pipe Green Vert.png" 
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+    
+    <!-- Elbows -->
+    
+      <img  id="imgElbowYellow2" src="image/Elbow Yellow BottomRight.png"
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+     <img id="imgElbowRed2" src="image/Elbow Red BottomRight.png"
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img  id="imgElbowGreen2" src="image/Elbow Green BottomRight.png"
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+           
+    <img  id="imgElbowYellow3" src="image/Elbow Yellow TopLeft.png"  alt="ElbowRed1" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgElbowBlue3" src="image/Elbow Red TopLeft.png" alt="ElbowBlue1" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img  id="imgElbowRed3" src="image/Elbow Green TopLeft.png"  alt="ElbowRed1" 
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+     
+    <img  id="imgElbowYellow4" src="image/Elbow Yellow TopRight.png"  
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":true,"trigger":"on_true"}}'>  
+    <img id="imgElbowBlue4" src="image/Elbow Red TopRight.png" alt="ElbowBlue1" 
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+     <img  id="imgElbowRed4" src="image/Elbow Green TopRight.png"  alt="ElbowRed1" 
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+     
+     <!--Transfer Valve-->
+     <label id="TransferValvelabel" opc-tag-txt='{"tag":"Valve.Value","config":{"formats":{"bad_q":"?????","bool_f":"TRANSFER VALVE CLOSED","bool_t":"TRANSFER VALVE OPENED","float":"0.00 Ft.","int":"0 Ft","string":"{0}"},"offset":0}}' >TRANSFER VALVE</label>
+    <button name="Valve" type="button" id="Valve" style; width="100" style="background-color:transparent"
+  	opc-tag-set='{"tag":"Valve.Value","config":{"evt":"click","offset":0,"set":"toggle","set_src":""}}'>
+    <img id="imgValveYellow1" src="image/Valve1 Yellow.png"     
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgValveRed1" src="image/Valve1 Red.png"  
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img src="image/Valve1 Green.png" name="imgValveGreen1" id="imgValveGreen1"   
+    opc-tag-vis='{"tag":"Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+  </button>
+  
+  	<!--Transfer Pump -->
+    <label id="Pumplabel" opc-tag-txt='{"tag":"Pump.Value","config":{"formats":{"bad_q":"?????","bool_f":"TRANSFER PUMP STOPPED","bool_t":"TRANSFER PUMP RUNNING","float":"0.00 Ft.","int":"0 Ft","string":"{0}"},"offset":0}}' >TRANSFER PUMP</label>
+    <button name="Pump1" type="button" id="Pump1" style; width="100" style="background-color:transparent"
+  	opc-tag-set='{"tag":"Pump.Value","config":{"evt":"click","offset":0,"set":"toggle","set_src":""}}'>
+     <img id="imgPumpYellow1" src="image/Pump Yellow Front.png"  alt="Blue Pump" width="106" height="80"   
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgPumpRed1" src="image/Pump Red Front.png"  alt="PipeRed1" width="106" height="80"  
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img id="imgPumpBlue1" src="image/Pump Green Front.png"  alt="Blue Pump" width="106" height="80"   
+    opc-tag-vis='{"tag":"Pump.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+  </button>
+  
+  <!-- Drain Valve -->
+  <label id="Drainlabel" opc-tag-txt='{"tag":"Drain Valve.Value","config":{"formats":{"bad_q":"?????","bool_f":"DRAIN VALVE CLOSED","bool_t":"DRAIN VALVE OPENED","float":"0.00 Ft.","int":"0 Ft","string":"{0}"},"offset":0}}' >DRAIN VALVE</label>
+  <button name="Valve" type="button" id="DrainValve" style; width="100" style="background-color:transparent"
+  	opc-tag-set='{"tag":"Drain Valve.Value","config":{"evt":"click","offset":0,"set":"toggle","set_src":""}}'>
+    <img id="imgValveYellow3" src="image/Valve1 YellowVert.png"     
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":true,"trigger":"on_false"}}'>
+    <img id="imgValveRed3" src="image/Valve1 RedVert.png"  
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":false,"trigger":"on_false"}}'>
+    <img id="imgValveGreen3" src="image/Valve1 GreenVert.png"   
+    opc-tag-vis='{"tag":"Drain Valve.Value","config":{"bad_q":false,"trigger":"on_true"}}'>
+  </button>
+  
+    </div>
+
+
+</body>
+</html>
+
+

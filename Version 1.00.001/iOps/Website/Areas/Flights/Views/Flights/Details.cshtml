@@ -1,0 +1,235 @@
+﻿@model iOps.Core.Model.Flight
+
+<script>
+    // Ajax enable row Delete Buttons
+    $(".Ajaxify").each(function (intIndex) {
+        $(this).bind("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    $('#FlightAdminData').html(data);
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        // Add Flight Tooltip
+        $('.hasTooltip').kendoTooltip({
+            position: "center",
+            'text-indent': '-1000em',
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    });
+
+    // customize the _show method to call options.beforeShow 
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+
+
+</script>
+
+<h2>Flight Details - @Html.DisplayFor(model => model.FlightNumber)</h2>
+
+<div id="FlightAdmin-Container">
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AircraftType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AircraftType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AircraftSubType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AircraftSubType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Airline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Airline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FlightNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FlightNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArrivalAirport)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArrivalAirport)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartureAirport)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepartureAirport)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OnBoardActualTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OnBoardActualTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OnBoardScheduledTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OnBoardScheduledTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OnBoardEstimatedTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OnBoardEstimatedTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OnBoardTouchDownTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OnBoardTouchDownTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PassengerGate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PassengerGate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingPosition)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParkingPosition)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BridgeUpdateDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BridgeUpdateDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DoorPosition)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DoorPosition)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AC_Door_AVG_HT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AC_Door_AVG_HT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AC_DRIVE_COL_HT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AC_DRIVE_COL_HT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RTUOnIndicator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RTUOnIndicator)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RTURemoteCntrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RTURemoteCntrl)
+        </dd>
+    </dl>
+    <div id="Navigation-Buttons">
+        <p>
+            <input type="button" class="BackToList Ajaxify hasTooltip" value="Back to List" title="Go back to the flight list" href='@Url.Action("Index", "Flights", new { area = "Flights" })' />&nbsp;&nbsp;
+            <input type="button" class="FlightEditButton Ajaxify hasTooltip" value="Edit Flight" title="Edit the current flight" href='@Url.Action("Edit", "Flights", new { area = "Flights", id = Model.Id })' />&nbsp;&nbsp;
+            <input type="button" class="FlightDeleteButton Ajaxify hasTooltip" value="Delete Flight" title="Delete the current flight" href='@Url.Action("Delete", "Flights", new { area = "Flights", id = Model.Id })' />
+        </p>
+    </div>
+</div>

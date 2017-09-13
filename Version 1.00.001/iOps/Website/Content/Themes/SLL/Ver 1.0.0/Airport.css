@@ -1,0 +1,319 @@
+﻿.Airport-Window {
+    height:100%; width:100%;
+    position: relative;
+    background-color:#ac9;
+}
+
+.Airport-Window #gates_container {
+    width:100%;
+    position:relative;
+    box-sizing:border-box;
+}
+
+.Airport-Window #gates_container .img {
+    width:100%;
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+.Airport-Window #gates_container #building { 
+    content:url(Images/gates/sll-terminal-Rev-1.001.png); 
+    width: 100%; height: 100%; 
+    /*position:relative !important;*/
+}
+
+.Airport-Window #gates_container #gates_nc { 
+    content:url(Images/gates/sll-gate-nc-Rev-1.001.png); 
+    width: 100%; height: 100%; 
+    position:relative !important;
+}
+
+/* CID Planes */
+.Airport-Window #gates_container .gate_status { width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); }
+.Airport-Window #gates_container .gate_plane { width: 100%; height: 100%; opacity: 1; filter: alpha(opacity=100); }
+
+/* Narrow Plane Styles */
+.Airport-Window .g1A_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g1A_ac { content:url(Images/gates/sll-gate1A-plane.png); }
+.Airport-Window .g1A_idle { content:url(Images/gates/sll-gate1A-idle.png); }
+.Airport-Window .g1A_bq { content:url(Images/gates/sll-gate1A-gray.png); opacity: .7; }
+.Airport-Window .g1A_g { content:url(Images/gates/sll-gate1A-green.png); }
+.Airport-Window .g1A_y { content:url(Images/gates/sll-gate1A-yellow.png); }
+.Airport-Window .g1A_o { content:url(Images/gates/sll-gate1A-orange.png); }
+.Airport-Window .g1A_r { content:url(Images/gates/sll-gate1A-red.png); }
+
+.Airport-Window .g1B_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g1B_ac { content:url(Images/gates/sll-gate1B-plane.png); }
+.Airport-Window .g1B_idle { content:url(Images/gates/sll-gate1B-idle.png); }
+.Airport-Window .g1B_bq { content:url(Images/gates/sll-gate1B-gray.png); opacity: .7;}
+.Airport-Window .g1B_g { content:url(Images/gates/sll-gate1B-green.png); }
+.Airport-Window .g1B_y { content:url(Images/gates/sll-gate1B-yellow.png); }
+.Airport-Window .g1B_o { content:url(Images/gates/sll-gate1B-orange.png); }
+.Airport-Window .g1B_r { content:url(Images/gates/sll-gate1B-red.png); }
+
+.Airport-Window .g2A_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g2A_ac { content:url(Images/gates/sll-gate2A-plane.png); }
+.Airport-Window .g2A_idle { content:url(Images/gates/sll-gate2A-idle.png); }
+.Airport-Window .g2A_bq { content:url(Images/gates/sll-gate2A-gray.png); opacity: .7; }
+.Airport-Window .g2A_g { content:url(Images/gates/sll-gate2A-green.png); }
+.Airport-Window .g2A_y { content:url(Images/gates/sll-gate2A-yellow.png); }
+.Airport-Window .g2A_o { content:url(Images/gates/sll-gate2A-orange.png); }
+.Airport-Window .g2A_r { content:url(Images/gates/sll-gate2A-red.png); }
+
+.Airport-Window .g2B_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g2B_ac { content:url(Images/gates/sll-gate2B-plane.png); }
+.Airport-Window .g2B_idle { content:url(Images/gates/sll-gate2B-idle.png); }
+.Airport-Window .g2B_bq { content:url(Images/gates/sll-gate2B-gray.png); opacity: .7; }
+.Airport-Window .g2B_g { content:url(Images/gates/sll-gate2B-green.png); }
+.Airport-Window .g2B_y { content:url(Images/gates/sll-gate2B-yellow.png); }
+.Airport-Window .g2B_o { content:url(Images/gates/sll-gate2B-orange.png); }
+.Airport-Window .g2B_r { content:url(Images/gates/sll-gate2B-red.png); }
+
+.Airport-Window .g3A_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g3A_ac { content:url(Images/gates/sll-gate3A-plane.png); }
+.Airport-Window .g3A_idle { content:url(Images/gates/sll-gate3A-idle.png); }
+.Airport-Window .g3A_bq { content:url(Images/gates/sll-gate3A-gray.png); opacity: .7; }
+.Airport-Window .g3A_g { content:url(Images/gates/sll-gate3A-green.png); }
+.Airport-Window .g3A_y { content:url(Images/gates/sll-gate3A-yellow.png); }
+.Airport-Window .g3A_o { content:url(Images/gates/sll-gate3A-orange.png); }
+.Airport-Window .g3A_r { content:url(Images/gates/sll-gate3A-red.png); }
+
+.Airport-Window .g3B_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g3B_ac { content:url(Images/gates/sll-gate3B-plane.png); }
+.Airport-Window .g3B_idle { content:url(Images/gates/sll-gate3B-idle.png); }
+.Airport-Window .g3B_bq { content:url(Images/gates/sll-gate3B-gray.png); opacity: .7; }
+.Airport-Window .g3B_g { content:url(Images/gates/sll-gate3B-green.png); }
+.Airport-Window .g3B_y { content:url(Images/gates/sll-gate3B-yellow.png); }
+.Airport-Window .g3B_o { content:url(Images/gates/sll-gate3B-orange.png); }
+.Airport-Window .g3B_r { content:url(Images/gates/sll-gate3B-red.png); }
+
+.Airport-Window .g4A_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g4A_ac { content:url(Images/gates/sll-gate4A-plane.png); }
+.Airport-Window .g4A_idle { content:url(Images/gates/sll-gate4A-idle.png); }
+.Airport-Window .g4A_bq { content:url(Images/gates/sll-gate4A-gray.png); opacity: .7; }
+.Airport-Window .g4A_g { content:url(Images/gates/sll-gate4A-green.png); }
+.Airport-Window .g4A_y { content:url(Images/gates/sll-gate4A-yellow.png); }
+.Airport-Window .g4A_o { content:url(Images/gates/sll-gate4A-orange.png); }
+.Airport-Window .g4A_r { content:url(Images/gates/sll-gate4A-red.png); }
+
+.Airport-Window .g4B_no_ac { content:""; content:""; display: none; }
+.Airport-Window .g4B_ac { content:url(Images/gates/sll-gate4B-plane.png); }
+.Airport-Window .g4B_idle { content:url(Images/gates/sll-gate4B-idle.png); }
+.Airport-Window .g4B_bq { content:url(Images/gates/sll-gate4B-gray.png); opacity: .7; }
+.Airport-Window .g4B_g { content:url(Images/gates/sll-gate4B-green.png); }
+.Airport-Window .g4B_y { content:url(Images/gates/sll-gate4B-yellow.png); }
+.Airport-Window .g4B_o { content:url(Images/gates/sll-gate4B-orange.png); }
+.Airport-Window .g4B_r { content:url(Images/gates/sll-gate4B-red.png); }
+
+/* Wide Plane Styles */
+.Airport-Window .g1A_ac_wide { content:url(Images/gates/sll-gate1-wide-plane.png); }
+.Airport-Window .g1A_idle_wide { content:url(Images/gates/sll-gate1A-wide-idle.png); }
+.Airport-Window .g1A_bq_wide { content:url(Images/gates/sll-gate1A-wide-gray.png); opacity: .7; }
+.Airport-Window .g1A_g_wide { content:url(Images/gates/sll-gate1A-wide-green.png); }
+.Airport-Window .g1A_y_wide { content:url(Images/gates/sll-gate1A-wide-yellow.png); }
+.Airport-Window .g1A_o_wide { content:url(Images/gates/sll-gate1A-wide-orange.png); }
+.Airport-Window .g1A_r_wide { content:url(Images/gates/sll-gate1A-wide-red.png); }
+
+.Airport-Window .g1B_ac_wide { content: ""; content: none; display: none; }
+.Airport-Window .g1B_idle_wide { content:url(Images/gates/sll-gate1B-wide-idle.png); }
+.Airport-Window .g1B_bq_wide { content:url(Images/gates/sll-gate1B-wide-gray.png); opacity: .7;}
+.Airport-Window .g1B_g_wide { content:url(Images/gates/sll-gate1B-wide-green.png); }
+.Airport-Window .g1B_y_wide { content:url(Images/gates/sll-gate1B-wide-yellow.png); }
+.Airport-Window .g1B_o_wide { content:url(Images/gates/sll-gate1B-wide-orange.png); }
+.Airport-Window .g1B_r_wide { content:url(Images/gates/sll-gate1B-wide-red.png); }
+
+.Airport-Window .g2A_ac_wide { content:url(Images/gates/sll-gate2-wide-plane.png); }
+.Airport-Window .g2A_idle_wide { content:url(Images/gates/sll-gate2A-wide-idle.png); }
+.Airport-Window .g2A_bq_wide { content:url(Images/gates/sll-gate2A-wide-gray.png); opacity: .7; }
+.Airport-Window .g2A_g_wide { content:url(Images/gates/sll-gate2A-wide-green.png); }
+.Airport-Window .g2A_y_wide { content:url(Images/gates/sll-gate2A-wide-yellow.png); }
+.Airport-Window .g2A_o_wide { content:url(Images/gates/sll-gate2A-wide-orange.png); }
+.Airport-Window .g2A_r_wide { content:url(Images/gates/sll-gate2A-wide-red.png); }
+
+.Airport-Window .g2B_ac_wide { content: ""; content: none; display: none; }
+.Airport-Window .g2B_idle_wide { content:url(Images/gates/sll-gate2B-wide-idle.png); }
+.Airport-Window .g2B_bq_wide { content:url(Images/gates/sll-gate2B-wide-gray.png); opacity: .7; }
+.Airport-Window .g2B_g_wide { content:url(Images/gates/sll-gate2B-wide-green.png); }
+.Airport-Window .g2B_y_wide { content:url(Images/gates/sll-gate2B-wide-yellow.png); }
+.Airport-Window .g2B_o_wide { content:url(Images/gates/sll-gate2B-wide-orange.png); }
+.Airport-Window .g2B_r_wide { content:url(Images/gates/sll-gate2B-wide-red.png); }
+
+.Airport-Window .g3A_ac_wide { content:url(Images/gates/sll-gate3-wide-plane.png); }
+.Airport-Window .g3A_idle_wide { content:url(Images/gates/sll-gate3A-wide-idle.png); }
+.Airport-Window .g3A_bq_wide { content:url(Images/gates/sll-gate3A-wide-gray.png); opacity: .7; }
+.Airport-Window .g3A_g_wide { content:url(Images/gates/sll-gate3A-wide-green.png); }
+.Airport-Window .g3A_y_wide { content:url(Images/gates/sll-gate3A-wide-yellow.png); }
+.Airport-Window .g3A_o_wide { content:url(Images/gates/sll-gate3A-wide-orange.png); }
+.Airport-Window .g3A_r_wide { content:url(Images/gates/sll-gate3A-wide-red.png); }
+
+.Airport-Window .g3B_ac_wide { content: ""; content: none; display: none; }
+.Airport-Window .g3B_idle_wide { content:url(Images/gates/sll-gate3B-wide-idle.png); }
+.Airport-Window .g3B_bq_wide { content:url(Images/gates/sll-gate3B-wide-gray.png); opacity: .7; }
+.Airport-Window .g3B_g_wide { content:url(Images/gates/sll-gate3B-wide-green.png); }
+.Airport-Window .g3B_y_wide { content:url(Images/gates/sll-gate3B-wide-yellow.png); }
+.Airport-Window .g3B_o_wide { content:url(Images/gates/sll-gate3B-wide-orange.png); }
+.Airport-Window .g3B_r_wide { content:url(Images/gates/sll-gate3B-wide-red.png); }
+
+.Airport-Window .g4A_ac_wide { content:url(Images/gates/sll-gate4-wide-plane.png); }
+.Airport-Window .g4A_idle_wide { content:url(Images/gates/sll-gate4A-wide-idle.png); }
+.Airport-Window .g4A_bq_wide { content:url(Images/gates/sll-gate4A-wide-gray.png); opacity: .7; }
+.Airport-Window .g4A_g_wide { content:url(Images/gates/sll-gate4A-wide-green.png); }
+.Airport-Window .g4A_y_wide { content:url(Images/gates/sll-gate4A-wide-yellow.png); }
+.Airport-Window .g4A_o_wide { content:url(Images/gates/sll-gate4A-wide-orange.png); }
+.Airport-Window .g4A_r_wide { content:url(Images/gates/sll-gate4A-wide-red.png); }
+
+.Airport-Window .g4B_ac_wide { content: ""; content: none; display: none; }
+.Airport-Window .g4B_idle_wide { content:url(Images/gates/sll-gate4B-wide-idle.png); }
+.Airport-Window .g4B_bq_wide { content:url(Images/gates/sll-gate4B-wide-gray.png); opacity: .7; }
+.Airport-Window .g4B_g_wide { content:url(Images/gates/sll-gate4B-wide-green.png); }
+.Airport-Window .g4B_y_wide { content:url(Images/gates/sll-gate4B-wide-yellow.png); }
+.Airport-Window .g4B_o_wide { content:url(Images/gates/sll-gate4B-wide-orange.png); }
+.Airport-Window .g4B_r_wide { content:url(Images/gates/sll-gate4B-wide-red.png); }
+
+
+.Airport-Window #gates_container a.gate_link {
+    position:absolute;
+    white-space:nowrap;
+    border:none;
+    width:auto !important;
+}
+.Airport-Window #gates_container .gate_fire {
+    padding: 3px 5px;
+    background-color: #c00;
+    color: #fff;
+    font-weight: bold;
+    font-size:12px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.1);
+    text-decoration:none !important;
+    margin-top:3px;
+}
+.Airport-Window #gates_container .gate_fire:after {
+    content:"Fire Alarm";
+}
+.Airport-Window #gates_container #gate1A { top:62%;left:83%; }
+.Airport-Window #gates_container #gate1B { top:68%;left:74%; }
+.Airport-Window #gates_container #gate2A { top:62%;left:63%; }
+.Airport-Window #gates_container #gate2B { top:68%;left:53%; }
+.Airport-Window #gates_container #gate3A { top:62%;left:43%; }
+.Airport-Window #gates_container #gate3B { top:68%;left:32%; }
+.Airport-Window #gates_container #gate4A { top:62%;left:23%; }
+.Airport-Window #gates_container #gate4B { top:68%;left:10%; }
+
+
+.k-window {
+    z-index: 100 !important;
+}
+
+.k-window-titlebar {
+    background-color: #BFBFBF !important;
+}
+
+.k-window-title {
+    font-weight: bold !important;
+}
+
+/*CSS for gate image links*/
+#AirportWindow ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#AirportWindow a {
+    /*/text-indent: -1000em;*/
+    position: absolute; /*hides the linked copy within the li tags to the left of the window */
+    width: 50px;
+    height: 25px;
+    font-weight:bold;
+    color:#000000;
+    border: 1px solid yellow
+}
+
+
+    #AirportWindow a:hover {
+        cursor: pointer;
+    }
+
+#AirportWindow .gate6 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 28%;
+    left: 18%;
+}
+
+#AirportWindow .gate5 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 73%;
+    left: 30%;
+}
+
+#AirportWindow .gate4 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 18%;
+    left: 40%;
+}
+
+#AirportWindow .gate3 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 60%;
+    left: 60%;
+}
+
+#AirportWindow .gate2 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 8%;
+    left: 53%;
+}
+
+#AirportWindow .gate1 a {
+    /*top: 275px;*/
+    /*left: 1025px*/
+    top: 35%;
+    left: 79%;
+}
+#AirportWindow #AirportAlarmWindow {
+    position: absolute;
+    min-height: 30% !important;
+    min-width: 47% !important;
+    /*border: 1px solid red;*/
+    top: 1%;
+    left: 36%;
+}
+
+#AirportWindow #AirportAlarms {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    /*border: 1px solid blue;*/
+}
+
+#AirportAlarmWindow tr.AlarmRow {
+	background-color: #f00 !important;
+	color: #fff !important;
+	font-weight: bold !important;
+	border-color: #fff !important;
+}
+
+#AirportAlarmWindow tr.AlarmRow a { color:#fff !important; }
+#AirportAlarmWindow tr.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#AirportAlarmWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#AirportAlarmWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#AirportAlarmWindow tr.WarningRow {
+	background-color: #ff0 !important;
+	color: #000 !important;
+	font-weight: normal !important;
+	border-color: #fff !important;
+}
+#AirportAlarmWindow tr.WarningRow a { color:#000 !important; }
+#AirportAlarmWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#AirportAlarmWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#AirportAlarmWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+/*END OF CSS Image LInk*/

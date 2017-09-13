@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="cid.iopsnow.com" />
+  <setParameter name="Db-Web.config Connection String" value="data source=HOU1IOPSSQL1;initial catalog=iOps_Dev_v1;user id=iopsadmin;password=i0ps2@14" />
+  <setParameter name="iopsContext-Web.config Connection String" value="metadata=res://*/Model.csdl|res://*/Model.ssdl|res://*/Model.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=HOU1IOPSSQL1;initial catalog=iops_dev;persist security info=True;user id=iopsadmin;password=i0ps2@14;multipleactiveresultsets=True;application name=EntityFramework&quot;" />
+  <setParameter name="iopsWeatherEntities-Web.config Connection String" value="metadata=res://*/WeatherDBModel.csdl|res://*/WeatherDBModel.ssdl|res://*/WeatherDBModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=HOU1IOPSSQL1;initial catalog=iops_dev;persist security info=True;user id=iopsadmin;password=i0ps2@14;multipleactiveresultsets=True;application name=EntityFramework&quot;" />
+</parameters>

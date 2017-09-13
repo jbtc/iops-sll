@@ -1,0 +1,293 @@
+﻿@model iOps.Core.Model.User
+
+<script>
+    // Ajax enable row Delete Buttons
+    $(".Ajaxify").each(function (intIndex) {
+        $(this).bind("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    $('#UserAdminData').html(data);
+                }
+            });
+        });
+    });
+
+    $('#btnSubmit').click(function (event) {
+        event.preventDefault();
+        $('#btnSubmit').prop("disabled", true);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "Users", new { area = "Users" })',
+            data: $(this).closest("form").serialize(),
+            dataType: "html",
+            success: function (data) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Index", "Users", new { area = "Users" })',
+                    contentType: 'text/html',
+                    success: function (data) {
+                        $('#btnSubmit').prop("disabled", false);
+                        $('#UserAdminData').html(data);
+                        },
+                    error: function (a, b, c) {
+                        $('#btnSubmit').prop("disabled", false);
+
+                    }
+                });
+            },
+            error: function (a, b, c) {
+                $('#btnSubmit').prop("disabled", false);
+
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // Add User Tooltip
+        $('.hasTooltip').kendoTooltip({
+            position: "center",
+            'text-indent': '-1000em',
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    });
+
+    // customize the _show method to call options.beforeShow 
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+
+
+</script>
+
+<h2>Create New User</h2>
+
+
+@using (Html.BeginForm("Create", "Users", new { area = "Users" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <table class="form-table">
+            <tr style="display: none;">
+                <td class="form-group"></td>
+                <td>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.Approved, htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Approved)
+                        @Html.ValidationMessageFor(model => model.Approved, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Active)
+                        @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.SecurityGroups, "SecurityGroupsID", htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.ListBox("SecurityGroupsID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SecurityGroups, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group"> 
+                    @Html.LabelFor(model => model.SecurityRoles, "SecurityRolesID", htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.ListBox("SecurityRolesID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SecurityRoles, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.SecurityTasks, "SecurityTasksID", htmlAttributes: new { @class = "control-label col-md-2 required" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.ListBox("SecurityTasksID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SecurityTasks, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.SalutationID, "SalutationID", htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.DropDownList("SalutationID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SalutationID, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.MiddleInitial, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.MiddleInitial, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MiddleInitial, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.JobTitle, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.JobTitle, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.JobTitle, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.Department, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Department, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.HireDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.HireDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.HireDate, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">
+                    @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                </td>
+                <td>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    @*<div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>*@
+
+    <div id="Navigation-Buttons">
+        <p>
+            <input type="button" class="BackToList Ajaxify hasTooltip" value="Back to List" title="Go back to the user list" href='@Url.Action("Index", "Users", new { area = "Users" })' />&nbsp;&nbsp;
+            <button id="btnSubmit" class="UserCreateButton hasTooltip" title="Create the new user" onclick="return false;">Create User</button>
+        </p>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

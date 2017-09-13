@@ -1,0 +1,1317 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="iopsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Countries">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Feedbacks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Source" Type="nvarchar" MaxLength="1024" />
+          <Property Name="Action" Type="nvarchar" MaxLength="10" />
+          <Property Name="Details" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Organizations">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Designator" Type="nvarchar" MaxLength="25" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Organizations_ContactInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="OrganizationID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CountryID" Type="uniqueidentifier" />
+          <Property Name="Address1" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Address2" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="100" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="Phone1" Type="nvarchar" MaxLength="25" />
+          <Property Name="Phone2" Type="nvarchar" MaxLength="25" />
+          <Property Name="Email1" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email2" Type="nvarchar" MaxLength="255" />
+          <Property Name="Website" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="LatCoord" Type="nvarchar" MaxLength="25" />
+          <Property Name="LonCoord" Type="nvarchar" MaxLength="25" />
+        </EntityType>
+        <EntityType Name="OrganizationsXrefUsers">
+          <Key>
+            <PropertyRef Name="OrganizationID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="OrganizationID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Salutations">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Screens">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="DisplayName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+          <Property Name="ScreenLayout" Type="xml" />
+          <Property Name="DefaultDisplayOrder" Type="int" />
+          <Property Name="DefaultIconType" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityGroups">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityGroupsXrefSecurityRoles">
+          <Key>
+            <PropertyRef Name="SecurityGroupId" />
+            <PropertyRef Name="SecurityRoleId" />
+          </Key>
+          <Property Name="SecurityGroupId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityRoleId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityGroupsXrefSecurityTasks">
+          <Key>
+            <PropertyRef Name="SecurityGroupID" />
+            <PropertyRef Name="SecurityTaskID" />
+          </Key>
+          <Property Name="SecurityGroupID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityTaskID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityRoles">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityRolesXrefSecurityTasks">
+          <Key>
+            <PropertyRef Name="SecurityRoleID" />
+            <PropertyRef Name="SecurityTaskID" />
+          </Key>
+          <Property Name="SecurityRoleID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityTaskID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SecurityTasks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="512" />
+          <Property Name="PasswordDateTime" Type="datetime" />
+          <Property Name="PasswordSalt" Type="varchar" MaxLength="512" />
+          <Property Name="Approved" Type="bit" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="SalutationID" Type="uniqueidentifier" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MiddleInitial" Type="nvarchar" MaxLength="1" />
+          <Property Name="JobTitle" Type="nvarchar" MaxLength="50" />
+          <Property Name="Department" Type="nvarchar" MaxLength="50" />
+          <Property Name="HireDate" Type="date" />
+          <Property Name="BirthDate" Type="date" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users_ContactInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ControlField" Type="xml" />
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CountryID" Type="uniqueidentifier" />
+          <Property Name="Address1" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Address2" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="100" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="Phone1" Type="nvarchar" MaxLength="25" />
+          <Property Name="Phone2" Type="nvarchar" MaxLength="25" />
+          <Property Name="Email1" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email2" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsDeleted" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ReadyForArchive" Type="bit" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsersXrefScreens">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ScreenID" />
+            <PropertyRef Name="DisplayOrder" />
+          </Key>
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ScreenID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsersXrefSecurityGroups">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="SecurityGroupID" />
+          </Key>
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityGroupID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsersXrefSecurityRoles">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="SecurityRoleID" />
+          </Key>
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityRoleID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsersXrefSecurityTasks">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="SecurityTaskID" />
+          </Key>
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecurityTaskID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Organizations_ContactInformation_Countries">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="0..1" />
+          <End Role="Organizations_ContactInformation" Type="Self.Organizations_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Organizations_ContactInformation">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Organizations_ContactInformation_Organizations">
+          <End Role="Organizations" Type="Self.Organizations" Multiplicity="1" />
+          <End Role="Organizations_ContactInformation" Type="Self.Organizations_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Organizations_ContactInformation">
+              <PropertyRef Name="OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrganizationsXrefUsers_Organizations">
+          <End Role="Organizations" Type="Self.Organizations" Multiplicity="1" />
+          <End Role="OrganizationsXrefUsers" Type="Self.OrganizationsXrefUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrganizationsXrefUsers">
+              <PropertyRef Name="OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrganizationsXrefUsers_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="OrganizationsXrefUsers" Type="Self.OrganizationsXrefUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrganizationsXrefUsers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityGroupsXrefSecurityRoles_SecurityGroups">
+          <End Role="SecurityGroups" Type="Self.SecurityGroups" Multiplicity="1" />
+          <End Role="SecurityGroupsXrefSecurityRoles" Type="Self.SecurityGroupsXrefSecurityRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityGroups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityGroupsXrefSecurityRoles">
+              <PropertyRef Name="SecurityGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityGroupsXrefSecurityRoles_SecurityRoles">
+          <End Role="SecurityRoles" Type="Self.SecurityRoles" Multiplicity="1" />
+          <End Role="SecurityGroupsXrefSecurityRoles" Type="Self.SecurityGroupsXrefSecurityRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityRoles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityGroupsXrefSecurityRoles">
+              <PropertyRef Name="SecurityRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityGroupsXrefSecurityTasks_SecurityGroups">
+          <End Role="SecurityGroups" Type="Self.SecurityGroups" Multiplicity="1" />
+          <End Role="SecurityGroupsXrefSecurityTasks" Type="Self.SecurityGroupsXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityGroups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityGroupsXrefSecurityTasks">
+              <PropertyRef Name="SecurityGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityGroupsXrefSecurityTasks_SecurityTasks">
+          <End Role="SecurityTasks" Type="Self.SecurityTasks" Multiplicity="1" />
+          <End Role="SecurityGroupsXrefSecurityTasks" Type="Self.SecurityGroupsXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityTasks">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityGroupsXrefSecurityTasks">
+              <PropertyRef Name="SecurityTaskID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityRolesXrefSecurityTasks_SecurityRoles">
+          <End Role="SecurityRoles" Type="Self.SecurityRoles" Multiplicity="1" />
+          <End Role="SecurityRolesXrefSecurityTasks" Type="Self.SecurityRolesXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityRoles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityRolesXrefSecurityTasks">
+              <PropertyRef Name="SecurityRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SecurityRolesXrefSecurityTasks_SecurityTasks">
+          <End Role="SecurityTasks" Type="Self.SecurityTasks" Multiplicity="1" />
+          <End Role="SecurityRolesXrefSecurityTasks" Type="Self.SecurityRolesXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityTasks">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SecurityRolesXrefSecurityTasks">
+              <PropertyRef Name="SecurityTaskID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_ContactInformation_Countries">
+          <End Role="Countries" Type="Self.Countries" Multiplicity="0..1" />
+          <End Role="Users_ContactInformation" Type="Self.Users_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users_ContactInformation">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_ContactInformation_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Users_ContactInformation" Type="Self.Users_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users_ContactInformation">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Salutations1">
+          <End Role="Salutations" Type="Self.Salutations" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Salutations">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="SalutationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users1" Type="Self.Users" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users1">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefScreens_Screens">
+          <End Role="Screens" Type="Self.Screens" Multiplicity="1" />
+          <End Role="UsersXrefScreens" Type="Self.UsersXrefScreens" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Screens">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefScreens">
+              <PropertyRef Name="ScreenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefScreens_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UsersXrefScreens" Type="Self.UsersXrefScreens" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefScreens">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityGroups_SecurityGroups">
+          <End Role="SecurityGroups" Type="Self.SecurityGroups" Multiplicity="1" />
+          <End Role="UsersXrefSecurityGroups" Type="Self.UsersXrefSecurityGroups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityGroups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityGroups">
+              <PropertyRef Name="SecurityGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityGroups_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UsersXrefSecurityGroups" Type="Self.UsersXrefSecurityGroups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityGroups">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityRoles_SecurityRoles">
+          <End Role="SecurityRoles" Type="Self.SecurityRoles" Multiplicity="1" />
+          <End Role="UsersXrefSecurityRoles" Type="Self.UsersXrefSecurityRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityRoles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityRoles">
+              <PropertyRef Name="SecurityRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityRoles_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UsersXrefSecurityRoles" Type="Self.UsersXrefSecurityRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityRoles">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityTasks_SecurityTasks">
+          <End Role="SecurityTasks" Type="Self.SecurityTasks" Multiplicity="1" />
+          <End Role="UsersXrefSecurityTasks" Type="Self.UsersXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecurityTasks">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityTasks">
+              <PropertyRef Name="SecurityTaskID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefSecurityTasks_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UsersXrefSecurityTasks" Type="Self.UsersXrefSecurityTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefSecurityTasks">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="NewIopsGUID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="uniqueidentifier">
+          <Parameter Name="NEWID" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="iopsModelStoreContainer">
+          <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Feedbacks" EntityType="Self.Feedbacks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="History" EntityType="Self.History" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Organizations" EntityType="Self.Organizations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Organizations_ContactInformation" EntityType="Self.Organizations_ContactInformation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrganizationsXrefUsers" EntityType="Self.OrganizationsXrefUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Salutations" EntityType="Self.Salutations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Screens" EntityType="Self.Screens" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityGroups" EntityType="Self.SecurityGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityGroupsXrefSecurityRoles" EntityType="Self.SecurityGroupsXrefSecurityRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityGroupsXrefSecurityTasks" EntityType="Self.SecurityGroupsXrefSecurityTasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityRoles" EntityType="Self.SecurityRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityRolesXrefSecurityTasks" EntityType="Self.SecurityRolesXrefSecurityTasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SecurityTasks" EntityType="Self.SecurityTasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users_ContactInformation" EntityType="Self.Users_ContactInformation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersXrefScreens" EntityType="Self.UsersXrefScreens" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersXrefSecurityGroups" EntityType="Self.UsersXrefSecurityGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersXrefSecurityRoles" EntityType="Self.UsersXrefSecurityRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersXrefSecurityTasks" EntityType="Self.UsersXrefSecurityTasks" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Organizations_ContactInformation_Countries" Association="Self.FK_Organizations_ContactInformation_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Organizations_ContactInformation" EntitySet="Organizations_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organizations_ContactInformation_Organizations" Association="Self.FK_Organizations_ContactInformation_Organizations">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="Organizations_ContactInformation" EntitySet="Organizations_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrganizationsXrefUsers_Organizations" Association="Self.FK_OrganizationsXrefUsers_Organizations">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="OrganizationsXrefUsers" EntitySet="OrganizationsXrefUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrganizationsXrefUsers_Users" Association="Self.FK_OrganizationsXrefUsers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="OrganizationsXrefUsers" EntitySet="OrganizationsXrefUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityGroupsXrefSecurityRoles_SecurityGroups" Association="Self.FK_SecurityGroupsXrefSecurityRoles_SecurityGroups">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="SecurityGroupsXrefSecurityRoles" EntitySet="SecurityGroupsXrefSecurityRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityGroupsXrefSecurityRoles_SecurityRoles" Association="Self.FK_SecurityGroupsXrefSecurityRoles_SecurityRoles">
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+            <End Role="SecurityGroupsXrefSecurityRoles" EntitySet="SecurityGroupsXrefSecurityRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityGroupsXrefSecurityTasks_SecurityGroups" Association="Self.FK_SecurityGroupsXrefSecurityTasks_SecurityGroups">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="SecurityGroupsXrefSecurityTasks" EntitySet="SecurityGroupsXrefSecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityGroupsXrefSecurityTasks_SecurityTasks" Association="Self.FK_SecurityGroupsXrefSecurityTasks_SecurityTasks">
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+            <End Role="SecurityGroupsXrefSecurityTasks" EntitySet="SecurityGroupsXrefSecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityRolesXrefSecurityTasks_SecurityRoles" Association="Self.FK_SecurityRolesXrefSecurityTasks_SecurityRoles">
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+            <End Role="SecurityRolesXrefSecurityTasks" EntitySet="SecurityRolesXrefSecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SecurityRolesXrefSecurityTasks_SecurityTasks" Association="Self.FK_SecurityRolesXrefSecurityTasks_SecurityTasks">
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+            <End Role="SecurityRolesXrefSecurityTasks" EntitySet="SecurityRolesXrefSecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_ContactInformation_Countries" Association="Self.FK_Users_ContactInformation_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Users_ContactInformation" EntitySet="Users_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_ContactInformation_Users" Association="Self.FK_Users_ContactInformation_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users_ContactInformation" EntitySet="Users_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Salutations1" Association="Self.FK_Users_Salutations1">
+            <End Role="Salutations" EntitySet="Salutations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Users" Association="Self.FK_Users_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users1" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefScreens_Screens" Association="Self.FK_UsersXrefScreens_Screens">
+            <End Role="Screens" EntitySet="Screens" />
+            <End Role="UsersXrefScreens" EntitySet="UsersXrefScreens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefScreens_Users" Association="Self.FK_UsersXrefScreens_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UsersXrefScreens" EntitySet="UsersXrefScreens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityGroups_SecurityGroups" Association="Self.FK_UsersXrefSecurityGroups_SecurityGroups">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="UsersXrefSecurityGroups" EntitySet="UsersXrefSecurityGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityGroups_Users" Association="Self.FK_UsersXrefSecurityGroups_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UsersXrefSecurityGroups" EntitySet="UsersXrefSecurityGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityRoles_SecurityRoles" Association="Self.FK_UsersXrefSecurityRoles_SecurityRoles">
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+            <End Role="UsersXrefSecurityRoles" EntitySet="UsersXrefSecurityRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityRoles_Users" Association="Self.FK_UsersXrefSecurityRoles_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UsersXrefSecurityRoles" EntitySet="UsersXrefSecurityRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityTasks_SecurityTasks" Association="Self.FK_UsersXrefSecurityTasks_SecurityTasks">
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+            <End Role="UsersXrefSecurityTasks" EntitySet="UsersXrefSecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefSecurityTasks_Users" Association="Self.FK_UsersXrefSecurityTasks_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UsersXrefSecurityTasks" EntitySet="UsersXrefSecurityTasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="iopsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Organizations_ContactInformation" Relationship="Self.FK_Organizations_ContactInformation_Countries" FromRole="Countries" ToRole="Organizations_ContactInformation" />
+          <NavigationProperty Name="Users_ContactInformation" Relationship="Self.FK_Users_ContactInformation_Countries" FromRole="Countries" ToRole="Users_ContactInformation" />
+        </EntityType>
+        <EntityType Name="Feedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="Organization">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Designator" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Organizations_ContactInformation" Relationship="Self.FK_Organizations_ContactInformation_Organizations" FromRole="Organizations" ToRole="Organizations_ContactInformation" />
+          <NavigationProperty Name="Users" Relationship="Self.OrganizationsXrefUsers" FromRole="Organizations" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Organizations_ContactInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OrganizationID" Type="Guid" Nullable="false" />
+          <Property Name="CountryID" Type="Guid" />
+          <Property Name="Address1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PostalCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Phone1" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Phone2" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Email1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Email2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="LatCoord" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="LonCoord" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Country" Relationship="Self.FK_Organizations_ContactInformation_Countries" FromRole="Organizations_ContactInformation" ToRole="Countries" />
+          <NavigationProperty Name="Organization" Relationship="Self.FK_Organizations_ContactInformation_Organizations" FromRole="Organizations_ContactInformation" ToRole="Organizations" />
+        </EntityType>
+        <EntityType Name="Salutation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Salutations1" FromRole="Salutations" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Screen">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="ScreenLayout" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="UsersXrefScreens" Relationship="Self.FK_UsersXrefScreens_Screens" FromRole="Screens" ToRole="UsersXrefScreens" />
+          <Property Name="DefaultDisplayOrder" Type="Int32" />
+          <Property Name="DefaultIconType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SecurityGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="SecurityRoles" Relationship="Self.SecurityGroupsXrefSecurityRoles" FromRole="SecurityGroups" ToRole="SecurityRoles" />
+          <NavigationProperty Name="SecurityTasks" Relationship="Self.SecurityGroupsXrefSecurityTasks" FromRole="SecurityGroups" ToRole="SecurityTasks" />
+          <NavigationProperty Name="Users" Relationship="Self.UsersXrefSecurityGroups" FromRole="SecurityGroups" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="SecurityRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="SecurityGroups" Relationship="Self.SecurityGroupsXrefSecurityRoles" FromRole="SecurityRoles" ToRole="SecurityGroups" />
+          <NavigationProperty Name="SecurityTasks" Relationship="Self.SecurityRolesXrefSecurityTasks" FromRole="SecurityRoles" ToRole="SecurityTasks" />
+          <NavigationProperty Name="Users" Relationship="Self.UsersXrefSecurityRoles" FromRole="SecurityRoles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="SecurityTask">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="SecurityGroups" Relationship="Self.SecurityGroupsXrefSecurityTasks" FromRole="SecurityTasks" ToRole="SecurityGroups" />
+          <NavigationProperty Name="SecurityRoles" Relationship="Self.SecurityRolesXrefSecurityTasks" FromRole="SecurityTasks" ToRole="SecurityRoles" />
+          <NavigationProperty Name="Users" Relationship="Self.UsersXrefSecurityTasks" FromRole="SecurityTasks" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordDateTime" Type="DateTime" Precision="3" />
+          <Property Name="PasswordSalt" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+          <Property Name="Approved" Type="Boolean" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="SalutationID" Type="Guid" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleInitial" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="JobTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HireDate" Type="DateTime" Precision="0" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Salutation" Relationship="Self.FK_Users_Salutations1" FromRole="Users" ToRole="Salutations" />
+          <NavigationProperty Name="Users_ContactInformation" Relationship="Self.FK_Users_ContactInformation_Users" FromRole="Users" ToRole="Users_ContactInformation" />
+          <NavigationProperty Name="UsersXrefScreens" Relationship="Self.FK_UsersXrefScreens_Users" FromRole="Users" ToRole="UsersXrefScreens" />
+          <NavigationProperty Name="Organizations" Relationship="Self.OrganizationsXrefUsers" FromRole="Users" ToRole="Organizations" />
+          <NavigationProperty Name="SecurityGroups" Relationship="Self.UsersXrefSecurityGroups" FromRole="Users" ToRole="SecurityGroups" />
+          <NavigationProperty Name="SecurityRoles" Relationship="Self.UsersXrefSecurityRoles" FromRole="Users" ToRole="SecurityRoles" />
+          <NavigationProperty Name="SecurityTasks" Relationship="Self.UsersXrefSecurityTasks" FromRole="Users" ToRole="SecurityTasks" />
+          <NavigationProperty Name="Users1" Relationship="iopsModel.FK_Users_Users" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="User1" Relationship="iopsModel.FK_Users_Users" FromRole="User1" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Users_ContactInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ControlField" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="Guid" Nullable="false" />
+          <Property Name="CountryID" Type="Guid" />
+          <Property Name="Address1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PostalCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Phone1" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Phone2" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Email1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Email2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ReadyForArchive" Type="Boolean" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Country" Relationship="Self.FK_Users_ContactInformation_Countries" FromRole="Users_ContactInformation" ToRole="Countries" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Users_ContactInformation_Users" FromRole="Users_ContactInformation" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="UsersXrefScreen">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ScreenID" />
+            <PropertyRef Name="DisplayOrder" />
+          </Key>
+          <Property Name="UserID" Type="Guid" Nullable="false" />
+          <Property Name="ScreenID" Type="Guid" Nullable="false" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Screen" Relationship="Self.FK_UsersXrefScreens_Screens" FromRole="UsersXrefScreens" ToRole="Screens" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UsersXrefScreens_Users" FromRole="UsersXrefScreens" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_Organizations_ContactInformation_Countries">
+          <End Role="Countries" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Organizations_ContactInformation" Type="Self.Organizations_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Organizations_ContactInformation">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_ContactInformation_Countries">
+          <End Role="Countries" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Users_ContactInformation" Type="Self.Users_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Countries">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users_ContactInformation">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Organizations_ContactInformation_Organizations">
+          <End Role="Organizations" Type="Self.Organization" Multiplicity="1" />
+          <End Role="Organizations_ContactInformation" Type="Self.Organizations_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Organizations_ContactInformation">
+              <PropertyRef Name="OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Salutations1">
+          <End Role="Salutations" Type="Self.Salutation" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Salutations">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="SalutationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefScreens_Screens">
+          <End Role="Screens" Type="Self.Screen" Multiplicity="1" />
+          <End Role="UsersXrefScreens" Type="Self.UsersXrefScreen" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Screens">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefScreens">
+              <PropertyRef Name="ScreenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_ContactInformation_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Users_ContactInformation" Type="Self.Users_ContactInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users_ContactInformation">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersXrefScreens_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UsersXrefScreens" Type="Self.UsersXrefScreen" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UsersXrefScreens">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrganizationsXrefUsers">
+          <End Role="Organizations" Type="Self.Organization" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="SecurityGroupsXrefSecurityRoles">
+          <End Role="SecurityGroups" Type="Self.SecurityGroup" Multiplicity="*" />
+          <End Role="SecurityRoles" Type="Self.SecurityRole" Multiplicity="*" />
+        </Association>
+        <Association Name="SecurityGroupsXrefSecurityTasks">
+          <End Role="SecurityGroups" Type="Self.SecurityGroup" Multiplicity="*" />
+          <End Role="SecurityTasks" Type="Self.SecurityTask" Multiplicity="*" />
+        </Association>
+        <Association Name="SecurityRolesXrefSecurityTasks">
+          <End Role="SecurityRoles" Type="Self.SecurityRole" Multiplicity="*" />
+          <End Role="SecurityTasks" Type="Self.SecurityTask" Multiplicity="*" />
+        </Association>
+        <Association Name="UsersXrefSecurityGroups">
+          <End Role="SecurityGroups" Type="Self.SecurityGroup" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="UsersXrefSecurityRoles">
+          <End Role="SecurityRoles" Type="Self.SecurityRole" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="UsersXrefSecurityTasks">
+          <End Role="SecurityTasks" Type="Self.SecurityTask" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="iopsContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Countries" EntityType="Self.Country" />
+          <EntitySet Name="Feedbacks" EntityType="Self.Feedback" />
+          <EntitySet Name="Histories" EntityType="Self.History" />
+          <EntitySet Name="Organizations" EntityType="Self.Organization" />
+          <EntitySet Name="Organizations_ContactInformation" EntityType="Self.Organizations_ContactInformation" />
+          <EntitySet Name="Salutations" EntityType="Self.Salutation" />
+          <EntitySet Name="Screens" EntityType="Self.Screen" />
+          <EntitySet Name="SecurityGroups" EntityType="Self.SecurityGroup" />
+          <EntitySet Name="SecurityRoles" EntityType="Self.SecurityRole" />
+          <EntitySet Name="SecurityTasks" EntityType="Self.SecurityTask" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="Users_ContactInformation" EntityType="Self.Users_ContactInformation" />
+          <EntitySet Name="UsersXrefScreens" EntityType="Self.UsersXrefScreen" />
+          <AssociationSet Name="FK_Organizations_ContactInformation_Countries" Association="Self.FK_Organizations_ContactInformation_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Organizations_ContactInformation" EntitySet="Organizations_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_ContactInformation_Countries" Association="Self.FK_Users_ContactInformation_Countries">
+            <End Role="Countries" EntitySet="Countries" />
+            <End Role="Users_ContactInformation" EntitySet="Users_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organizations_ContactInformation_Organizations" Association="Self.FK_Organizations_ContactInformation_Organizations">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="Organizations_ContactInformation" EntitySet="Organizations_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Salutations1" Association="Self.FK_Users_Salutations1">
+            <End Role="Salutations" EntitySet="Salutations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefScreens_Screens" Association="Self.FK_UsersXrefScreens_Screens">
+            <End Role="Screens" EntitySet="Screens" />
+            <End Role="UsersXrefScreens" EntitySet="UsersXrefScreens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_ContactInformation_Users" Association="Self.FK_Users_ContactInformation_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users_ContactInformation" EntitySet="Users_ContactInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersXrefScreens_Users" Association="Self.FK_UsersXrefScreens_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UsersXrefScreens" EntitySet="UsersXrefScreens" />
+          </AssociationSet>
+          <AssociationSet Name="OrganizationsXrefUsers" Association="Self.OrganizationsXrefUsers">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="SecurityGroupsXrefSecurityRoles" Association="Self.SecurityGroupsXrefSecurityRoles">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+          </AssociationSet>
+          <AssociationSet Name="SecurityGroupsXrefSecurityTasks" Association="Self.SecurityGroupsXrefSecurityTasks">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="SecurityRolesXrefSecurityTasks" Association="Self.SecurityRolesXrefSecurityTasks">
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+          </AssociationSet>
+          <AssociationSet Name="UsersXrefSecurityGroups" Association="Self.UsersXrefSecurityGroups">
+            <End Role="SecurityGroups" EntitySet="SecurityGroups" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="UsersXrefSecurityRoles" Association="Self.UsersXrefSecurityRoles">
+            <End Role="SecurityRoles" EntitySet="SecurityRoles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="UsersXrefSecurityTasks" Association="Self.UsersXrefSecurityTasks">
+            <End Role="SecurityTasks" EntitySet="SecurityTasks" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Users" Association="iopsModel.FK_Users_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="User1" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_Users_Users">
+          <End Type="iopsModel.User" Role="User" Multiplicity="1" />
+          <End Type="iopsModel.User" Role="User1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User1">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="iopsModelStoreContainer" CdmEntityContainer="iopsContext">
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="iopsModel.Country">
+              <MappingFragment StoreEntitySet="Countries">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Feedbacks">
+            <EntityTypeMapping TypeName="iopsModel.Feedback">
+              <MappingFragment StoreEntitySet="Feedbacks">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Histories">
+            <EntityTypeMapping TypeName="iopsModel.History">
+              <MappingFragment StoreEntitySet="History">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Organizations">
+            <EntityTypeMapping TypeName="iopsModel.Organization">
+              <MappingFragment StoreEntitySet="Organizations">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Designator" ColumnName="Designator" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Organizations_ContactInformation">
+            <EntityTypeMapping TypeName="iopsModel.Organizations_ContactInformation">
+              <MappingFragment StoreEntitySet="Organizations_ContactInformation">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="OrganizationID" ColumnName="OrganizationID" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="Address1" ColumnName="Address1" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="Phone1" ColumnName="Phone1" />
+                <ScalarProperty Name="Phone2" ColumnName="Phone2" />
+                <ScalarProperty Name="Email1" ColumnName="Email1" />
+                <ScalarProperty Name="Email2" ColumnName="Email2" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+                <ScalarProperty Name="LatCoord" ColumnName="LatCoord" />
+                <ScalarProperty Name="LonCoord" ColumnName="LonCoord" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Salutations">
+            <EntityTypeMapping TypeName="iopsModel.Salutation">
+              <MappingFragment StoreEntitySet="Salutations">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Screens">
+            <EntityTypeMapping TypeName="iopsModel.Screen">
+              <MappingFragment StoreEntitySet="Screens">
+                <ScalarProperty Name="DefaultIconType" ColumnName="DefaultIconType" />
+                <ScalarProperty Name="DefaultDisplayOrder" ColumnName="DefaultDisplayOrder" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ScreenLayout" ColumnName="ScreenLayout" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SecurityGroups">
+            <EntityTypeMapping TypeName="iopsModel.SecurityGroup">
+              <MappingFragment StoreEntitySet="SecurityGroups">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SecurityRoles">
+            <EntityTypeMapping TypeName="iopsModel.SecurityRole">
+              <MappingFragment StoreEntitySet="SecurityRoles">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SecurityTasks">
+            <EntityTypeMapping TypeName="iopsModel.SecurityTask">
+              <MappingFragment StoreEntitySet="SecurityTasks">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="iopsModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="PasswordDateTime" ColumnName="PasswordDateTime" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="SalutationID" ColumnName="SalutationID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleInitial" ColumnName="MiddleInitial" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="HireDate" ColumnName="HireDate" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users_ContactInformation">
+            <EntityTypeMapping TypeName="iopsModel.Users_ContactInformation">
+              <MappingFragment StoreEntitySet="Users_ContactInformation">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ControlField" ColumnName="ControlField" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="Address1" ColumnName="Address1" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="Phone1" ColumnName="Phone1" />
+                <ScalarProperty Name="Phone2" ColumnName="Phone2" />
+                <ScalarProperty Name="Email1" ColumnName="Email1" />
+                <ScalarProperty Name="Email2" ColumnName="Email2" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ReadyForArchive" ColumnName="ReadyForArchive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsersXrefScreens">
+            <EntityTypeMapping TypeName="iopsModel.UsersXrefScreen">
+              <MappingFragment StoreEntitySet="UsersXrefScreens">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ScreenID" ColumnName="ScreenID" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="OrganizationsXrefUsers" TypeName="iopsModel.OrganizationsXrefUsers" StoreEntitySet="OrganizationsXrefUsers">
+            <EndProperty Name="Organizations">
+              <ScalarProperty Name="ID" ColumnName="OrganizationID" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="SecurityGroupsXrefSecurityRoles" TypeName="iopsModel.SecurityGroupsXrefSecurityRoles" StoreEntitySet="SecurityGroupsXrefSecurityRoles">
+            <EndProperty Name="SecurityGroups">
+              <ScalarProperty Name="ID" ColumnName="SecurityGroupId" />
+            </EndProperty>
+            <EndProperty Name="SecurityRoles">
+              <ScalarProperty Name="ID" ColumnName="SecurityRoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="SecurityGroupsXrefSecurityTasks" TypeName="iopsModel.SecurityGroupsXrefSecurityTasks" StoreEntitySet="SecurityGroupsXrefSecurityTasks">
+            <EndProperty Name="SecurityGroups">
+              <ScalarProperty Name="ID" ColumnName="SecurityGroupID" />
+            </EndProperty>
+            <EndProperty Name="SecurityTasks">
+              <ScalarProperty Name="ID" ColumnName="SecurityTaskID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="SecurityRolesXrefSecurityTasks" TypeName="iopsModel.SecurityRolesXrefSecurityTasks" StoreEntitySet="SecurityRolesXrefSecurityTasks">
+            <EndProperty Name="SecurityRoles">
+              <ScalarProperty Name="ID" ColumnName="SecurityRoleID" />
+            </EndProperty>
+            <EndProperty Name="SecurityTasks">
+              <ScalarProperty Name="ID" ColumnName="SecurityTaskID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UsersXrefSecurityGroups" TypeName="iopsModel.UsersXrefSecurityGroups" StoreEntitySet="UsersXrefSecurityGroups">
+            <EndProperty Name="SecurityGroups">
+              <ScalarProperty Name="ID" ColumnName="SecurityGroupID" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UsersXrefSecurityRoles" TypeName="iopsModel.UsersXrefSecurityRoles" StoreEntitySet="UsersXrefSecurityRoles">
+            <EndProperty Name="SecurityRoles">
+              <ScalarProperty Name="ID" ColumnName="SecurityRoleID" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UsersXrefSecurityTasks" TypeName="iopsModel.UsersXrefSecurityTasks" StoreEntitySet="UsersXrefSecurityTasks">
+            <EndProperty Name="SecurityTasks">
+              <ScalarProperty Name="ID" ColumnName="SecurityTaskID" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

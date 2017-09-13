@@ -1,0 +1,200 @@
+﻿@model IEnumerable<iOps.Core.Model.Flight>
+@using Kendo.Mvc.UI;
+
+<script>
+    // Ajax enable row Delete Buttons
+    $(".Ajaxify, .k-grid-header .k-link, .k-grid-pager .k-link").each(function (intIndex) {
+        $(this).bind("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    $('#FlightAdmin-Container').html(data);
+                },
+                error: function (jqXHR, error, errorThrown) {
+                    alert(jqXHR.status);
+                    if (jqXHR.status && jqXHR.status == 400) {
+                        alert(jqXHR.responseText);
+                    } else {
+                        alert("Something went wrong");
+                    }
+                }
+            });
+        });
+    });
+
+    $(".k-grid-pager .k-state-disabled").each(function (intIndex) {
+        $(this).off('click');
+    });
+
+    // Create and Ajax Enable Double Click a row for details.
+    $("#GridFlights table tr").dblclick(function (e) {
+        e.preventDefault();
+        var FlightID = $(this).find("td")[0].innerText;
+        $.ajax({
+            url: '@Url.Action("Details", "Flights", new { area = "Flights" })?id=' + FlightID,
+            type: "GET",
+            contentType: 'text/html',
+            success: function (data) {
+                $('#main-body').html(data);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        //Setup the main Kendo Window inside splitter-main
+        $("#FlightsWindow").kendoWindow({
+            title: "Flight Data",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded CSW20150707: Check to see if this is why the UserAdmin window stays open
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('#FlightsWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#FlightsWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).find('span').css("background-image", "url('#')"); //??? csw20160217:
+            $(this).attr('id', 'flightsWindowLink' + index);
+        });
+
+        //up arrow (Zone screen)
+        $('#FlightsWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowAirport", "Airport", new { area = "Airport" })',
+                type: "GET",
+                data: {
+                    clientName: "SLL",
+                    numberOfScreens: 0
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                    ChangeIcons(1);
+
+                }
+            });
+        });
+
+        // Add Flight Tooltip
+        $('.hasTooltip').kendoTooltip({
+            position: "center",
+            'text-indent': '-1000em',
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    });
+
+    // customize the _show method to call options.beforeShow
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+    $(".k-link").live('click', function (event) {
+        //var hash = this.hash;
+        //$("#Content").load(this.href, function () {
+        //    document.location.hash = hash;
+        //});
+        event.stopImmediatePropagation();
+        event.preventDefault();
+    });
+
+
+
+</script>
+
+<div id="FlightsWindow">
+    <div id="FlightAdmin-Container">
+
+        @(Html.Kendo().Grid(Model)
+        .Name("GridFlights")
+        .Columns(columns =>
+            {
+                columns.Bound(f => f.Id).Title("Flight ID").Hidden();
+                columns.Bound(f => f.TimeStamp).Title("Timestamp").Hidden().Width(140);
+                columns.Bound(f => f.OnBoardScheduledTime).Title("Scheduled Time").Width(140);
+                columns.Bound(f => f.OnBoardEstimatedTime).Title("Estimated Time").Width(140);
+                columns.Bound(f => f.Airline).Title("Airline").Width(35);
+                columns.Bound(f => f.FlightNumber).Title("Flight Number").Width(55);
+                columns.Bound(f => f.DepartureAirport).Title("Departure Airport").Width(40);
+                columns.Bound(f => f.PassengerGate).Title("Gate").Width(45);
+                columns.Bound(f => f.ParkingPosition).Title("Parking Position").Width(45);
+                columns.Bound(f => f.AircraftType).Title("Aircraft Type").Width(50);
+                columns.Bound(f => f.AircraftSubType).Title("Aircraft Subtype").Width(50);
+                columns.Bound(f => f.DoorPosition).Title("Door Position").Width(70);
+                columns.Bound(f => f.OnBoardTouchDownTime).Title("Touchdown Time").Width(140);
+                columns.Bound(f => f.OnBoardActualTime).Title("Actual Time").Width(140);
+                columns.Bound(f => f.BridgeUpdateDateTime).Title("Last Updated").Width(140);
+                columns.Bound(f => f.Id).Title("Operations").Hidden()
+                    .Sortable(false)
+                    .Template(@<text>
+                        <input type="button" class="FlightDeleteButton Ajaxify hasTooltip" value="Delete" title="Delete this Flight" flight-id="@item.Id" href='@Url.Action("Delete", "Flights", new { area = "Flights", id = @item.Id })' />&nbsp;&nbsp;
+                        <input type="button" class="FlightEditButton Ajaxify hasTooltip" value="Edit" title="Edit this Flight" flight-id="@item.Id" href='@Url.Action("Edit", "Flights", new { area = "Flights", id = @item.Id })' />
+                    </text>);
+            })
+        //.Sortable()
+        .Scrollable()
+        //.Pageable()
+        @*.DataSource(ds => ds
+            .Ajax()
+            .PageSize(30)
+            .ServerOperation(true)
+            .Read(read => { read.Type(HttpVerbs.Get); read.Action("FlightsList_Read", "Flights", new { area = "Flights" }); }))*@
+        )
+
+        <div id="Navigation-Buttons">
+            <p>
+                <input type="button" class="FlightAddButton Ajaxify hasTooltip" value="Add Flight" title="Add a new Flight" href='@Url.Action("Create", "Flights", new { area = "Flights" })' style="display: none;" />
+            </p>
+        </div>
+    </div>
+</div>

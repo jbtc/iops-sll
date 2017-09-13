@@ -1,0 +1,162 @@
+﻿/* Main Drop Down Menu Selectors*/
+.Header-DropDownMenu {
+    -ms-flex: 0 70px !important;
+    flex: 0 70px !important;
+    width: 100%;
+    height: 100%;
+    
+}
+.Header-DropDownMenu #menu {
+    height: 100%;
+    width: 100%;
+}
+.Header-DropDownMenu #menu li {
+    height: 100%;
+    width: 100%;
+}
+.Header-DropDownMenu #menu li div#menuIcon {
+    width: 100%;
+    height: 100%;
+    background-image: url(Images/ButtonHamburgerStyle.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+}
+
+.Header-DropDownMenu #menuItems {
+    margin: 10px 0 0 20px;
+}
+
+.Header-DropDownMenu #menuItems li {
+    line-height: 16px;
+    font-size: 12px;
+    width: 100%;
+}
+
+.menu-main 
+{
+    display: inline-block;
+    font-size: 0;
+    height: 84px;
+}
+.menu-login 
+{
+    float: right;
+    margin-right: 5px;
+}
+
+.menu-spacer
+{
+    width: 100px;
+    
+}
+
+.menu-login,.menu-spacer,.menu-main ul, ol 
+{
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.menu
+{
+    display: inline-block;
+    font-size: 0;
+}
+
+.menu-login,.menu-spacer,.menu-main li
+{
+    display: inline-block; 
+    *display: inline;
+    font-size: 15px;
+    vertical-align: middle;
+    text-rendering: optimizeLegibility;
+    font-weight: bold;
+    font-family: Verdana, Tahoma, Arial;
+    line-height: 55px;
+}
+
+.menu-login,.menu-spacer,.menu-main a
+{
+    padding: 10px 5px;
+    text-decoration: none;
+    color: #264e8f;
+}
+
+@media (max-width: 530px)
+{
+    .menu-login,.menu-spacer,.menu-main a
+    {
+        padding: 5px 2px;
+    }
+
+    .menu-login,.menu-spacer,.menu-main li
+    {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 700px)
+{
+    .optional
+    {
+        display: none !important;
+    }
+}
+
+.menu-login,.menu-spacer,.menu-main a:hover
+{
+    color: #3772d2;
+}
+
+/*----- Accordion -----*/
+.Header-DropDownMenu #menu .rtusp-accordion, .Header-DropDownMenu #menu .rtusp-accordion * {
+    -webkit-box-sizing:border-box; 
+    -moz-box-sizing:border-box; 
+    box-sizing:border-box;
+}
+ 
+.Header-DropDownMenu #menu .rtusp-accordion {
+    overflow:hidden;
+    box-shadow:0px 1px 3px rgba(0,0,0,0.25);
+    border-radius:3px;
+    background:#EAE3E3;
+}
+ 
+/*----- Section Titles -----*/
+.Header-DropDownMenu #menu .rtusp-accordion-section-title {
+    width:100%;
+    padding:5px;
+    display:inline-block;
+    border-bottom:1px solid #1a1a1a;
+    background:#E6E1E1;
+    transition:all linear 0.15s;
+    /* Type */
+    font-size:1.200em;
+    /*text-shadow:0px 1px 0px #1a1a1a;*/
+    color:#000;
+}
+ 
+.Header-DropDownMenu #menu .rtusp-accordion-section-title.active, .Header-DropDownMenu #menu .rtusp-accordion-section-title:hover {
+    background:#E8DFDF;
+    /* Type */
+    text-decoration:none;
+}
+ 
+.Header-DropDownMenu #menu .rtusp-accordion-section:last-child .rtusp-accordion-section-title {
+    border-bottom:none;
+}
+ 
+/*----- Section Content -----*/
+.Header-DropDownMenu #menu .rtusp-accordion-section-content {
+    padding:10px;
+    display:none;
+}
+
+.Header-DropDownMenu #menu .rtusp-accordion-section-content .rtusp-input {
+    width: 40px;
+}
+
+.Header-DropDownMenu #menu .rtusp-accordion-section-content .rtusp-button {
+    width: 60px;
+}
+

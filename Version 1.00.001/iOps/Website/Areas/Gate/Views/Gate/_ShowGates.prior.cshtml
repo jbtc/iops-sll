@@ -1,0 +1,1176 @@
+﻿<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script>
+    // Turn debug on/off for this page.
+    var _DebugPage = false;
+
+    $(document).ready(function () {
+        $('#imageinfoid').css('visibility', 'hidden');
+        //Setup the main Kendo Window inside splitter-main
+        $("#GateWindow").kendoWindow({
+            title: "Gate @TempData["GateNumber"]",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded CSW20150707: Check to see if this is why the UserAdmin window stays open
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //deletes all kendo window action buttons
+        //$('#GateWindow').parent().find('.k-window-action').css('visibility', 'hidden');
+
+        //removes the default custom icon for the kendo window
+        $('#GateWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#GateWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).attr('id', 'gateWindowLink' + index);
+
+        });
+
+        //up arrow (Zone screen)
+        $('#gateWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowAirport", "Airport", new { area = "Airport" })',
+                type: "GET",
+                data: {
+                    clientName: "CID",
+                    numberOfScreens: 0
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                    ChangeIcons(1);
+
+                }
+            });
+        });
+
+        //regular text link(to GPU)
+        $('#showServiceCounters').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowServiceCounters", "ServiceCounters", new { area = "ServiceCounters", gateNum = TempData["GateNumber"] })',
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('#gpuLinkButtonInGateScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseGateWarningWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+
+                }
+            });
+        });
+
+        //regular text link (to PCA)
+        $('#pcaLinkButtonInGateScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowPCA", "PCA", new { area= "PCA" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseGateAlarmWindow();
+                    CloseKendoGate();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        var gateAlarmWindow = $('#GateAlarmWindow');
+        var btnAlarms = $('#btnAlarms').bind('click', function () {
+            gateAlarmWindow.data('kendoWindow').open();
+        });
+
+        if (!gateAlarmWindow.data('kendoWindow')) {
+            gateAlarmWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] Alarms',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+        var gateWarningWindow = $('#GateWarningWindow');
+        var btnWarnings = $('#btnWarnings').bind('click', function () {
+            gateWarningWindow.data('kendoWindow').open();
+        });
+
+        if (!gateWarningWindow.data('kendoWindow')) {
+            gateWarningWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] Warnings',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+    })
+
+
+    function CloseKendoGate() {
+        if ($('#GateWindow').is(':visible')) {
+            $('#GateWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function CloseGateAlarmWindow() {
+        $('#GateAlarmWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    function CloseGateWarningWindow() {
+        $('#GateWarningWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    //function ChangeIcons2(iconNum) {
+    //    console.log("_ShowGates::ChangeIcons2(...) -> iconNum=" + iconNum);
+    //    for (var b = 1; b <= $('#txtScreenNumber').val() ; b++) {
+    //        $('.screen-icon1').removeClass('iconSelectedTop');
+    //        $('.screen-icon1').addClass('iconNormalTop');
+
+    //        if (b === iconNum) {
+    //            $('.screen-icon' + (b + 1)).removeClass('iconNormalBottom');
+    //            $('.screen-icon' + (b + 1)).addClass('iconSelectedBottom');
+    //        }
+    //        else {
+    //            $('.screen-icon' + (b + 1)).removeClass('iconSelectedBottom');
+    //            $('.screen-icon' + (b + 1)).addClass('iconNormalBottom');
+    //        }
+    //    }
+    //}
+
+
+    //add tooltip to PCA clickable area
+    //var tooltip = $('#GateWindow').kendoTooltip({
+    //    filter: "a",
+    //    width: 120,
+    //    position: "top"
+    //}).data("kendoTooltip");
+
+    $('#GateAlarmWindow').kendoWindow({
+        width: '400px',
+        height: '650px',
+        animation: false,
+        modal: false,
+        draggable: true,
+        title: 'Gate @TempData["GateNumber"] Alarms',
+        visible: false,
+        actions: ["Custom"]
+    });
+
+
+    $('#btnAlarms').click(function () {
+        $('#GateAlarmWindow').data('kendoWindow').open();
+        $('#GateAlarmWindow').closest(".k-window").css({ top: 90, left: 250 });
+
+        //add custom background image to custom kendo button
+        var gateAlarmWindow = $('#GateAlarmWindow').data('kendoWindow');
+        var buttonWrapper = gateAlarmWindow.wrapper.find('.k-i-custom');
+        buttonWrapper.css({ 'background': "url('/Content/Themes/JFK/Ver 1.0.0/Images/awe_icons.png') -38px -31px no-repeat", "cursor": "pointer" });
+        buttonWrapper.attr('id', 'btnAlarmClose');
+    })
+
+    //because the ID btnAlarmClose was added dynamically, jquery event delegation
+    //must be used to register the event handler
+    $(document).on('click', '#btnAlarmClose', function () {
+        if ($('#GateAlarmWindow').is(':visible')) {
+            $('#GateAlarmWindow').data('kendoWindow').close();
+            return false;
+        }
+    })
+
+    $('#GateWarningWindow').kendoWindow({
+
+        width: '400px',
+        height: '650px',
+        animation: false,
+        modal: false,
+        draggable: true,
+        title: 'Gate @TempData["GateNumber"] Warnings',
+        visible: false,
+        actions: ["Custom"]
+    });
+
+
+    $('#btnWarnings').click(function () {
+        $('#GateWarningWindow').data('kendoWindow').open();
+        $('#GateWarningWindow').closest(".k-window").css({ top: 90, left: 250 });
+
+        //add custom background image to custom kendo button
+        var gateWarningWindow = $('#GateWarningWindow').data('kendoWindow');
+        var buttonWrapper = gateWarningWindow.wrapper.find('.k-i-custom');
+        buttonWrapper.css({ 'background': "url('/Content/Themes/JFK/Ver 1.0.0/Images/awe_icons.png') -38px -31px no-repeat", "cursor": "pointer" });
+        buttonWrapper.attr('id', 'btnWarningClose');
+    })
+
+
+    $(document).on('click', '#btnWarningClose', function () {
+        if ($('#GateWarningWindow').is(':visible')) {
+            $('#GateWarningWindow').data('kendoWindow').close();
+            return false;
+        }
+    })
+
+    function get_value(tag) {
+        return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+    function get_bool(tag) {
+        var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    dir_base = "Content/Themes/CID/Ver%201.0.0/Images/DirectionalArrows/";
+    function update_vert(img) {
+        img = "UpDown-Arrow-NotReady-Rev-1.00.gif";
+        var pbb_in_oper_mode = get_bool("PBB.PBB_IN_OPER_MODE.Value");
+        var pbb_vert_up_cmd = get_bool("PBB.VERT_UP_CMD.Value");
+        var pbb_vert_up_limit = get_bool("PBB.Warning.VERT_UP_LIMIT_FLAG.Value");
+        var pbb_vert_up_ult = get_bool("PBB.Alarm.VERT_UP_ULT_FLAG.Value");
+        var pbb_vert_dn_cmd = get_bool("PBB.VERT_DN_CMD.Value");
+        var pbb_vert_dn_limit = get_bool("PBB.Warning.VERT_DN_LIMIT_FLAG.Value");
+        var pbb_vert_dn_ult = get_bool("PBB.Alarm.VERT_DN_ULT_FLAG.Value");
+
+        if (pbb_in_oper_mode) { img = "updown-arrow-ready-rev-1.00.gif"; }
+        if (pbb_vert_up_cmd) { img = "UpDown-Arrow-MovingUp-Rev-1.00.gif"; }
+        if (pbb_vert_up_limit) { img = "UpDown-Arrow-MovingUp-SoftLimit-Rev-1.00.gif"; }
+        if (pbb_vert_up_ult) { img = "UpDown-Arrow-MovingUp-HardLimit-Rev-1.00.gif"; }
+        if (pbb_vert_dn_cmd) { img = "UpDown-Arrow-MovingDown-Rev-1.00.gif"; }
+        if (pbb_vert_dn_limit) { img = "UpDown-Arrow-MovingDown-SoftLimit-Rev-1.00.gif"; }
+        if (pbb_vert_dn_ult) { img = "UpDown-Arrow-MovingDown-HardLimit-Rev-1.00.gif"; }
+        $("#imgVertMovement").attr("src", dir_base + img);
+    }
+
+    function update_horz(img) {
+        var img = "Moving-Arrow-NotReady-Rev-1.00.gif";
+        // TODO: set Horizontal image based on tag values - need tag information for movement
+        $("#imgHorizMovement").attr("src", dir_base + img)
+    }
+
+    function update_movements() {
+        update_vert();
+        update_horz();
+    }
+
+    function update_labels() {
+
+        // PBB Mode display
+        var autolevelmode = get_value("PBB.PLANE_DOCKED.Value");
+        var maintok = get_value("PBB.MAINTOK.Value");
+        //var autolevelmode = get_value("PBB.AUTOLEVELMODEFLAG.Value");
+        //var maintok = get_value("PBB.AUTOLEVELKEY.Value");
+        if (autolevelmode && autolevelmode == "True") { $("#btnPBBMode").html("Auto Level"); }
+        else if (maintok && maintok == "True") { $("#btnPBBMode").html("Manual Mode"); }
+        else { $("#btnPBBMode").html("Logged Off"); }
+        //Auto Level
+        var autolevelok = get_value("PBB.AUTOLEVELOK.Value");
+        if (autolevelmode && autolevelmode == "True") { $("#btnAutoLevel").html("Activated"); }
+        else if (autolevelok && autolevelok == "True") { $("#btnAutoLevel").html("Ready/OK"); }
+        else { $("#btnAutoLevel").html("Not Ready"); }
+        //Vertical Movement
+        var vertupok = get_bool("PBB.VERTUPOK.Value");
+        var vertdnok = get_bool("PBB.VERTDNOK.Value");
+        if (vertupok && vertdnok == "True") { $("#btnVerticalMvt").html("Ready/OK"); }
+        else { $("#btnVerticalMvt").html("Not Ready"); }
+        //Horizontal Movement
+        var horizextlimit = get_value("PBB.HORIZ_EXT_LIMIT_FLAG.Value");
+        var horizretlimit = get_value("PBB.HORIZ_RET_LIMIT_FLAG.Value");
+        var horizextult = get_value("PBB.Alarm.HORIZ_EXT_ULT.Value");
+        var horizretult = get_value("PBB.Alarm.HORIZ_RET_ULT.Value");
+        if (horizextlimit && horizretlimit && horizextult && horizretult == "True") { $("#btnHorizontalMvt").html("Ready/OK"); }
+        else { $("#btnHorizontalMvt").html("Not Ready"); }
+    }
+
+    function update_alarms() {
+        var PriorityCol = -1;
+        PriorityCol = $('#GateAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GateAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                $('#GateAlarmWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow").addClass("HideAlarm");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function update_warnings() {
+        var PriorityCol = -1;
+        PriorityCol = $('#GateWarningWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#GateWarningWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                $('#GateWarningWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow").addClass("HideAlarm");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function refresh_update(data, cid) {
+        // put any other js here that needs to be executed on every server tag update
+        update_movements();
+        update_labels();
+        $('#imageinfoid').css('visibility', 'visible');
+    }
+
+    $(document).ready(function () {
+        // set up gate prefix
+        OPC_config.token = '7e61b230-481d-4551-b24b-ba9046e3d8f2';
+        OPC_config.serverURL = 'http://opc.iopsnow.com:58725';
+        @*OPC_config.tag_prefix = '\\\\opc.iopsnow.com\\RemoteSCADAHosting.Airport-CID.Airport.' + '@TempData["ClientAbbr"]' + '.Term1.Zone' + '@TempData["ZoneNumber"]' + '.Gate C-' + '@TempData["GateNumber"]' + '.';*@
+        OPC_config.tag_prefix = '\\\\opc.iopsnow.com\\RemoteSCADAHosting.Airport-CID.Airport.CID.Term1.Zone1.GateC' + '@TempData["GateNumber"]' + '.';
+        OPC_config.refresh_callback = refresh_update;
+        OPC_config.max_tags_per_msg = 25;
+        OPC_config.watch_tags = '';
+        OPC_config.callback_timeout = 10000;
+        OPC_config.max_callbacks = 10;
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "GateAlarms",
+                callback: update_alarms,
+                showInfo: true,
+                showHistory: false,
+                filter: {
+                    alarmtypes: ["High High", "High", "Low", "Low Low", "Digital", "ROC"],
+                    alarmgroups: ["@TempData["GateNumber"]" + "_PBB_ALARMS"]
+                },
+                columns: [
+		        	{ name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+		            { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+		            { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+		            { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+		            { name: "Text", text: "Text", type: "string", visible: true },
+		            { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+		            { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "GateWarnings",
+                callback: update_warnings,
+                showInfo: true,
+                showHistory: false,
+                filter: {
+                    alarmtypes: ["High High", "High", "Low", "Low Low", "Digital", "ROC"],
+                    alarmgroups: ["@TempData["GateNumber"]" + "_PBB_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            }
+        ];
+
+        //wtags.push("PBB.VERTUPOK.Value");
+        //OPC_config.watch_tags = wtags;
+
+
+        // TODO: add horizontal/vertical movement tags to OPC_config.watch_tags array
+        OPC.init(); //re-initialize HTML HMI engine after updating prefix
+    });
+</script>
+<!--Because jquery syntax does not like razor tags, input will be used instead-->
+<!--NOTE: OPC tag values that are BOOLEANS will show a button image; all other values will show text-->
+<input type="hidden" id="txtScreenNumber" value='@TempData["CIDMaxScreens"]' />
+<div id="GateWindow" opc-tag-bkg='{"type":"group","all_f":{"cls":"AutoLevelingFalse"},"bad_q":{"cls":"AutoLevelingFalse"},"group":[
+            {"tag":"PBB.PLANE_DOCKED.Value","config":{"cls":"AutoLevelingTrue"}}
+                                                   
+     ]}'>
+    <div class="gatesPageDividerLeft">
+        <table>
+            <tr>
+                <td>
+                    <table class="pointsTable" id="tblPoints">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader">Point</th>
+                            <th class="pointsTableHeader">Value</th>
+                        </tr>
+                        <tr>
+                            <td><span id='spnPBBStatusTitle' opc-tag-txt='{"tag":"PBB.PBB_IN_OPER_MODE.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPBBStatus"
+                                        opc-tag-bkg='
+                                        {"type":"group",
+                                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                            "group":[
+                                                {"tag":"PBB.PBB_IN_OPER_MODE.Value","config":{"cls":"btnGreen"}}
+                                            ]
+                                        }'>
+                                    <span id='spnPBBStatus' opc-tag-txt='{"tag":"PBB.PBB_IN_OPER_MODE.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Not Ready","bool_t":"Ready/OK"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnPBBModeTitle' opc-tag-txt='{"tag":"PBB.AUTOLEVELMODEFLAG.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPBBMode"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.PLANE_DOCKED.Value","config":{"cls":"btnGreen"}},
+                                                    {"tag":"PBB.MAINTOK.Value","config":{"cls":"btnBlue"}}
+                                                ]
+                                            }'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnEStopTitle' opc-tag-txt='{"tag":"PBB.Alarm.E_STOP.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnEStop"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.Alarm.E_STOP.Value","config":{"cls":"btnsRed"}}
+                                                ]
+                                            }'>
+                                    <span id='spnEStop' opc-tag-txt='{"tag":"PBB.Alarm.E_STOP.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Ready/OK","bool_t":"Activated"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnSmokeDetectorTitle' opc-tag-txt='{"tag":"PBB.SMOKEDETECTOR.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnSmokeDetector" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGreen"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PBB.SMOKEDETECTOR.Value","config":{"cls":"btnGray"}}]}'>
+                                    <span id='spnSmokeDetector' opc-tag-txt='{"tag":"PBB.SMOKEDETECTOR.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Activated","bool_t":"Ready/OK"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnAutoLevelTitle' opc-tag-txt='{"tag":"PBB.AUTOLEVELOK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnAutoLevel"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.PLANE_DOCKED.Value","config":{"cls":"btnGreen"}},
+                                                    {"tag":"PBB.AUTOLEVELOK.Value","config":{"cls":"btnGray"}}
+                                                ]
+                                            }'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnAutoLevelBackupTitle' opc-tag-txt='{"tag":"PBB.SHOECONNECTED.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnAutoLevelBackup"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.SHOECONNECTED.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnAutoLevelBackup" opc-tag-txt='{"tag":"PBB.SHOECONNECTED.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Activated","bool_t":"Ready/OK"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnAutoLevelingTitle' opc-tag-txt='{"tag":"PBB.AUTOLEVELING.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnAutoLeveling"
+                                        opc-tag-bkg='
+                                                {"type":"group",
+                                                    "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                    "group":[
+                                                        {"tag":"PBB.AUTOLEVELING.Value","config":{"cls":"btnGreen"}}
+                                    ]
+                                }'>
+                                    <span id='spnAutoLeveling' opc-tag-txt='{"tag":"PBB.AUTOLEVELING.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Deactivated"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnCanopyTitle' opc-tag-txt='{"tag":"PBB.Warning.CANOPYDOWN.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnCanopy"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.Warning.CANOPYDOWN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnCanopy" opc-tag-txt='{"tag":"PBB.Warning.CANOPYDOWN.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Retracted","bool_t":"Extended"}}}'>Loading...</span>
+
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnGPUSTATUSSTitle' opc-tag-txt='{"tag":"GPU.GPUSTATUS.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnGPUSTATUSS"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"GPU.GPUSTATUS.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnGPUSTATUSS" opc-tag-txt='{"tag":"GPU.GPUSTATUS.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Retracted","bool_t":"Extended","string":"{0}"}}}'>Loading...</span>
+
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnLimitBypassPBTitle' opc-tag-txt='{"tag":"PBB.BYPASSPB.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnLimitBypassPB"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.BYPASSPB.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnLimitBypassPB' opc-tag-txt='{"tag":"PBB.BYPASSPB.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactive","bool_t":"Active","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnVerticalMvtTitle' opc-tag-txt='{"tag":"PBB.VERTUPOK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnVerticalMvtds"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.VERTUPOK.Value","config":{"cls":"btnGreen"}},
+                                                    {"tag":"PBB.VERTDNOK.Value","config":{"cls":"btnsBlue"}}
+                                                ]}'>
+                                    Loading..
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--<span id='spnHeightTitle' opc-tag-txt='{"tag":"PBB.HEIGHT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHeight"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.HEIGHT.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnHeight' opc-tag-txt='{"tag":"PBB.HEIGHT.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>--<span id='spnVertUpTitle' opc-tag-txt='{"tag":"PBB.VERTUPLIMDISP.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnVertUp"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.VERTUPLIMDISP.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnVertUp' opc-tag-txt='{"tag":"PBB.VERTUPLIMDISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>--<span id='spnVertDnTitle' opc-tag-txt='{"tag":"PBB.VERTDNLIMDISP.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnVertDn"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.VERTDNLIMDISP.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnVertDn' opc-tag-txt='{"tag":"PBB.VERTDNLIMDISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnHorizontalMvtTitle' opc-tag-txt='{"tag":"PBB.HORIZ_EXT_LIMIT_FLAG.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHorizontalMvt"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                { "config":{"cls":"btnGreen"}}
+                            ]
+                        }'>
+                                    Loading...
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnTunnelLengthTitle' opc-tag-txt='{"tag":"PBB.HORIZTODISP.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTunnelLength"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.HORIZTODISP.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnTunnelLength' opc-tag-txt='{"tag":"PBB.HORIZTODISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                            <td><span id='spnCableHoistTitle' opc-tag-txt='{"tag":"GPU.HZ400CABLEDEPLOYED.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnCableHoist"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"GPU.HZ400CABLEDEPLOYED.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnCableHoist' opc-tag-txt='{"tag":"GPU.HZ400CABLEDEPLOYED.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Ready/OK","bool_t":"Retracted"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>*@
+                        <tr>
+                            <td><span id='spnCabinFloorDeicerTitle' opc-tag-txt='{"tag":"PBB.CABFLOORDEICER.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnCabinFloorDeicer"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.CABFLOORDEICER.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnCabinFloorDeicer' opc-tag-txt='{"tag":"PBB.CABFLOORDEICER.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnTerminalDoorTitle' opc-tag-txt='{"tag":"PBB.TERMINALDOOR.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTerminalDoor"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.TERMINALDOOR.Value","config":{"cls":"btnGreen"}}
+                            ]
+                        }'>
+                                    <span id='spnTerminalDoor' opc-tag-txt='{"tag":"PBB.TERMINALDOOR.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Closed","bool_t":"Open"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnFloodLightTitle' opc-tag-txt='{"tag":"PBB.FLOODON.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFloodLight"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.FLOODON.Value","config":{"cls":"btnGreen"}}
+                            ]
+                        }'>
+                                    <span id='spnFloodLight' opc-tag-txt='{"tag":"PBB.FLOODON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnDockTimeTitle' opc-tag-txt='{"tag":"PBB.DOCKTIME.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnDockTime"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.DOCKTIME.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnDockTime' opc-tag-txt='{"tag":"PBB.DOCKTIME.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnUnDockTimeTitle' opc-tag-txt='{"tag":"PBB.UNDOCKTIME.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnUnDockTime"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.UNDOCKTIME.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnUnDockTime' opc-tag-txt='{"tag":"PBB.UNDOCKTIME.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnLastDockTimeTitle' opc-tag-txt='{"tag":"PBB.LASTDOCKTIME.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnLastDockTime"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.LASTDOCKTIME.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnLastDockTime' opc-tag-txt='{"tag":"PBB.LASTDOCKTIME.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnDailyAircraftDockTitle' opc-tag-txt='{"tag":"PBB.DAILYAIRCRAFTDOCKED.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnDailyAircraftDock"
+                                        opc-tag-bkg='
+                        {"type":"group",
+                            "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.DAILYAIRCRAFTDOCKED.Value","config":{"cls":"btnGray"}}
+                            ]
+                        }'>
+                                    <span id='spnDailyAircraftDock' opc-tag-txt='{"tag":"PBB.DAILYAIRCRAFTDOCKED.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnDistToParkTitle' opc-tag-txt='{"tag":"PBB.DISTTOPARK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnDistToPark"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.DISTTOPARK.Value","config":{"cls":"btnGray"}}
+                                                ]
+                                            }'>
+                                    <span id="spnDistToPark" opc-tag-txt='{"tag":"PBB.DISTTOPARK.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                            <td><span id='spnMainConControlTitle' opc-tag-txt='{"tag":"PBB.MAINCONCONTROL.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnMainConControl"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.MAINCONCONTROL.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnMainConControl' opc-tag-txt='{"tag":"PBB.MAINCONCONTROL.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnPCATitle' opc-tag-txt='{"tag":"PCA.PCAON.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPCA"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PCA.PCAON.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnPCA' opc-tag-txt='{"tag":"PCA.PCAON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnGPUTitle' opc-tag-txt='{"tag":"GPU.GPU28V.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnGPU"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"GPU.GPU28V.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnGPU' opc-tag-txt='{"tag":"GPU.GPU28V.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spn400HzInterlockTitle' opc-tag-txt='{"tag":"GPU.INTRLCK400HZ.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btn400HzInterlock"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"GPU.INTRLCK400HZ.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spn400HzInterlock' opc-tag-txt='{"tag":"GPU.INTRLCK400HZ.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnPCAInterlockTitle' opc-tag-txt='{"tag":"PCA.PCA_INTRLCK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPCAInterlock"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PCA.PCA_INTRLCK.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnPCAInterlock' opc-tag-txt='{"tag":"PCA.PCA_INTRLCK.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnLimitBypassPBTitle' opc-tag-txt='{"tag":"PBB.BYPASSPB.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnLimitBypassPB"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.BYPASSPB.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnLimitBypassPB' opc-tag-txt='{"tag":"PBB.BYPASSPB.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactive","bool_t":"Active","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnAutoLevelingTitle' opc-tag-txt='{"tag":"PBB.AUTOLEVELING.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnAutoLeveling"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.AUTOLEVELING.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id='spnAutoLeveling' opc-tag-txt='{"tag":"PBB.AUTOLEVELING.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnSmokeDetectorTitle' opc-tag-txt='{"tag":"PBB.SMOKEDETECTOR.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnSmokeDetector" opc-tag-bkg='{
+                                        "type":"group",
+                                        "all_f":{"cls":"btnGray"},
+                                        "bad_q":{"cls":"btnGray"},
+                                        "group":[{"tag":"PBB.SMOKEDETECTOR.Value","config":{"cls":"redFlashingBackground"}}]}'>
+                                    <span id='spnSmokeDetector' opc-tag-txt='{"tag":"PBB.SMOKEDETECTOR.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>*@
+                        
+
+                        @*<tr>
+                                <td><span id='spnGPUTitle' opc-tag-txt='{"tag":"GPU.GPU28V.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btnGPU"
+                                            opc-tag-bkg='
+                                                {"type":"group",
+                                                    "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                    "group":[
+                                                        {"tag":"GPU.GPU28V.Value","config":{"cls":"btnGreen"}}
+                                                    ]
+                                                }'>
+                                        <span id='spnGPU' opc-tag-txt='{"tag":"GPU.GPU28V.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On","string":"{0}"}}}'>Loading...</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span id='spn400HzInterlockTitle' opc-tag-txt='{"tag":"GPU.INTRLCK400HZ.Description"}'>Loading...</span></td>
+                                <td class="pointsTableDataCells">
+                                    <button id="btn400HzInterlock"
+                                            opc-tag-bkg='
+                                                {"type":"group",
+                                                    "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                    "group":[
+                                                        {"tag":"GPU.INTRLCK400HZ.Value","config":{"cls":"btnGreen"}}
+                                                    ]
+                                                }'>
+                                        <span id='spn400HzInterlock' opc-tag-txt='{"tag":"GPU.INTRLCK400HZ.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated","string":"{0}"}}}'>Loading...</span>
+                                    </button>
+                                </td>
+                            </tr>*@
+
+
+
+
+
+
+
+
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="btnAlarms" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                            "bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}}
+                            ]}' opc-tag-txt='{"tag":"PBB.Alarm._Count.Value","config":{"formats":{"bad_q":"Click here to view alarms (Bad Data)","string":"Alarms ({0})"}}}'>
+                         Alarms
+                    </button>
+                    <button id="btnWarnings" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                            "bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"PBB.Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                            ]}' opc-tag-txt='{"tag":"PBB.Warning._Count.Value","config":{"formats":{"bad_q":"Click here to view alarms (Bad Data)","string":"Warnings ({0})"}}}'>
+                        Warnings
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="gatesPageDividerRight">
+        <button id="pcaLinkButtonInGateScreen">PCA</button>
+        <button id="gpuLinkButtonInGateScreen">GPU</button>
+
+        
+
+            <div id="movementContainer">
+                @*<img id="imgHorizMovement" src="Content/Themes/JFK/ver%201.0.0/Images/DirectionalArrows/Moving-Arrow-NotReady-rev-1.00.gif" width="115" style="display:none;" />
+                    <img id="imgVertMovement" src="Content/Themes/JFK/Ver%201.0.0/Images/DirectionalArrows/UpDown-Arrow-NotReady-Rev-1.00.gif" width="75" />*@
+            </div>
+        
+            <table class="pointsTable" id="tblGatePoints">
+                <tr style="border:none"><td style="border:none">&nbsp;</td></tr>
+                <tr class="pointsTableRowHeader">
+                    <th class="pointsTableHeader">Point</th>
+                    <th class="pointsTableHeader">Value</th>
+                </tr>
+                @*<tr>
+                        <td>Movement</td>
+                        <td class="pointsTableDataCells"></td>
+                    </tr>*@
+                
+               
+
+                <tr>
+                    <td><span id='spnAudibleWarningTitle' opc-tag-txt='{"tag":"PBB.AUDIBLEWARNING.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnAudibleWarning"
+                                opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.AUDIBLEWARNING.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                            <span id="spnAudibleWarning" opc-tag-txt='{"tag":"PBB.AUDIBLEWARNING.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id='spnServiceDoorTitle' opc-tag-txt='{"tag":"PBB.SERVICEDOORINTRLCK.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnServiceDoor"
+                                opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.SERVICEDOORINTRLCK.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                            <span id="spnServiceDoor" opc-tag-txt='{"tag":"PBB.SERVICEDOORINTRLCK.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id='spnIrLeftTitle' opc-tag-txt='{"tag":"PBB.IRLEFTSLOWDOWN.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnIrLeft"
+                                opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.IRLEFTSLOWDOWN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                            <span id="spnIrLeft" opc-tag-txt='{"tag":"PBB.IRLEFTSLOWDOWN.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id='spnIrCenterTitle' opc-tag-txt='{"tag":"PBB.IRCENTERSLOWDOWN.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnIrCenter"
+                                opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.IRCENTERSLOWDOWN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                            <span id="spnIrCenter" opc-tag-txt='{"tag":"PBB.IRCENTERSLOWDOWN.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id='spnIrRightTitle' opc-tag-txt='{"tag":"PBB.IRRIGHTSLOWDOWN.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnIrRightt"
+                                opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"PBB.IRRIGHTSLOWDOWN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                            <span id="spnIrRight" opc-tag-txt='{"tag":"PBB.IRRIGHTSLOWDOWN.Value","config":{"formats":{"bad_q":"Bad Data","bool_t":"Activated","bool_f":"Ready/OK"}}}'>Loading...</span>
+                        </button>
+                    </td>
+                </tr>
+
+            </table>
+        <div id="imageinfoid">
+            <p id="cabangle">
+                <span id='cabangletitle' opc-tag-txt='{"tag":"PBB.CABANGLEDISP.Description"}'>Loading..</span>
+                <span id='cabangleval' opc-tag-txt='{"tag":"PBB.CABANGLEDISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+            <p id="slope">
+                <span id='slopetitle' opc-tag-txt='{"tag":"PBB.SLOPEDEG.Description"}'>Loading..</span>
+                <span id='slopeval' opc-tag-txt='{"tag":"PBB.SLOPEDEG.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+            <p id="bridge">
+                <span id='bridgerotationtitle' opc-tag-txt='{"tag":"PBB.SWINGANGLEDISP.Description"}'>Loading..</span>
+                <span id='bridgerotationval' opc-tag-txt='{"tag":"PBB.SWINGANGLEDISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+            <p id="heightofbridge">
+                <span id='heightofbridgetitle' opc-tag-txt='{"tag":"PBB.HEIGHTTODISP.Description"}'>Loading..</span>
+                <span id='heightofbridgeval' opc-tag-txt='{"tag":"PBB.HEIGHTTODISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+            <p id="wheelbogieangle">
+                <span id='wheelbogieangletitle' opc-tag-txt='{"tag":"PBB.WHEELANGLEDEG.Description"}'>Loading..</span>
+                <span id='wheelbogieangleval' opc-tag-txt='{"tag":"PBB.WHEELANGLEDEG.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+            <p id="extensionofbridge">
+                <span id='extensionofbridgetitle' opc-tag-txt='{"tag":"PBB.HORIZTODISP.Description"}'>Loading..</span>
+                <span id='extensionofbridgeval' opc-tag-txt='{"tag":"PBB.HORIZTODISP.Value","config":{"formats":{"bad_q":"Bad Data","float":"0.000","string":"{0}"},"offset":0}}'>Loading..</span>
+            </p>
+        </div>
+        
+    </div>
+</div>
+<div id="GateAlarmWindow">
+    <div id="GateAlarms"></div>
+
+</div>
+<div id="GateWarningWindow">
+    <div id="GateWarnings"></div>
+
+</div>
+

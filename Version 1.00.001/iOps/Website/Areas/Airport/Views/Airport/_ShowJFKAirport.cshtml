@@ -1,0 +1,192 @@
+﻿<script>
+    $(document).ready(function () {
+        $('#gateLinkid').css('visibility', 'hidden');
+        $("#AirportWindow").kendoWindow({
+            title: "JFK - Airport Termial 4 Overview",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false
+        })
+
+        //removes all buttons from kendo window
+        $('.k-window-titlebar').find('.k-window-actions').css('visibility', 'hidden');
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        var tags = [];
+        // set up gate prefix
+        $(document).ready(function () {
+            
+            OPC_config = {
+                token: '7e61b230-481d-4551-b24b-ba9046e3d8f2',
+                serverURL: 'http://10.28.100.3:58725',
+                tag_prefix: '\\\\10.28.100.3\\Airport.JFK.Term4.',
+                refresh_callback: opc_callback,
+                max_tags_per_msg: 20,
+                watch_tags: tags
+            }
+
+            tags.push("ZoneA1.GateA5.PBB.AUTOLEVELMODEFLAG.Value");                  // aircraft is docked
+            tags.push("ZoneA1.GateA5.PBB.AUTOLEVELKEY.Value");                  // show green
+            tags.push("ZoneA1.GateA5.PBB.Warning._HasAlarms.Value");            // show yellow
+            tags.push("ZoneA1.GateA5.PBB.AUTOLEVELLING.Value");                 // show orange
+            //tags.push("ZoneA1.GateA5.GPU.RVOUTAVG.Value");                 // show orange
+            tags.push("ZoneA1.GateA5.PBB.Alarm._HasAlarms.Value");                     // show red
+
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELMODEFLAG.Value");                  // aircraft is docked
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELKEY.Value");                  // show green
+            tags.push("ZoneB1.GateB25L1.PBB.Warning._HasAlarms.Value");            // show yellow
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELLING.Value");                 // show orange
+            //tags.push("ZoneB1.GateB25L1.GPU.RVOUTAVG.Value");                 // show orange
+            tags.push("ZoneB1.GateB25L1.PBB.Alarm._HasAlarms.Value");                     // show red
+
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELMODEFLAG.Value");                  // aircraft is docked
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELKEY.Value");                  // show green
+            tags.push("ZoneB1.GateB27.PBB.Warning._HasAlarms.Value");            // show yellow
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELLING.Value");                 // show orange
+           // tags.push("ZoneB1.GateB27.GPU.RVOUTAVG.Value");                 // show orange
+            tags.push("ZoneB1.GateB27.PBB.Alarm._HasAlarms.Value");                     // show red
+
+            OPC.init(); //required for ajax calls in OPC
+        });
+        
+    })
+
+    function CloseKendoAirport() {
+        if ($('#AirportWindow').is(':visible')) {
+            $('#AirportWindow').data('kendoWindow').destroy();
+        }
+    }
+
+    function GoZone(zoneNumber,icon) {
+        $.ajax({
+            url: 'Zones/Zones/ShowJFKZone',
+            type: "GET",
+            data: {
+                zoneNum: zoneNumber
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                CloseKendoAirport();
+                $('#main-body').html(data);
+                //ChangeIcons2(icon);
+                ChangeIcons(icon);
+            }
+        })
+    }
+
+    function GoZoneGate(zoneNumber, gateNumber,icon) {
+        $.ajax({
+            url: 'Gate/Gate/ShowGates',
+            type: "GET",
+            data: {
+                zoneNum: zoneNumber,
+                gateNum: gateNumber
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                CloseKendoAirport();
+                $('#main-body').html(data);
+                //ChangeIcons2(icon);
+                ChangeIcons(icon);
+            }
+        })
+    }
+
+    //function ChangeIcons2(iconNum) {
+    //    console.log("_ShowJFKAirport::ChangeIcons2(...) -> iconNum=" + iconNum);
+    //    for (var b = 1; b <= $('#txtScreenNumber').val() ; b++) {
+    //        $('.screen-icon1').removeClass('iconSelectedTop');
+    //        $('.screen-icon1').addClass('iconNormalTop');
+
+    //        if (b === iconNum) {
+    //            $('.screen-icon' + (b + 1)).removeClass('iconNormalBottom');
+    //            $('.screen-icon' + (b + 1)).addClass('iconSelectedBottom');
+    //        }
+    //        else {
+    //            $('.screen-icon' + (b + 1)).removeClass('iconSelectedBottom');
+    //            $('.screen-icon' + (b + 1)).addClass('iconNormalBottom');
+    //        }
+    //    }
+    //}
+
+</script>
+
+<input type="hidden" id="txtScreenNumber" value='@TempData["CIDMaxScreens"]' />
+<div id="AirportWindow" class="Window-Container Airport-Window">
+    <div id="gates_container">
+        <!-- terminal and gates -->
+        <img id="building" class="img" />
+        <!-- gate alarm color overlays  -->
+
+
+        <img id=gA5_ac class="img" style="display:none;" />
+        <img id=gA5_idle class="img status" style="display:none;" />
+        <img id=gA5_bq class="img status" style="display:none;" />
+        <img id=gA5_g class="img status" style="display:none;"  />
+        <img id=gA5_y class="img status" style="display:none;" />
+        <img id=gA5_o class="img status" style="display:none;" />
+        <img id=gA5_r class="img status" style="display:none;" />
+
+        <img id=gB25L1_ac class="img" style="display:none;" />
+        <img id=gB25L1_idle class="img status" style="display:none;" />
+        <img id=gB25L1_bq class="img status" style="display:none;" />
+        <img id=gB25L1_g class="img status" style="display:none;" />
+        <img id=gB25L1_y class="img status" style="display:none;" />
+        <img id=gB25L1_o class="img status" style="display:none;" />
+        <img id=gB25L1_r class="img status" style="display:none;" />
+
+        <img id=gB27_ac class="img" style="display:none;" />
+        <img id=gB27_idle class="img status" style="display:none;" />
+        <img id=gB27_bq class="img status" style="display:none;" />
+        <img id=gB27_g class="img status" style="display:none;" />
+        <img id=gB27_y class="img status" style="display:none;" />
+        <img id=gB27_o class="img status" style="display:none;" />
+        <img id=gB27_r class="img status" style="display:none;" />
+
+
+
+        <!-- gate links  -->
+        <div id="gateLinkid" >
+            <a id=gateA5 class="gate_link" onclick='GoZoneGate("A1","A5",5)'>Gate A5</a>
+            <a id=gateB25L1 class="gate_link" onclick='GoZoneGate("B1","B25L1",6)'>Gate B25L1</a>
+            <a id=gateB27 class="gate_link" onclick='GoZoneGate("B1","B27",7)'>Gate B27</a>
+            <!--Zone links-->
+            <a id=zoneA1 class="gate_link" onclick='GoZone("A1",1)'>Concourse A1</a>
+            <a id=zoneB1 class="gate_link" onclick='GoZone("B1",2)'>Concourse B1</a>
+            <a id=zoneB2 class="gate_link" onclick='GoZone("B2",3)'>Concourse B2</a>
+            <a id=zoneB3 class="gate_link" onclick='GoZone("B3",4)'>Concourse B3</a>
+        </div>
+
+            <!-- gate links  -->
+            @*@for (var a = 1; a <= (int)TempData["CIDMaxScreens"] - 1; a++)
+            {
+                <a id='gate@(a)' class="gate_link" onclick='GoGate(@(a))'>Gate @a</a>
+            }
+            <!--Zone links-->
+            @for (var a = 1; a <= (int)TempData["CIDMaxScreens"] - 1; a++)
+            {
+                <a id='zone@(a)' class="gate_link" onclick='GoZone(@(a))'>Zone @a</a>
+            }*@
+
+        </div>
+
+</div>
+
+

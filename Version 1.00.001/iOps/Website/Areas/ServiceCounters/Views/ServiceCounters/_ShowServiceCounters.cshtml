@@ -1,0 +1,166 @@
+﻿<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/OPCHTML/js/lib/jquery.numberformatter-1.2.3.min.js"></script>
+<script>
+    var tags = [];
+    $(document).ready(function () {
+        OPC.tags = [];
+        OPC_config.watch_tags = tags;
+        OPC_config.tag_prefix = 'Airport.SLL.Term1.Zone1.Gate' + '@TempData["GateNumber"]' + '.PBB.';
+        //OPC_config.refresh_callback = refresh_update;
+        OPC_config.watch_tags = tags;
+
+        tags.push("Vertical Movement Count.Value");
+        tags.push("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value");
+
+        buildServiceCounters();
+        OPC.init(); //re-initialize HTML HMI engine after updating prefix
+
+
+        $("#ServiceCountersWindow").kendoWindow({
+            title: "Gate @TempData["GateLabel"] - Service Counters",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('#ServiceCountersWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#ServiceCountersWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).attr('id', 'serviceCountersWindowLink' + index);
+        });
+
+        //up arrow (Airport screen)
+        $('#serviceCountersWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "1"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseKendoServiceCounters();
+                    $('#main-body').html(data);
+                }
+            });
+        })
+
+        $('#gateLinkButtonInServiceCountersScreen').click(function () {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate" })',
+                type: "GET",
+                data: {
+                    zoneNum: "1",
+                    gateNum: "@TempData["GateNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseKendoServiceCounters();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('.ResetButton').click(function (e) {
+            OPC.set_value(OPC.tag_prefix + $(this).attr('tagName') + ' Count Reset.Value', 'True');
+        })
+    });
+
+    function CloseKendoServiceCounters() {
+        if ($('#ServiceCountersWindow').is(':visible')) {
+            $('#ServiceCountersWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function buildServiceCounters() {
+        var counters = [
+            { tag: "E_Stop", label: "E-Stop", id: "E_Stop" },
+            { tag: "AutolevelModeflag", label: "Autolevel", id: "AutolevelModeflag" },
+            { tag: "ShoeConnected", label: "Autolevel (Backup)", id: "ShoeConnected" },
+            { tag: "CanopyDown", label: "Canopy", id: "CanopyDown" },
+            { tag: "Vertical Movement", label: "Vertical Movement", id: "VerticalMovement" },
+            { tag: "Horizontal Movement", label: "Horizontal Movement", id: "HorizontalMovement" },
+            { tag: "Front Swing Door", label: "Front Shutter / Doors", id: "FrontSwingDoor" },
+            { tag: "RoofTop AC", label: "Roof Top AC Units", id: "RoofTop_AC" },
+            { tag: "RemoteLightingInd", label: "Bridge Lighting", id: "RemoteLightingInd" },
+            { tag: "SmokeDetector", label: "Fire Alarm System", id: "SmokeDetector" },
+            { tag: "VDGSInterlock", label: "VDGS Interlock", id: "VDGSInterlock" },
+            { tag: "PCAir_Pit_Interlock", label: "PCA Pit", id: "PCAir_Pit_Interlock" },
+            { tag: "PCAir_Cntr_Pit_Interlock", label: "PCA Center Pit", id: "PCAir_Cntr_Pit_Interlock" },
+            { tag: "Hz400_Pit_Interlock", label: "400hz Pit", id: "Hz400_Pit_Interlock" },
+            { tag: "Hz400_Cntr_Pit_Interlock", label: "400hz Center Pit", id: "Hz400_Cntr_Pit_Interlock" }
+        ];
+
+        tbl = $("#tblPoints.tblServiceCounters");
+        for (var i = 0; i < counters.length; i++) {
+            var c = counters[i];
+            tags.push(c.tag + " Count Reset.Value");
+
+            tbl.append($("<tr><td>" + c.label + "</td>" +
+                            "<td id='" + c.id + "_count' opc-tag-txt='{\"tag\":\"" + c.tag + " Count.Value\", \"config\":{\"formats\":{\"float\":\"0.00\"}, \"bad_q\":\"Bad Data\"}}'>--</td>" +
+                            "<td id='" + c.id + "_ts' opc-tag-txt='{\"tag\":\"" + c.tag + " Count Reset Timestamp.Value\", \"config\":{\"bad_q\":\"Bad Data\"}}'>--</td>" +
+                            "<td id='" + c.id + "_btnWrapper' class=\"pointsTableDataCells\">" +
+                                "<button id=\"btn" + c.id + "\" class=\"ResetButton btn btnGray\" tagName=\"" + c.tag + "\" " + (@TempData["AuthLevel"] > 1 ? "" : "Disabled" ) + ">Reset</button>" +
+                            "</td></tr>"));
+
+            @*$('#btn' + c.id).css('enabled', (@TempData["AuthLevel"] > 1 ? "" : "Disabled" ));*@
+        }
+
+        $('#btnScResetAll').prop('disabled', (@TempData["AuthLevel"] > 1 ? false : true));
+        $("#btnScResetAll").click(function () {
+            for (var i = 0; i < counters.length; i++) {
+                var c = counters[i];
+                if (c.tag != '') { OPC.set_value(c.tag + ' Count Reset.Value', 'True'); }
+            }
+        });
+    }
+
+</script>
+
+<div id="ServiceCountersWindow" class="Window-Container ServiceCounters-Window">
+    <ul>
+        <li><a id="gateLink" class="hoverLinks" title="Go to Gate"></a></li>
+    </ul>
+    <div class="serviceCountersPageDividerLeft">
+        <table>
+            <tr>
+                <td>
+                    <table class="pointsTable tblServiceCounters" id="tblPoints">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader" style="text-align:left;">Point</th>
+                            <th class="pointsTableHeader" style="text-align:left;">Count</th>
+                            <th class="pointsTableHeader" style="text-align:left; white-space:nowrap;">Reset Date</th>
+                            <th class="pointsTableHeader" style="text-align:center;"><button id="btnScResetAll" class="btn btnGray">Reset ALL</button></th>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="serviceCountersPageDividerRight">
+            <button id="gateLinkButtonInServiceCountersScreen">Go to Gate</button>
+    </div> 
+</div>

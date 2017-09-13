@@ -1,0 +1,198 @@
+﻿#NetworkMonitorWindow #tblPoints .pointsTableRowHeader, #NetworkMonitorWindow #tblGatePoints .pointsTableRowHeader {
+    background-color: #e3e3e3;
+    color: #2e2e2e;
+    height: 30px;
+}
+
+#NetworkMonitorWindow #tblPoints .pointsTableHeader, #NetworkMonitorWindow #tblGatePoints .pointsTableHeader {
+    text-align: center;
+}
+
+#NetworkMonitorWindow #tblPoints {
+    border-collapse: collapse;
+    /*width: 500px;*/
+    opacity: .8
+}
+
+#NetworkMonitorWindow #tblGatePoints {
+    border-collapse: collapse;
+    width:435px;
+    opacity: .8;
+    margin: 52% 0 0 0
+}
+
+#NetworkMonitorWindow #tblPoints th,#NetworkMonitorWindow #tblPoints td,#NetworkMonitorWindow #tblGatePoints th, #NetworkMonitorWindow #tblGatePoints td {
+    border: 1px solid #c5c5c5;
+}
+
+
+#NetworkMonitorWindow .pointsTable tr:nth-child(even) {
+    background-color:#f5f5f5;
+}
+
+#NetworkMonitorWindow .pointsTable tr:nth-child(odd) {
+    background-color:#fff
+}
+
+#NetworkMonitorWindow .pointsTableDataCells {
+    text-align: center;
+    width: 231px;
+    font-weight:bold;
+    height: 25px;
+}
+
+div.k-widget.k-window.KendoWindowToTop {
+    z-index: 500 !important;
+}
+
+
+#NetworkMonitorWindow .btnRed {
+    -moz-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    -webkit-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #FEA1A1), color-stop(1, #B30602));
+    background: -moz-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -webkit-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -o-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -ms-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: linear-gradient(to bottom, #FEA1A1 10%, #B30602 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEA1A1', endColorstr='#B30602',GradientType=0);
+    background-color: transparent;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 47px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+#NetworkMonitorWindow .btnRed:active {
+    position:relative;
+    top:1px;
+}
+
+/* Red Button Layout */
+#NetworkMonitorWindow .btnGreen {
+    color: green;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+}
+
+#NetworkMonitorWindow .btnGreen:active {
+    position:relative;
+    top:1px;
+}
+
+/* Blue button Layout */
+#NetworkMonitorWindow .btnBlue {
+    -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+#NetworkMonitorWindow .btnBlue:active {
+    position:relative;
+    top:1px;
+}
+
+#NetworkMonitorWindow .btnsBlue {
+    color: blue;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+#NetworkMonitorWindow .btnsRed {
+    color: red;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+
+/* Gray Button Layout */
+#NetworkMonitorWindow .btnGray {
+   color: slategray;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+}
+
+#NetworkMonitorWindow .btnGray:active {
+    position:relative;
+    top:1px;
+}
+
+#NetworkMonitorWindow .redFlashingBackground {
+    background-image: url('Images/red-black-flashing-image.gif');
+    color: #FFF;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 16px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 200px;
+    height: 20px;
+}
+
+#NetworkMonitorWindow .yellowFlashingBackground {
+    background-image: url('Images/yellow-black-flashing-image.gif');
+    color: #3A3A12;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 16px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 200px;
+    height: 20px;
+}
+

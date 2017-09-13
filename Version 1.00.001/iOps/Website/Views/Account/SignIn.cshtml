@@ -1,0 +1,133 @@
+﻿@model SignInInput
+@{
+    ViewBag.Title = "SignIn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        debugger;
+        if ('@HttpContext.Current.User.Identity.IsAuthenticated' == 'True') {
+            window.location = location.protocol + '//' + location.host + '@Url.Action("SignOff","Account")';
+            return false;
+        }
+        $('#menuItemUserAdmin').css('display', 'none');
+        $("#menuItemRTUAutoOnSP").css('display', 'none');
+
+        $("#pageData").kendoWindow({
+            title: "Login",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false
+        });
+        //removes all buttons from kendo window
+        $('.k-window-titlebar').find('.k-window-actions').css('visibility', 'hidden');
+
+        //add tooltip to forgot button
+        $('#btnForgot').kendoTooltip({
+            height: 100,
+            width: 175,
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    })
+
+    // customize the _show method to call options.beforeShow
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+
+
+</script>
+<div id="pageData">
+    <div style="margin:auto;width:600px;">
+        @*@using (Html.BeginForm())
+            {
+                    @Html.EditorFor(o => o.Login)
+                    @Html.EditorFor(o => o.Password)
+                    @Html.EditorFor(o => o.Remember)
+                    <div class="efield">
+                        <div class="elabel">&nbsp;</div>
+                        <input type='submit' value='log in' />
+
+                    </div>
+            }*@
+        @using (Ajax.BeginForm("SignIn", "Account", new AjaxOptions { InsertionMode = InsertionMode.Replace, UpdateTargetId = "main-body", OnSuccess = "LoadScreenIconsAndWeather()" }))
+        {
+            <div style="width:100%; margin: 59px auto;text-align:center">
+                    <h2 class="signInHeader">Sign In</h2>
+                    @Html.EditorFor(o => o.Username)
+                    @Html.EditorFor(o => o.Password)
+                    @Html.EditorFor(o => o.Remember)<br />
+                <div style="width:110%"><input type="submit" value="Log In" id="btnSignIn" />&nbsp;<input id="btnForgot" value="I forgot my password" type="button" title="If you have forgot your password and need it reset, please contact your system administrator for assistance."/></div>
+            </div>
+        }
+        <script>
+            $('#btnForgot').click(function (e) {
+                e.preventDefault();
+            })
+
+            function LoadScreenIconsAndWeather() {
+                debugger;
+                $.ajax({
+                    url: '/ScreenIcon/GetScreenIcons',
+                    type: "GET",
+                    contentType: 'text/html',
+                    data: {
+                        clientName: "SLL"
+                    },
+                    success: function (data) {
+                        $('#tblScreenNav').html(data);
+                        //hide the link text for gate list and show the icons on startup on the slide-in-handle splitter column
+                        if ($('#slide-in-handle').is(':visible')) {
+                            $('[class^="screen-text"]').hide();
+                            //$('[class^="screen-icon"]').css('height', '25px');
+                        }
+                    }
+                });
+                $.ajax({
+                    url: '/Weather/GetWeatherData',
+                    type: "GET",
+                    contentType: 'text/html',
+                    data: {
+                        clientName: "SLL"
+                    },
+                    success: function (data) {
+                        $('#WeatherPlaceHolder').html(data);
+                    }
+                });
+            }
+        </script>
+
+        @Html.ValidationSummary(true)
+    </div>
+</div>

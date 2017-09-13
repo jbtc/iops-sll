@@ -1,0 +1,140 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "iOps 2014";
+}
+
+<body>
+    <div id="container">
+        <div id="win">
+            @Html.Partial("~/Views/RDU/Gates/_GatesJBT.cshtml")
+        </div>
+    </div>
+
+
+    <style>
+        #container {
+            /*border: 1px solid red;*/
+            width: 100%;
+            height: 100%;
+            /*z-index: 1;
+            position: relative;*/
+        }
+        #win {
+            /*height: 100%;
+            width: 100%;*/
+            /*position: relative;
+            z-index: 1;*/
+        }
+    </style>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#win").kendoWindow({
+            draggable: false,
+            modal: false,
+            resizable: false,
+            height: '825px',
+            width: '86%',
+            title: "Gate 001",
+            actions: ["Custom", "Pin", "Refresh"]
+        }).data("kendoWindow").wrapper.find(".k-i-custom").click(function (e) {
+            alert("Custom action button clicked");
+            e.preventDefault();
+        }).data("kendoWindow").wrapper.find(".k-i-pin").click(function (e) {
+            alert("Pinned action button clicked");
+            e.preventDefault();
+        });
+
+        $("#win").data("kendoWindow").dragging._draggable.bind("drag", function (e) {
+
+	        var wnd = $("#win").data("kendoWindow");
+            var position = wnd.wrapper.position();
+            alert("Dragging");
+            if (wnd.options.pinned)
+            {
+                alert('pinned');
+                return;
+            }
+            var minT = 0;
+            var minL = 0;
+            //Get the Window width and height and
+            //place them in position of the hard-coded width and height
+            var curT = wnd.wrapper.top();
+            var curL = $("#container").left();
+            var maxT = $("#container").height() - wnd.wrapper.height();
+            var maxL = $("#container").width() - wnd.wrapper.width();
+
+            if (position.left < curL) {
+                coordinates = { left: minL + curL };
+                $(wnd.wrapper).css(coordinates);
+            }
+
+            if (position.top < minT) {
+                coordinates = { top: minT };
+                $(wnd.wrapper).css(coordinates);
+            }
+
+            if (position.left > maxL + curL) {
+                coordinates = { left: maxL + curL };
+                $(wnd.wrapper).css(coordinates);
+            }
+
+            if (position.top > maxT) {
+                coordinates = { top: maxT };
+                $(wnd.wrapper).css(coordinates);
+            }
+        });
+
+      $("#win").data("kendoWindow").bind("resize", function (e) {
+        var wnd = $("#win").data("kendoWindow");
+          var position = wnd.wrapper.position();
+
+          var minT = 0;
+          var minL = 0;
+          //Get the Window width and height and
+          //place them in position of the hard-coded width and height
+          var maxT = $("#container").height() - wnd.wrapper.height();
+          var maxL = $("#container").width() - wnd.wrapper.width();
+          alert("Resizing");
+          if(wnd.wrapper.height() >= $("#container").height() && wnd.wrapper.width()>= $("#container").width())
+          {
+            coordinates = { left: 0 };
+            $(wnd.wrapper).css(coordinates);
+            coordinates = { top: 0 };
+            $(wnd.wrapper).css(coordinates);
+					  wnd.wrapper.height($("#container").height());
+					  wnd.wrapper.width($("#container").width());
+          }
+        else
+        {
+            coordinates = { left: 5 };
+            $(wnd.wrapper).css(coordinates);
+            coordinates = { top: 5 };
+            $(wnd.wrapper).css(coordinates);
+					  wnd.wrapper.height($("#container").height()*.5);
+					  wnd.wrapper.width($("#container").width()*.5);
+        }
+          /*
+          if (position.left < minL) {
+            coordinates = { left: minL };
+            $(wnd.wrapper).css(coordinates);
+          }
+
+          if (position.top < minT) {
+            coordinates = { top: minT };
+            $(wnd.wrapper).css(coordinates);
+          }
+
+          if (position.left > maxL) {
+            coordinates = { left: maxL };
+            $(wnd.wrapper).css(coordinates);
+          }
+
+          if (position.top > maxT) {
+            coordinates = { top: maxT };
+            $(wnd.wrapper).css(coordinates);
+          }
+					*/
+        });
+    })
+    </script>
+</body>

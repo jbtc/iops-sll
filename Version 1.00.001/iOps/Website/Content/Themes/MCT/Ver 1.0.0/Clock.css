@@ -1,0 +1,106 @@
+﻿/*  iOps Ver 1.0.0 - Clock.css styleSheet
+    Purpose: Contains the styles for this themes Clock 
+    Author: Crane Whitehead
+    
+    History
+    ---------------------------------------------------------------------------
+    CSW  09-17-2014 - Added for MVC5 and better use of HTML5
+     
+*/
+.Clock-Time-Layout {
+    align-self: flex-start;
+    text-align: center;
+    color: #2B2B2B;
+    font-size: 18px;
+    height: 100%;
+    width: 100%;
+    padding: 10px 40px 10px 0px;
+    border-left: 1px dotted #D9D9D9;
+}
+.Clock-Date-Layout {
+    align-self: flex-end;
+    /*text-shadow: 0 0 5px #00c6ff;*/
+    width: 100%;
+    color: #2B2B2B;
+    font-size: 12px;
+    margin: 0px 15px;
+    padding-top: 5px;
+}
+.Clock-Time-Layout ul {
+    border-bottom: 1px solid #2B2B2B;
+    margin: 0px 15px;
+    height: 50%;
+    width: 100%;
+}
+.Clock-Time-Layout ul li {
+     display: inline;
+    /*text-shadow: 0 0 5px #00c6ff;*/
+}
+
+.Clock-Point {
+    position: relative;
+    -moz-animation: myBlink 1s ease infinite;
+    -webkit-animation: myBlink 1s ease infinite;
+}
+
+/* Clock part ID's for special case formatting such as not displaying seconds */
+#Clock-Hours {
+    margin: -5px;
+}
+#Clock-PntMin {
+}
+#Clock-Min {
+    margin: -5px;
+}
+#Clock-PntSec {
+    display:none;
+}
+#Clock-Sec {
+    margin: -5px;
+    display:none;
+}
+#Clock-AmPm {
+    padding-left:3px;
+    font-size:.5em;
+}
+#Clock-TimeZone {
+    display:none;
+}
+#Clock-DST {
+    display:none;
+}
+
+/* Simple Blink Animation */
+@-webkit-keyframes myBlink {
+    0% {
+        opacity: 1.0;
+        text-shadow: 0 0 20px #00c6ff;
+    }
+
+    50% {
+        opacity: 0;
+        text-shadow: none;
+    }
+
+    100% {
+        opacity: 1.0;
+        text-shadow: 0 0 20px #00c6ff;
+    }	
+}
+
+@-moz-keyframes myBlink {
+    0% {
+        opacity: 1.0;
+        text-shadow: 0 0 20px #00c6ff;
+    }
+
+    50% {
+        opacity: 0;
+        text-shadow: none;
+    }
+
+    100% {
+        opacity: 1.0;
+        text-shadow: 0 0 20px #00c6ff;
+    }
+}

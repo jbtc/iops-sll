@@ -1,0 +1,38 @@
+﻿/*  iOps Main Site Stylesheet 
+    Author: Crane Whitehead
+    
+    History
+    ---------------------------------------------------------------------------
+    CSW  08-10-2014 - Initial Release
+    CSW  09-17-2014 - Changed header and footer from <div id="..."> to 
+                      <header> / <footer> tags and separated into thier own
+                      selectors
+     
+*/
+
+
+
+
+/* Footer Appearance Overrides */
+footer
+{
+    color: #555;
+    border-top: 1px solid lightgray;
+    text-shadow: 0 1px 0 white;
+    background-color: #FFFFFC;
+    -moz-box-shadow: inset 0 0 1px #fff;
+    -ms-box-shadow: inset 0 0 1px #fff;
+    -webkit-box-shadow: inset 0 0 1px white;
+    box-shadow: inset 0 0 1px white;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#FFFFFF,EndColorStr=#FFFFFC);
+    background-image: -webkit-linear-gradient(top, #FFFFFF 30%, #FFFFFC 100%); 
+    background-image: -moz-linear-gradient(top, #FFFFFF, #FFFFFC);
+    background-image: -ms-linear-gradient(top, #FFFFFF, #FFFFFC);
+    background-image: -o-linear-gradient(top, #FFFFFF, #FFFFFC);
+    background-image: linear-gradient(top, #FFFFFF, #FFFFFC);
+    -moz-user-select: none;
+    -webkit-user-select: none;
+   border-top: 1px solid lightgray;
+    padding: 10px;
+}
+

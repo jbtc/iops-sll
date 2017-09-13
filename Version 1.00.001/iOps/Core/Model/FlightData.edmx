@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="iOPCOmanDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ACPositions">
+          <Key>
+            <PropertyRef Name="AircraftType" />
+          </Key>
+          <Property Name="AircraftType" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="IATACode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DoorPosition" Type="nvarchar" MaxLength="255" />
+          <Property Name="AC_Door_AVG_HT" Type="float" />
+          <Property Name="AC_DRIVE_COL_HT" Type="float" />
+        </EntityType>
+        <EntityType Name="ACSpecifications">
+          <Key>
+            <PropertyRef Name="IATACode" />
+            <PropertyRef Name="ACType" />
+            <PropertyRef Name="AircraftType" />
+          </Key>
+          <Property Name="IATACode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ACType" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AircraftType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="MaxDoorSillHeight" Type="varchar" MaxLength="50" />
+          <Property Name="MinDoorSillHeight" Type="varchar" MaxLength="50" />
+          <Property Name="MinDoorSillHeight2" Type="varchar" MaxLength="50" />
+          <Property Name="NoseToNose" Type="varchar" MaxLength="50" />
+          <Property Name="NoseToDoor" Type="varchar" MaxLength="50" />
+          <Property Name="CLToSill" Type="varchar" MaxLength="50" />
+          <Property Name="WingSpan" Type="varchar" MaxLength="50" />
+          <Property Name="OverallLength" Type="varchar" MaxLength="50" />
+          <Property Name="DoorSillAngle" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Flights">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TimeStamp" Type="datetime" />
+          <Property Name="AircraftType" Type="nchar" MaxLength="10" />
+          <Property Name="AircraftSubType" Type="nchar" MaxLength="10" />
+          <Property Name="Airline" Type="nchar" MaxLength="10" />
+          <Property Name="FlightNumber" Type="nchar" MaxLength="10" />
+          <Property Name="ArrivalAirport" Type="nchar" MaxLength="10" />
+          <Property Name="DepartureAirport" Type="nchar" MaxLength="10" />
+          <Property Name="OnBoardActualTime" Type="datetime" />
+          <Property Name="OnBoardScheduledTime" Type="datetime" />
+          <Property Name="OnBoardEstimatedTime" Type="datetime" />
+          <Property Name="OnBoardTouchDownTime" Type="datetime" />
+          <Property Name="PassengerGate" Type="nchar" MaxLength="10" />
+          <Property Name="ParkingPosition" Type="nchar" MaxLength="10" />
+          <Property Name="BridgeUpdateDateTime" Type="datetime" />
+          <Property Name="DoorPosition" Type="nvarchar" MaxLength="255" />
+          <Property Name="AC_Door_AVG_HT" Type="float" />
+          <Property Name="AC_DRIVE_COL_HT" Type="float" />
+          <Property Name="RTUOnIndicator" Type="bit" Nullable="false" />
+          <Property Name="RTURemoteCntrl" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="iOPCOmanDBModelStoreContainer">
+          <EntitySet Name="ACPositions" EntityType="Self.ACPositions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ACSpecifications" EntityType="Self.ACSpecifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flights" EntityType="Self.Flights" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="iOPCOmanDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ACPosition">
+          <Key>
+            <PropertyRef Name="AircraftType" />
+          </Key>
+          <Property Name="AircraftType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IATACode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DoorPosition" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AC_Door_AVG_HT" Type="Double" />
+          <Property Name="AC_DRIVE_COL_HT" Type="Double" />
+        </EntityType>
+        <EntityType Name="Flight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimeStamp" Type="DateTime" Precision="3" />
+          <Property Name="AircraftType" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="AircraftSubType" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Airline" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="FlightNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="ArrivalAirport" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="DepartureAirport" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="OnBoardActualTime" Type="DateTime" Precision="3" />
+          <Property Name="OnBoardScheduledTime" Type="DateTime" Precision="3" />
+          <Property Name="OnBoardEstimatedTime" Type="DateTime" Precision="3" />
+          <Property Name="OnBoardTouchDownTime" Type="DateTime" Precision="3" />
+          <Property Name="PassengerGate" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="ParkingPosition" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="BridgeUpdateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="DoorPosition" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AC_Door_AVG_HT" Type="Double" />
+          <Property Name="AC_DRIVE_COL_HT" Type="Double" />
+          <Property Name="RTUOnIndicator" Type="Boolean" Nullable="false" />
+          <Property Name="RTURemoteCntrl" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="iOPCOmanDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ACPositions" EntityType="Self.ACPosition" />
+          <EntitySet Name="Flights" EntityType="Self.Flight" />
+          <EntitySet Name="ACSpecifications" EntityType="iOPCOmanDBModel.ACSpecification" />
+        </EntityContainer>
+        <EntityType Name="ACSpecification">
+          <Key>
+            <PropertyRef Name="IATACode" />
+            <PropertyRef Name="ACType" />
+            <PropertyRef Name="AircraftType" />
+          </Key>
+          <Property Name="IATACode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ACType" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AircraftType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaxDoorSillHeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MinDoorSillHeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MinDoorSillHeight2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NoseToNose" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NoseToDoor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CLToSill" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WingSpan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OverallLength" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DoorSillAngle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="iOPCOmanDBModelStoreContainer" CdmEntityContainer="iOPCOmanDBEntities">
+          <EntitySetMapping Name="ACPositions">
+            <EntityTypeMapping TypeName="iOPCOmanDBModel.ACPosition">
+              <MappingFragment StoreEntitySet="ACPositions">
+                <ScalarProperty Name="AircraftType" ColumnName="AircraftType" />
+                <ScalarProperty Name="IATACode" ColumnName="IATACode" />
+                <ScalarProperty Name="DoorPosition" ColumnName="DoorPosition" />
+                <ScalarProperty Name="AC_Door_AVG_HT" ColumnName="AC_Door_AVG_HT" />
+                <ScalarProperty Name="AC_DRIVE_COL_HT" ColumnName="AC_DRIVE_COL_HT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flights">
+            <EntityTypeMapping TypeName="iOPCOmanDBModel.Flight">
+              <MappingFragment StoreEntitySet="Flights">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="AircraftType" ColumnName="AircraftType" />
+                <ScalarProperty Name="AircraftSubType" ColumnName="AircraftSubType" />
+                <ScalarProperty Name="Airline" ColumnName="Airline" />
+                <ScalarProperty Name="FlightNumber" ColumnName="FlightNumber" />
+                <ScalarProperty Name="ArrivalAirport" ColumnName="ArrivalAirport" />
+                <ScalarProperty Name="DepartureAirport" ColumnName="DepartureAirport" />
+                <ScalarProperty Name="OnBoardActualTime" ColumnName="OnBoardActualTime" />
+                <ScalarProperty Name="OnBoardScheduledTime" ColumnName="OnBoardScheduledTime" />
+                <ScalarProperty Name="OnBoardEstimatedTime" ColumnName="OnBoardEstimatedTime" />
+                <ScalarProperty Name="OnBoardTouchDownTime" ColumnName="OnBoardTouchDownTime" />
+                <ScalarProperty Name="PassengerGate" ColumnName="PassengerGate" />
+                <ScalarProperty Name="ParkingPosition" ColumnName="ParkingPosition" />
+                <ScalarProperty Name="BridgeUpdateDateTime" ColumnName="BridgeUpdateDateTime" />
+                <ScalarProperty Name="DoorPosition" ColumnName="DoorPosition" />
+                <ScalarProperty Name="AC_Door_AVG_HT" ColumnName="AC_Door_AVG_HT" />
+                <ScalarProperty Name="AC_DRIVE_COL_HT" ColumnName="AC_DRIVE_COL_HT" />
+                <ScalarProperty Name="RTUOnIndicator" ColumnName="RTUOnIndicator" />
+                <ScalarProperty Name="RTURemoteCntrl" ColumnName="RTURemoteCntrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ACSpecifications">
+            <EntityTypeMapping TypeName="iOPCOmanDBModel.ACSpecification">
+              <MappingFragment StoreEntitySet="ACSpecifications">
+                <ScalarProperty Name="DoorSillAngle" ColumnName="DoorSillAngle" />
+                <ScalarProperty Name="OverallLength" ColumnName="OverallLength" />
+                <ScalarProperty Name="WingSpan" ColumnName="WingSpan" />
+                <ScalarProperty Name="CLToSill" ColumnName="CLToSill" />
+                <ScalarProperty Name="NoseToDoor" ColumnName="NoseToDoor" />
+                <ScalarProperty Name="NoseToNose" ColumnName="NoseToNose" />
+                <ScalarProperty Name="MinDoorSillHeight2" ColumnName="MinDoorSillHeight2" />
+                <ScalarProperty Name="MinDoorSillHeight" ColumnName="MinDoorSillHeight" />
+                <ScalarProperty Name="MaxDoorSillHeight" ColumnName="MaxDoorSillHeight" />
+                <ScalarProperty Name="AircraftType" ColumnName="AircraftType" />
+                <ScalarProperty Name="ACType" ColumnName="ACType" />
+                <ScalarProperty Name="IATACode" ColumnName="IATACode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

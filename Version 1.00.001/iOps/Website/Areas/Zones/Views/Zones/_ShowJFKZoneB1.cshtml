@@ -1,0 +1,367 @@
+﻿<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/OPCHTML/js/lib/jquery.numberformatter-1.2.3.min.js"></script>
+<script>
+
+    function get_value(tag) {
+        var tagTemp = tag + (tag.endsWith(".Value") ? "" : ".Value");
+        if (!OPC.tags[tagTemp.replace(".Value", "")].props["Value"].quality) {
+            return null;
+        }
+        return OPC.get_value(tagTemp);
+    }
+    function get_bool(tag) {
+        var tagTemp = tag + (tag.endsWith(".Value") ? "" : ".Value");
+        if (!OPC.tags[tagTemp.replace(".Value", "")].props["Value"].quality) {
+            return null;
+        }
+        var b = OPC.get_value(tagTemp);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    // display plane and color overlay for gate based on tags
+    function check_gate_images(zone, gate) {
+        var pre = OPC_config.tag_prefix + "Zone" + zone + "." + "Gate" + gate + ".";
+        var show_ac = get_bool(pre + "PBB.AUTOLEVELMODEFLAG.Value") && get_bool(pre + "PBB.AUTOLEVELKEY.Value");          // aircraft is docked
+        var show_nc = false;              // show Not Connected (still need to determine how to define this logically)
+        var show_g = get_bool(pre + "PBB.AUTOLEVELKEY.Value") || get_bool(pre + "PBB.OPERATEKEY.Value");              // show green
+        //var show_y = get_bool(pre + "PBB.Warning._HasWarnings.Value");        // show yellow
+        var show_o = get_bool(pre + "PBB.AUTOLEVELING.Value");                // show orange
+        //var show_r = get_bool(pre + "PBB.Alarm._HasAlarms.Value");              // show red
+
+        //$("#g" + gate + "_r").toggle(false);
+        //$("#g" + gate + "_y").toggle(false);
+        $("#g" + gate + "_o").toggle(false);
+        $("#g" + gate + "_g").toggle(false);
+        $("#g" + gate + "_idle").toggle(false);
+        $("#g" + gate + "_bq").toggle(false);
+        $("#g" + gate + "_nc").toggle(true);
+
+        if (show_ac != null && show_nc != null && show_g != null && show_o != null) {  // removed csw20160211:  && show_r != null && show_y != null
+            $("#g" + gate + "_ac").toggle(show_ac);
+            $("#g" + gate + "_nc").toggle(false);
+            switch (true) {
+                //case show_r:
+                //    $("#g" + gate + "_r").toggle(true);
+                //    break;
+                //case show_y:
+                //    $("#g" + gate + "_y").toggle(true);
+                //    break;
+                case show_o:
+                    $("#g" + gate + "_o").toggle(true);
+                    break;
+                case show_g:
+                    $("#g" + gate + "_g").toggle(true);
+                    break;
+                case show_nc:
+                    break;
+                default:
+                    $("#g" + gate + "_idle").toggle(true);
+                    break;
+            }
+        }
+        else {
+            $("#g" + gate + "_nc").toggle(false);
+            $("#g" + gate + "_bq").toggle(true);
+        }
+    }
+
+    function opc_ZoneB1_callback(data) {
+        // run thru all the gates updating images
+        @*for (var i=0; i<@TempData["CIDMaxScreens"]; i++) {
+            check_gate_images(i+1);
+        }*@
+        $('#gateLinkid').css('visibility', 'visible');
+        check_gate_images("B1", "B25L1");
+        check_gate_images("B1", "B27");
+    }
+
+    $(document).ready(function () {
+        $('#gateLinkid').css('visibility', 'hidden');
+        $("#ZonesWindow").kendoWindow({
+            title: "JFK Terminal 4 Concourse B Overview",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom", "Custom", "Custom"]
+        })
+
+
+        //deletes all kendo window action buttons
+        //$('#GateWindow').parent().find('.k-window-action').css('visibility', 'hidden');
+
+        //removes the default custom icon for the kendo window
+        $('#ZonesWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#ZonesWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            //alert($(this).attr('class'));
+            $(this).attr('id', 'zoneWindowLink' + index);
+        });
+
+        //left arrow(Previous zone screen)
+        $('#zoneWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowJFKZone", "Zones", new { area = "Zones" })',
+                type: "GET",
+                data: {
+                    zoneNum: "A1",
+                },
+                contentType: 'text/html',
+                success: function (data) {
+
+                    CloseKendoZone();
+                    $('#main-body').html(data);
+                    //ChangeIcons2(2);
+                    ChangeIcons(2);
+                }
+            });
+        });
+
+        //up arrow (Airport screen)
+        $('#zoneWindowLink1').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowAirport", "Airport", new { area = "Airport" })',
+                type: "GET",
+                data: {
+                    clientName: "JFK",
+                    numberOfScreens: $('#txtScreenNumber').val()
+                },
+                contentType: 'text/html',
+                success: function (data) {
+
+                    CloseKendoZone();
+                    $('#main-body').html(data);
+                    //ChangeIcons2(1);
+                    ChangeIcons(1);
+                }
+            });
+        });
+
+        //right arrow(Next Zone screen)
+        $('#zoneWindowLink2').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowJFKZone", "Zones", new { area = "Zones" })',
+                type: "GET",
+                data: {
+                    zoneNum: "B2",
+                },
+                contentType: 'text/html',
+                success: function (data) {
+
+                    CloseKendoZone();
+                    $('#main-body').html(data);
+                    //ChangeIcons2(4);
+                    ChangeIcons(4);
+                }
+            });
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        // set up gate prefix
+        $(document).ready(function () {
+            var tags = [];
+            // set up moitoring of AC and Gate tags, and firing callback on data refresh
+            OPC.tags = [];
+            OPC_config.watch_tags = [];
+            OPC_config.tag_prefix = "Airport." + "@TempData["ClientAbbr"]" + ".Term4.";
+            OPC_config.refresh_callback = opc_ZoneB1_callback;
+            OPC_config.watch_tags = tags;
+            OPC_config.alarm_bindings = [
+                {
+                    alarmid: "ZoneB1Alarms",
+                    callback: updateZoneB1Alarms,
+                    showInfo: false,
+                    showHistory: false,
+                    showSearch: false,
+                    height: 200,
+                    filter: {
+                        alarmtypes: ["Digital"],
+                        alarmgroups: ["B25L1_PBB_ALARMS", "B27_PBB_ALARMS", "B25L1_GPU_ALARMS", "B27_GPU_ALARMS"]
+                    },
+                    columns: [
+                        { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                        { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                        { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                        { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                        { name: "Text", text: "Text", type: "string", visible: true },
+                        { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                        { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                    ]
+                },{
+                    alarmid: "ZoneB1MasterAlarms",
+                    callback: updateMasterZoneB1Alarms,
+                    showInfo: false,
+                    showHistory: false,
+                    showSearch: false,
+                    height: 200,
+                    filter: {
+                        alarmtypes: ["Digital"],
+                        alarmgroups: ["A5_PBB_ALARMS", "B25L1_PBB_ALARMS", "B27_PBB_ALARMS", "A5_GPU_ALARMS", "B25L1_GPU_ALARMS", "B27_GPU_ALARMS", "A5_PBB_WARNINGS", "B25L1_PBB_WARNINGS", "B27_PBB_WARNINGS", "A5_GPU_WARNINGS", "B25L1_GPU_WARNINGS", "B27_GPU_WARNINGS"]
+                    },
+                    columns: [
+                        { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                        { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                        { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                        { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                        { name: "Text", text: "Text", type: "string", visible: true },
+                        { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                        { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                    ]
+                }
+            ];
+
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELMODEFLAG.Value");                  // aircraft is docked
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELKEY.Value");                  // show green
+            tags.push("ZoneB1.GateB25L1.PBB.AUTOLEVELING.Value");                 // show orange
+            tags.push("ZoneB1.GateB25L1.PBB.OPERATEKEY.Value");                  // show green
+
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELMODEFLAG.Value");                  // aircraft is docked
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELKEY.Value");                  // show green
+            tags.push("ZoneB1.GateB27.PBB.AUTOLEVELING.Value");                 // show orange
+            tags.push("ZoneB1.GateB27.PBB.OPERATEKEY.Value");                  // show green
+
+            OPC.init();
+
+        });
+
+    })
+
+
+
+    function CloseKendoZone() {
+        if ($('#ZonesWindow').is(':visible')) {
+            $('#ZonesWindow').data('kendoWindow').destroy();
+        }
+    }
+
+    function GoGate(zoneNumber, gateNumber, icon) {
+
+        $.ajax({
+            url: 'Gate/Gate/ShowGates',
+            type: "GET",
+            data: {
+                zoneNum: zoneNumber,
+                gateNum: gateNumber
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                CloseKendoZone();
+                $('#main-body').html(data);
+                //ChangeIcons2(icon);
+                ChangeIcons(icon);
+            }
+        })
+    }
+
+    function updateMasterZoneB1Alarms() {
+        var PriorityCol = -1;
+        var alarmCnt = 0;
+        var warningCnt = 0;
+        PriorityCol = $('#ZoneB1MasterAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#ZoneB1MasterAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    alarmCnt = (cellData == 100) ? alarmCnt + 1 : alarmCnt;
+                    warningCnt = (cellData == 0) ? warningCnt + 1 : warningCnt;
+                }
+            });
+        }
+        $("#MasterAlarmCount").html(alarmCnt + " Active<br /> Alarms");
+        $("#MasterWarningCount").html(warningCnt + " Active<br /> Warnings");
+    };
+
+
+    function updateZoneB1Alarms() {
+        var PriorityCol = -1;
+        var TextCol = -1;
+        var alarmB25L1 = false;
+        var alarmB27 = false;
+
+        PriorityCol = $('#ZoneB1AlarmWindow th:contains("Priority")').index();
+        TextCol = $('#ZoneB1AlarmWindow th:contains("Text")').index();
+        if (PriorityCol > -1) {
+            $('#ZoneB1AlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    var cellTextData = $(this).find('td').eq(TextCol)[0].innerText;
+                    alarmB25L1 = (alarmB25L1 || cellTextData.indexOf("B25L1") >= 0) ? true : false;
+                    alarmB27 = (alarmB27 || cellTextData.indexOf("B27") >= 0) ? true : false;
+                    $('#ZoneB1AlarmWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        $("#gB25L1_r").toggle(alarmB25L1);
+        $("#gB27_r").toggle(alarmB27);
+    };
+
+
+</script>
+
+<input type="hidden" id="txtScreenNumber" value='@TempData["CIDMaxScreens"]' />
+<div id="ZonesWindow" class="Window-Container Zones-Window">
+    <div id="zones_container">
+        <!-- terminal and gates -->
+        <img id="ZoneB1" class="img" />
+        <!-- gate alarm color overlays  -->
+        <img id=gB25L1_ac class="img" style="display:none;" />
+        <img id=gB25L1_idle class="img status" style="display:none;" />
+        <img id=gB25L1_bq class="img status" style="display:none;" />
+        <img id=gB25L1_g class="img status" style="display:none;" />
+        @*<img id=gB25L1_y class="img status" style="display:none;" />*@
+        <img id=gB25L1_o class="img status" style="display:none;" />
+        <img id=gB25L1_r class="img status" style="display:none;" />
+
+        <img id=gB27_ac class="img" style="display:none;" />
+        <img id=gB27_idle class="img status" style="display:none;" />
+        <img id=gB27_bq class="img status" style="display:none;" />
+        <img id=gB27_g class="img status" style="display:none;" />
+        @*<img id=gB27_y class="img status" style="display:none;" />*@
+        <img id=gB27_o class="img status" style="display:none;" />
+        <img id=gB27_r class="img status" style="display:none;" />
+        <!-- gate links  -->
+        <div id="gateLinkid">
+            <a id=gateB25L1 class="gate_link" onclick='GoGate("B1","B25L1",7)'>Gate B25L1</a>
+            <a id=gateB27 class="gate_link" onclick='GoGate("B1","B27",8)'>Gate B27</a>
+        </div>
+    </div>
+    <div id="ZoneB1AlarmWindow">
+        <div id="ZoneB1Alarms"></div>
+
+    </div>
+
+</div>
+<div id="ZoneB1MasterAlarmWindow" style="display: none">
+    <div id="ZoneB1MasterAlarms"></div>
+
+</div>

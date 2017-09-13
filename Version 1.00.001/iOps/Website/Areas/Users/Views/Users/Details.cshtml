@@ -1,0 +1,214 @@
+﻿@model iOps.Core.Model.User
+
+<script>
+    // Ajax enable row Delete Buttons
+    $(".Ajaxify").each(function (intIndex) {
+        $(this).bind("click", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    $('#UserAdminData').html(data);
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        // Add User Tooltip
+        $('.hasTooltip').kendoTooltip({
+            position: "center",
+            'text-indent': '-1000em',
+            width: 120,
+            position: 'top',
+            beforeShow: function (e) {
+                if (!$('#showTooltips').is(":checked")) {
+                    e.preventDefault();
+                }
+            },
+            show: function () {
+                this.refresh();
+            }
+        });
+    });
+
+    // customize the _show method to call options.beforeShow 
+    // to allow preventing the tooltip from being shown..
+    kendo.ui.Tooltip.fn._show = function (show) {
+        return function (target) {
+            var e = {
+                sender: this,
+                target: target,
+                preventDefault: function () {
+                    this.isDefaultPrevented = true;
+                }
+            };
+
+            if (typeof this.options.beforeShow === "function") {
+                this.options.beforeShow.call(this, e);
+            }
+            if (!e.isDefaultPrevented) {
+                // only show the tooltip if preventDefault() wasn't called..
+                show.call(this, target);
+            }
+        };
+    }(kendo.ui.Tooltip.fn._show);
+
+
+
+</script>
+
+<h2>User Details - @Html.DisplayFor(model => model.Username)</h2>
+
+<div id="UserAdmin-Container">
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PasswordDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PasswordDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Approved)
+        </dt>
+
+        <dd>
+            @Html.CheckBoxFor(model => model.Approved.Value, new { @onclick = "return false" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+
+        <dd>
+            @Html.CheckBoxFor(model => model.Active.Value, new { @onclick = "return false" })
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SecurityGroups)
+        </dt>
+        <dd>
+            @Html.ListBoxFor(model => model.SecurityGroups, new SelectList(Model.SecurityGroups, "ID", "Name"))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SecurityRoles)
+        </dt>
+        <dd>
+            @Html.ListBoxFor(model => model.SecurityRoles, new SelectList(Model.SecurityRoles, "ID", "Name"))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SecurityTasks)
+        </dt>
+        <dd>
+            @Html.ListBoxFor(model => model.SecurityTasks, new SelectList(Model.SecurityTasks, "ID", "Name"))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Salutation.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Salutation.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MiddleInitial)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MiddleInitial)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.JobTitle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.JobTitle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Department)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HireDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HireDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </dt>
+
+        <dd>
+            @Html.CheckBoxFor(model => model.IsDeleted, new { @onclick = "return false" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReadyForArchive)
+        </dt>
+
+        <dd>
+            @Html.CheckBoxFor(model => model.ReadyForArchive, new { @onclick = "return false" })
+        </dd>
+
+    </dl>
+    <div id="Navigation-Buttons">
+        <p>
+            <input type="button" class="BackToList Ajaxify hasTooltip" value="Back to List" title="Go back to the user list" href='@Url.Action("Index", "Users", new { area = "Users" })' />&nbsp;&nbsp;
+            <input type="button" class="UserEditButton Ajaxify hasTooltip" value="Edit User" title="Edit the current user" href='@Url.Action("Edit", "Users", new { area = "Users", id = Model.ID })' />&nbsp;&nbsp;
+            <input type="button" class="UserDeleteButton Ajaxify hasTooltip" value="Delete User" title="Delete the current user" href='@Url.Action("Delete", "Users", new { area = "Users", id = Model.ID })' />
+        </p>
+    </div>
+</div>

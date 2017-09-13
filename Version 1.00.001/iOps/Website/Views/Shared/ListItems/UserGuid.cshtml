@@ -1,0 +1,31 @@
+@model IEnumerable<User>
+@foreach (var o in Model)
+{
+    <tr id='user@(o.ID)' data-val="@o.ID" class="awe-li">
+        <td>
+            @o.Username
+        </td>
+        <td>@(string.Join(",", o.SecurityGroups.Select(r => r.Name)))
+        </td>
+        <td>@(string.Join(",", o.SecurityRoles.Select(r => r.Name)))
+        </td>
+        <td>@(string.Join(",", o.UsersXrefScreens.Select(r => r.Screen.Name)))
+        </td>
+        <td>
+            <button class="awe-btn" onclick="@(Url.Awe().PopupFormAction().Url(Url.Action("Edit", "User", new { o.ID })).Success("edit").Height(300))">
+                <span class="ico-edit"></span>
+
+            </button>
+        </td>
+        <td>
+            <button class="awe-btn" onclick="@(Url.Awe().PopupFormAction().Url(Url.Action("ChangePassword", "User", new { o.ID })).Success("passchanged").Height(250))">
+                password</button>            
+        </td>
+        <td>
+            @Html.Partial("deletebtnGuid", new GuidDelBtn{ ID = o.ID, IsDeleted = o.IsDeleted, Controller = "User" })
+        </td>
+        <td>
+            @o.ControlFields.IsDeleted
+        </td>
+    </tr>
+}

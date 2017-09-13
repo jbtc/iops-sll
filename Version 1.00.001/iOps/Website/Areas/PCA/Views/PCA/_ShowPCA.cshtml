@@ -1,0 +1,832 @@
+﻿<script>
+    var tags = [];
+    $(document).ready(function () {
+        OPC.tags = [];
+        OPC_config.watch_tags = [];
+        OPC_config.tag_prefix = 'Airport.SLL.Term1.Zone1.GateC' + '@TempData["GateNumber"]' + '.PCA.';
+        OPC_config.refresh_callback = refresh_update;
+        OPC_config.watch_tags = tags;
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "PCAAlarms",
+                callback: update_alarms,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                //networkNodes: ["RemoteSCADAHosting.localhost.RemoteSCADAHost.Airport-CID"],
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["C" + "@TempData["GateNumber"]" + "_PCA_ALARMS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "PCAWarnings",
+                callback: update_warnings,
+                showInfo: true,
+                showHistory: false,
+                pagination: true,
+                pageLength: 10,
+                //networkNodes: ["RemoteSCADAHosting.localhost.RemoteSCADAHost.Airport-CID"],
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["C" + "@TempData["GateNumber"]" + "_PCA_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            }
+        ];
+
+        tags.push("TEMPDISCH.Value");                  // aircraft is docked
+        tags.push("TEMPAMB.Value");                  // show green
+        tags.push("TEMPCABIN.Value");            // show yellow
+        tags.push("PRESSSUCSEC1.Value");                 // show orange
+        tags.push("PRESSSUCSEC2.Value");                 // show orange
+        tags.push("PRESSSUCPRI1.Value");                 // show orange
+        tags.push("PRESSHEADPRI1.Value");                     // show red
+        tags.push("PRESSHEADSEC1.Value");                     // show red
+        tags.push("PRESSHEADSEC2.Value");                     // show red
+
+        //OPC.toggle_refresh(true);
+        OPC.init(); //required for ajax calls in OPC
+
+        //Setup the main Kendo Window inside splitter-main
+        $("#PCAWindow").kendoWindow({
+            title: "Gate @TempData["GateNumber"] - PCA",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom", "Custom", "Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('#PCAWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('#PCAWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+            $(this).attr('id', 'pcaWindowLink' + index);
+        });
+
+        //left arrow click (go to GPU)
+        $('#pcaWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    ClosePCAAlarmWindow();
+                    ClosePCAWarningWindow();
+                    CloseKendoPCA();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        //up arrow (go back to the Gates screen)
+        //by default, user will be shown gate 1 (get clarified)
+        $('#pcaWindowLink1').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate" })',
+                type: "GET",
+                data: {
+                    gateNum: "@TempData["GateNumber"]",
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    ClosePCAAlarmWindow();
+                    ClosePCAWarningWindow();
+                    CloseKendoPCA();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('#gateLinkButtonInPCAScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates","Gate",new {area = "Gate"})',
+                type: "GET",
+                data: {
+                    gateNum: '@TempData["GateNumber"]',
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    ClosePCAAlarmWindow();
+                    ClosePCAWarningWindow();
+                    CloseKendoPCA();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        $('#gpuLinkButtonInPCAScreen').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+                type: "GET",
+                data: {
+                    gateNum: '@TempData["GateNumber"]',
+                    zoneNum: "@TempData["ZoneNumber"]"
+                },
+                contentType: 'text/html',
+                success: function (data) {
+                    ClosePCAAlarmWindow();
+                    ClosePCAWarningWindow();
+                    CloseKendoPCA();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+        var pcaAlarmWindow = $('#PCAAlarmWindow');
+        if (!pcaAlarmWindow.data('kendoWindow')) {
+            pcaAlarmWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] - PCA Alarms',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+        $('#btnAlarms').click(function () {
+            $('#PCAAlarmWindow').data('kendoWindow').open();
+            $('#PCAAlarmWindow').closest(".k-window").css({ top: 90, left: 250 });
+        })
+
+        var pcaWarningWindow = $('#PCAWarningWindow');
+        if (!pcaWarningWindow.data('kendoWindow')) {
+            pcaWarningWindow.kendoWindow({
+                width: 'auto',
+                height: 'auto',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] - PCA Warnings',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                },
+            })
+        }
+
+        $('#btnWarnings').click(function () {
+            $('#PCAWarningWindow').data('kendoWindow').open();
+            $('#PCAWarningWindow').closest(".k-window").css({ top: 90, left: 250 });
+        })
+        createGauges();
+    });
+
+    function CloseKendoPCA() {
+
+        if ($('#PCAWindow').is(':visible')) {
+            $('#PCAWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function ClosePCAAlarmWindow() {
+        $('#PCAAlarmWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    function ClosePCAWarningWindow() {
+        $('#PCAWarningWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    function get_value(tag) {
+        return OPC.get_value(tag);
+        //return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+    function get_bool(tag) {
+        var b = OPC.get_value(tag);
+        //var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    function Update_Tagged_Controls() {
+        var pre = OPC_config.tag_prefix;
+        var gauge = $("#gaugeAMBTEMP").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "TEMPAMB.Value")));
+
+        gauge = $("#gaugeDISCHTEMP").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "TEMPDISCH.Value")));
+
+        gauge = $("#gaugeCABINTEMP").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "TEMPCABIN.Value")));
+    }
+
+    function update_alarms() {
+        var PriorityCol = -1;
+        PriorityCol = $('#PCAAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#PCAAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $('#PCAAlarmWindow').find('td').eq(PriorityCol)[0].innerText;
+                $('#PCAAlarmWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow").addClass("HideAlarm");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function update_warnings() {
+        var PriorityCol = -1;
+        PriorityCol = $('#PCAWarningWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#PCAWarningWindow tr').not('thead tr').each(function (idx, row) {
+                var cellData = $('#PCAWarningWindow').find('td').eq(PriorityCol)[0].innerText;
+                $('#PCAWarningWindow th:contains("Priority")').hide();
+                $(this).find('td').eq(PriorityCol).hide();
+                switch (cellData) {
+                    case '0':
+                        $(this).addClass("WarningRow");
+                        break;
+                    case '100':
+                        $(this).addClass("AlarmRow").addClass("HideAlarm");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    };
+
+    function refresh_update(data) {
+        Update_Tagged_Controls();
+    }
+
+    function createGauges() {
+        $("#gaugeAMBTEMP").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }],
+            scale: {
+                min: -20,
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 120,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: -20,
+                        to: 0,
+                        color: "#c20000"
+                    }, {
+                        from: 0,
+                        to: 40,
+                        color: "#ffd400"
+                    }, {
+                        from: 40,
+                        to: 70,
+                        color: "#00c000"
+                    }, {
+                        from: 70,
+                        to: 100,
+                        color: "#ffd400"
+                    }, {
+                        from: 100,
+                        to: 120,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugeDISCHTEMP").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }],
+            scale: {
+                min: -20,
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 120,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: -20,
+                        to: 0,
+                        color: "#c20000"
+                    }, {
+                        from: 0,
+                        to: 40,
+                        color: "#ffd400"
+                    }, {
+                        from: 40,
+                        to: 70,
+                        color: "#00c000"
+                    }, {
+                        from: 70,
+                        to: 100,
+                        color: "#ffd400"
+                    }, {
+                        from: 100,
+                        to: 120,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugeCABINTEMP").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }],
+            scale: {
+                min: -20,
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 120,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: -20,
+                        to: 0,
+                        color: "#c20000"
+                    }, {
+                        from: 0,
+                        to: 40,
+                        color: "#ffd400"
+                    }, {
+                        from: 40,
+                        to: 70,
+                        color: "#00c000"
+                    }, {
+                        from: 70,
+                        to: 100,
+                        color: "#ffd400"
+                    }, {
+                        from: 100,
+                        to: 120,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+    }
+</script>
+
+<div id="PCAWindow" class="Window-Container PCA-Window">
+    <div class="pcaPageDividerLeft">
+        <table class="pointsTable" id="tblPointsLeft">
+            <tr class="pointsTableRowHeader">
+                <th class="pointsTableHeader">Point</th>
+                <th class="pointsTableHeader">Value</th>
+            </tr>
+            <tr>
+                <td><span id="spnPCAONTitle" opc-tag-txt='{"tag":"PCAON.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPCAON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCAON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPCAON" opc-tag-txt='{"tag":"PCAON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id='spnMODEOFOPERATIONTitle' opc-tag-txt='{"tag":"MODEOFOPERATION.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnMODEOFOPERATION"
+                            opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"MODEOFOPERATION.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                        <span id="spnMODEOFOPERATION" opc-tag-txt='{"tag":"MODEOFOPERATION.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id='spnAIRCRAFTSELECTIONTitle' opc-tag-txt='{"tag":"AIRCRAFTSELECTION.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnAIRCRAFTSELECTION"
+                            opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"AIRCRAFTSELECTION.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                        <span id="spnAIRCRAFTSELECTION" opc-tag-txt='{"tag":"AIRCRAFTSELECTION.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id='spnTEMPAMBTitle' opc-tag-txt='{"tag":"TEMPAMB.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnTEMPAMB"
+                            opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPAMB.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                        <span id="spnTEMPAMB" opc-tag-txt='{"tag":"TEMPAMB.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id='spnTEMPDISCHTitle' opc-tag-txt='{"tag":"TEMPDISCH.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnTEMPDISCH"
+                            opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPDISCH.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                        <span id="spnTEMPDISCH" opc-tag-txt='{"tag":"TEMPDISCH.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id='spnTEMPCABINTitle' opc-tag-txt='{"tag":"TEMPCABIN.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnTEMPCABIN"
+                            opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPCABIN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                        <span id="spnTEMPCABIN" opc-tag-txt='{"tag":"TEMPCABIN.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSHEADPRI1Title" opc-tag-txt='{"tag":"PRESSHEADPRI1.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSHEADPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI" opc-tag-txt='{"tag":"PRESSHEADPRI1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSSUCPRI1Title" opc-tag-txt='{"tag":"PRESSSUCPRI1.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSSUCPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI1" opc-tag-txt='{"tag":"PRESSSUCPRI1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSHEADPRI2Title" opc-tag-txt='{"tag":"PRESSHEADPRI2.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSHEADPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI2" opc-tag-txt='{"tag":"PRESSHEADPRI2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSSUCPRI2Title" opc-tag-txt='{"tag":"PRESSSUCPRI2.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSSUCPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI2" opc-tag-txt='{"tag":"PRESSSUCPRI2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSHEADSEC1Title" opc-tag-txt='{"tag":"PRESSHEADSEC1.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSHEADSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC1" opc-tag-txt='{"tag":"PRESSHEADSEC1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSSUCSEC1Title" opc-tag-txt='{"tag":"PRESSSUCSEC1.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSSUCSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC1" opc-tag-txt='{"tag":"PRESSSUCSEC1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnPRESSHEADSEC2Title" opc-tag-txt='{"tag":"PRESSHEADSEC2.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPRESSHEADSEC2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC2" opc-tag-txt='{"tag":"PRESSHEADSEC2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnFANCONDFRONTPRITitle" opc-tag-txt='{"tag":"FANCONDFRONTPRI.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnFANCONDFRONTPRI" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDFRONTPRI.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDFRONTPRI" opc-tag-txt='{"tag":"FANCONDFRONTPRI.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnFANCONDREARPRITitle" opc-tag-txt='{"tag":"FANCONDREARPRI.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnFANCONDREARPRI" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDREARPRI.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDREARPRI" opc-tag-txt='{"tag":"FANCONDREARPRI.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnFANCONDFRONTSECTitle" opc-tag-txt='{"tag":"FANCONDFRONTSEC.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnFANCONDFRONTSEC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDFRONTSEC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDFRONTSEC" opc-tag-txt='{"tag":"FANCONDFRONTSEC.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnFANCONDREARSECTitle" opc-tag-txt='{"tag":"FANCONDREARSEC.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnFANCONDREARSEC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDREARSEC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDREARSEC" opc-tag-txt='{"tag":"FANCONDREARSEC.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+
+            @*<tr>
+                    <td><span id="spnBRIDGEAIRONTitle" opc-tag-txt='{"tag":"BRIDGEAIRON.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnBRIDGEAIRON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BRIDGEAIRON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBRIDGEAIRON" opc-tag-txt='{"tag":"BRIDGEAIRON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnBRIDGEAIRONTitle" opc-tag-txt='{"tag":"BRIDGEAIRON.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnBRIDGEAIRON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BRIDGEAIRON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBRIDGEAIRON" opc-tag-txt='{"tag":"BRIDGEAIRON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPCA_INTRLCKTitle" opc-tag-txt='{"tag":"PCA_INTRLCK.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPCA_INTRLCK" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCA_INTRLCK.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPCA_INTRLCK" opc-tag-txt='{"tag":"PCA_INTRLCK.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated"}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+            @*<tr>
+                    <td><span id="spnHEAT1Title" opc-tag-txt='{"tag":"HEAT1.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnHEAT1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT1" opc-tag-txt='{"tag":"HEAT1.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnHEAT2Title" opc-tag-txt='{"tag":"HEAT2.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnHEAT2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT2" opc-tag-txt='{"tag":"HEAT2.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnHEAT3Title" opc-tag-txt='{"tag":"HEAT3.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnHEAT3" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT3.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT3" opc-tag-txt='{"tag":"HEAT3.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnHEAT4Title" opc-tag-txt='{"tag":"HEAT4.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnHEAT4" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT4.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT4" opc-tag-txt='{"tag":"HEAT4.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+            @*<tr>
+                    <td><span id="spnHEAT5Title" opc-tag-txt='{"tag":"HEAT5.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnHEAT5" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT5.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT5" opc-tag-txt='{"tag":"HEAT5.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+
+            <tr>
+                <td><span id="spnPUMPCONDTitle" opc-tag-txt='{"tag":"PUMPCOND.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnPUMPCOND" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PUMPCOND.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPUMPCOND" opc-tag-txt='{"tag":"PUMPCOND.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnBLOWERTitle" opc-tag-txt='{"tag":"BLOWER.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnBLOWER" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BLOWER.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBLOWER" opc-tag-txt='{"tag":"BLOWER.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="spnMODEOVERNIGHTTitle" opc-tag-txt='{"tag":"MODEOVERNIGHT.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnMODEOVERNIGHT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"MODEOVERNIGHT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnMODEOVERNIGHT" opc-tag-txt='{"tag":"MODEOVERNIGHT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            @*<tr>
+                    <td><span id="spnPRESSHEADPRI2Title" opc-tag-txt='{"tag":"PRESSHEADPRI2.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSHEADPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI2" opc-tag-txt='{"tag":"PRESSHEADPRI2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr id="rowALMPRESSHEADSEC2Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSHEADSEC2.Value","config":{"bad_q":true,"trigger":"on_true"}}'>
+                    <td><span id="spnALMPRESSHEADSEC2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSHEADSEC2.Description"}'>Loading...</span></td>
+                    <td>
+                        <div id="divALMPRESSHEADSEC2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSHEADSEC2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSSUCPRI2Title" opc-tag-txt='{"tag":"PRESSSUCPRI2.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSSUCPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI2" opc-tag-txt='{"tag":"PRESSSUCPRI2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSSUCSEC2Title" opc-tag-txt='{"tag":"PRESSSUCSEC2.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSSUCSEC2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC2" opc-tag-txt='{"tag":"PRESSSUCSEC2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnMODEACFTTitle" opc-tag-txt='{"tag":"MODEACFT.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnMODEACFT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"MODEACFT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnMODEACFT" opc-tag-txt='{"tag":"MODEACFT.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRECOOLPBTitle" opc-tag-txt='{"tag":"PRECOOLPB.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRECOOLPB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT5.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRECOOLPB" opc-tag-txt='{"tag":"HEAT5.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnFORCEDAIRHEATTitle" opc-tag-txt='{"tag":"FORCEDAIRHEAT.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnFORCEDAIRHEAT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FORCEDAIRHEAT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFORCEDAIRHEAT" opc-tag-txt='{"tag":"FORCEDAIRHEAT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSSUCSEC1Title" opc-tag-txt='{"tag":"PRESSSUCSEC1.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSSUCSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC1" opc-tag-txt='{"tag":"PRESSSUCSEC1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSSUCPRI1Title" opc-tag-txt='{"tag":"PRESSSUCPRI1.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSSUCPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI1" opc-tag-txt='{"tag":"PRESSSUCPRI1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSHEADPRI1Title" opc-tag-txt='{"tag":"PRESSHEADPRI1.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSHEADPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI1" opc-tag-txt='{"tag":"PRESSHEADPRI1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnPRESSHEADSEC1Title" opc-tag-txt='{"tag":"PRESSHEADSEC1.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPRESSHEADSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC1" opc-tag-txt='{"tag":"PRESSHEADSEC1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+            <tr>
+                <td><span id="spnDIRTYFILTERTitle" opc-tag-txt='{"tag":"DIRTYFILTER.Description"}'>Loading...</span></td>
+                <td class="pointsTableDataCells">
+                    <button id="btnDIRTYFILTER" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGreen"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"DIRTYFILTER.Value","config":{"cls":"btnRed"}}]}'><span id="spnDIRTYFILTER" opc-tag-txt='{"tag":"DIRTYFILTER.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"OK","bool_t":"Clean Filter","float":"0.000","int":"0","string":"{0}"}}}'>Loading...</span></button>
+                </td>
+            </tr>
+            @*<tr>
+                    <td><span id="spnPCAMAINTTitle" opc-tag-txt='{"tag":"PCAMAINT.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnPCAMAINT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCAMAINT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBLOPCAMAINTWER" opc-tag-txt='{"tag":"PCAMAINT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"False","bool_t":""}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+            @*<tr>
+                    <td><span id="spnTEMPDISCHTitle" opc-tag-txt='{"tag":"TEMPDISCH.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnTEMPDISCH" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPDISCH.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPDISCH" opc-tag-txt='{"tag":"TEMPDISCH.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnTEMPAMBTitle" opc-tag-txt='{"tag":"TEMPAMB.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnTEMPAMB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPAMB.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPAMB" opc-tag-txt='{"tag":"TEMPAMB.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span id="spnTEMPCABINTitle" opc-tag-txt='{"tag":"TEMPCABIN.Description"}'>Loading...</span></td>
+                    <td class="pointsTableDataCells">
+                        <button id="btnTEMPCABIN" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPCABIN.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPCABIN" opc-tag-txt='{"tag":"TEMPCABIN.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                    </td>
+                </tr>*@
+
+        </table>
+        <table class="pointsTable" id="tblPointsRight">
+            <tr class="pointsTableRowHeader">
+                <th class="pointsTableHeader">Ambient Tempurature</th>
+                <th class="pointsTableHeader">Discharge Temperature</th>
+                <th class="pointsTableHeader">Cabin Temperature</th>
+            </tr>
+            <tr>
+                <td>
+                    <div id="gaugeTEMP-container" class="gauge-container">
+                        <div id="gaugeAMBTEMP" class="gauge"></div>
+                        <span id="spnGUAGETEMPAMB" class="SegmentDisplay" opc-tag-txt='{"tag":"TEMPAMB.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </div>
+                </td>
+                <td>
+                    <div id="gaugePRESSSUC-container" class="gauge-container">
+                        <div id="gaugeDISCHTEMP" class="gauge"></div>
+                        <span id="spnGUAGETEMPDISCH" class="SegmentDisplay" opc-tag-txt='{"tag":"TEMPDISCH.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </div>
+                </td>
+                <td>
+                    <div id="gaugePRESSHEAD-container" class="gauge-container">
+                        <div id="gaugeCABINTEMP" class="gauge"></div>
+                        <span id="spnGUAGETEMPCABIN" class="SegmentDisplay" opc-tag-txt='{"tag":"TEMPCABIN.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+        @*<button id="btnAlarms" opc-tag-bkg='{
+                    "type":"group",
+                    "all_f":{"cls":"btnInvisible"},
+                    "bad_q":{"cls":"btnGray"},
+                    "group":[
+                        {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}},
+                        {"tag":"Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                    ]}'>
+                Alarms
+            </button>*@
+        <button id="btnAlarms" opc-tag-bkg='{
+                    "type":"group",
+                    "all_f":{"cls":"btnInvisible"},
+                    "bad_q":{"cls":"btnGray"},
+                    "group":[
+                        {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}}
+                    ]}' opc-tag-txt='{"tag":"Alarm._Count.Value","config":{"formats":{"bad_q":"Alarms (Bad Data)","string":"Alarms ({0})"}}}'>
+            Alarms
+        </button>
+        <button id="btnWarnings" opc-tag-bkg='{
+                    "type":"group",
+                    "all_f":{"cls":"btnInvisible"},
+                    "bad_q":{"cls":"btnGray"},
+                    "group":[
+                        {"tag":"Warning._HasWarnings.Value","config": {"cls":"yellowFlashingBackground"}}
+                    ]}' opc-tag-txt='{"tag":"Warning._Count.Value","config":{"formats":{"bad_q":"Warnings (Bad Data)","string":"Warnings ({0})"}}}'>
+            Warnings
+        </button>
+    </div>
+    <div class="pcaPageDividerRight">
+        <button id="gateLinkButtonInPCAScreen">Go to Gate</button>
+        <button id="gpuLinkButtonInPCAScreen">Go to GPU</button>
+    </div>
+    <div id="PCAAlarmWindow">
+        <div id="PCAAlarms"></div>
+
+    </div>
+    <div id="PCAWarningWindow">
+        <div id="PCAWarnings"></div>
+    </div>
+</div>

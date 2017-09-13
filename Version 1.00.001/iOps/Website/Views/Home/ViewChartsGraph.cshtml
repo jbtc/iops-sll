@@ -1,0 +1,31 @@
+﻿@{
+
+    var db = new iOps.Core.Model.SLL_IOPS_ReportingEntities();
+    var dateStart = DateTime.Now.Date;
+    var dateEnd = DateTime.Now.AddDays(+1).Date;
+    var dbData1 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate1A") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData2 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate1B") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData3 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate2A") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData4 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate2B") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData5 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate3A") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData6 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate3B") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData7 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate4A") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+    var dbData8 = db.SLL_PBB_AlarmLogging.Where(w => w.Gate.Equals("Gate4B") && (w.AlarmDateTime >= dateStart && w.AlarmDateTime < dateEnd)).Count();
+
+    var myChart = new System.Web.Helpers.Chart(width: 700, height: 500, theme: ChartTheme.Blue);
+
+    //myChart.AddTitle("Gate Utilization");
+    //  myChart.AddSeries(chartType: "Pie",
+    //xValue: dbData, xField: "CityName",
+    //yValues: dbData, yFields: "TemperatureMax")
+    //myChart.DataBindTable(dataSource: dbData, xField: "Gate");
+    myChart.AddSeries(
+            //chartType: "Pie",
+            xField: "Gates",
+            yFields: "Utilized",
+            xValue: new[] { "Gate1A", "Gate1B", "Gate2A", "Gate2B", "Gate3A", "Gate3B", "Gate4A", "Gate4B" },
+            yValues: new[] { dbData1, dbData2, dbData3, dbData4, dbData5, dbData6, dbData7, dbData8 }
+            );
+
+    myChart.Write();
+}

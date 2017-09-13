@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f8c461ab4c7e4358b61de6a3c8081521" Name="Diagram1">
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_1A_DockTime" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_1A_UnDockTime" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_1B_DockTime" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_1B_UnDockTime" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_2A_DockTime" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_2A_UnDockTime" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_2B_DockTime" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_2B_UnDockTime" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_3A_DockTime" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_3A_UnDockTime" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_3B_DockTime" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_3B_UnDockTime" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_4A_DockTime" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_4A_UnDockTime" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_4B_DockTime" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_4B_UnDockTime" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_Network_Monitoring_Bool" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_AlarmLogging" Width="1.5" PointX="4.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_WarningLogging" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_DockTime_DataLogging" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_UnDockTime_DataLogging" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_DataLogging" Width="1.5" PointX="11.375" PointY="3.75" />
+        <EntityTypeShape EntityType="SLL_Airport_SCADAEntities.SLL_PBB_DailyAircraftDocked" Width="1.5" PointX="11.375" PointY="6.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,33 @@
+﻿.form-table tr td, .dl-horizontal dt dd {
+    padding: 5px 0px;
+    margin: 0px;
+}
+
+.col-md-10 .efield {
+    margin: 0px;
+    padding: 0px;
+    
+}
+.col-md-10 .efield .elabel {
+    display: none;
+}
+
+.col-md-10 .checkbox .efield .einput {
+    margin: 0px 0px 15px 20px;
+}
+
+.col-md-10 input[type="text"], input[type="password"], select {
+  border: 1px solid #aaa !important;
+  font-size: 13px;
+  border-radius: 2px;
+}
+.required:after
+{
+   content: "*";
+   font-weight: bold;
+   color: red;
+ }
+
+#GridUsers .k-grid-content {
+    height: 700px !important;
+}

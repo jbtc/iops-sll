@@ -1,0 +1,280 @@
+﻿/*  iOps Ver 1.0.0 - Layout.css styleSheet
+    Purpose: Contains the main styles for this themes 
+    Author: Crane Whitehead
+    
+    History
+    ---------------------------------------------------------------------------
+    CSW  08-10-2014 - Initial Release
+    CSW  09-17-2014 - Revised for MVC5 and better use of HTML5
+     
+*/
+
+#main {
+    height: 890px;
+    min-height: 800px !important;
+}
+
+#splitter {
+    height: 100%;
+}
+
+    #splitter > .splitter-main .main-body {
+        margin-left: 40px;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+    }
+
+    #splitter > .k-splitbar .k-icon.k-collapse-prev {
+        background: url(Images/Yellow-Arrow-Left.png);
+        height: 48px;
+        width: 12px;
+        z-index: 2000;
+        margin: -12px;
+        background-repeat: no-repeat;
+        background-size: 12px 48px;
+        background-position: center center;
+    }
+
+    #splitter > .k-splitbar .k-icon.k-expand-prev {
+        background: url(Images/Yellow-Arrow-Right.png);
+        height: 47px;
+        width: 12px;
+        z-index: 2000;
+        margin: -1px;
+        background-repeat: no-repeat;
+        background-size: 12px 48px;
+        background-position: left center;
+    }
+
+    #splitter > .k-splitbar.k-splitbar-horizontal {
+        width: 0px; /*specify the width of the horizontal splitbar*/
+    }
+
+    #splitter > .k-splitbar-vertical {
+        height: 0px; /*specify the height of the vertical splitbar*/
+    }
+
+    #splitter > .splitter-stats {
+        background-color: #668165;
+    }
+
+        #splitter > .splitter-stats .stats-001 {
+            padding-top: 5px;
+            color: #ffffff;
+            text-align: center;
+            font-style: italic;
+            font-size: 28px;
+            font-family: serif;
+        }
+
+#myModal {
+    display: none;
+    visibility: hidden;
+}
+
+#myModal1 {
+    display: none;
+    visibility: hidden;
+}
+
+#slide-in-wrapper {
+    border-right-style: solid;
+    border-right-color: rgb(191, 191, 191);
+    background-color: rgb(102, 129, 101);
+    width: 40px;
+    height: 100%;
+    background-position: 50px 5px;
+    position: absolute;
+    z-index: 1000;
+}
+
+#slide-in-content {
+    border: none;
+    /*border-right: 3px solid #BFBFBF;*/
+    background-color: transparent;
+    /*background-color: #7f7f7f;*/
+    -ms-align-content: center;
+    -webkit-align-content: center;
+    align-content: center;
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#slide-in-share {
+    border-style: none solid none none;
+    border-right-width: 3px;
+    border-right-color: rgb(191, 191, 191);
+    position: absolute;
+    /* top: -1px; */
+    left: 0px;
+    width: 40px;
+    height: 100%;
+    margin-left: 0px;
+    /*border-right: 3px solid #BFBFBF;*/
+    background-color: transparent;
+}
+
+#slide-in-handle {
+    z-index: 500;
+    position: absolute;
+    left: 0px;
+    width: 40px;
+    height: 100%;
+    text-indent: -999em;
+    /* border-right: 3px solid #BFBFBF; */
+    background-color: #668165;
+    /*background-color: #7F7F7F;*/
+    background-image: url(Images/psd-radar-screen-icon_opt.gif);
+    background-repeat: no-repeat;
+    background-size: 35px 38px;
+    background-position: 2px 5px;
+}
+
+#slide-in-content table {
+    left: 6px;
+    z-index: 1000;
+    position: absolute;
+    top: 59px;
+    padding:0;
+    margin: 0;
+
+}
+
+#slide-in-content td[class*="screen-icon-"]
+{
+    background: url('Images/screen-icon-sprite-rev.2.02.gif') no-repeat;
+    cursor:pointer;
+}
+
+#slide-in-content td.FirstIcon
+{
+    width: 27px;
+    height: 27px;
+}
+
+#slide-in-content td:not(.FirstIcon)
+{
+    width: 27px;
+    height: 33px;
+}
+
+#slide-in-content td[class*=" IconIdle"]
+{
+    background-position-x: -0px;
+}
+#slide-in-content td[class*=" IconWarning"]
+{
+    background-position-x: -28px;
+}
+#slide-in-content td[class*=" IconAlarm"]
+{
+    background-position-x: -56px;
+}
+#slide-in-content td[class*=" IconSelected"]
+{
+    background-position-x: -84px;
+}
+
+#slide-in-content td.screen-icon-Airport
+{
+    background-position-y: -0px;
+}
+
+#slide-in-content td.screen-icon-Zone
+{
+    background-position-y: -28px;
+}
+
+#slide-in-content td.screen-icon-Gate
+{
+    background-position-y: -62px;
+}
+
+#slide-in-content td.screen-icon-Report
+{
+    background-position-y: -96px;
+}
+
+#slide-in-content td.screen-icon-ServiceCounter
+{
+    background-position-y: -130px;
+}
+
+#slide-in-content td.screen-icon-Network
+{
+    background-position-y: -164px;
+}
+
+#slide-in-content td.screen-icon-Flight
+{
+    background-position-y: -198px;
+}
+
+
+#slide-in-content .screen-text {
+    width: 100px;
+    height: 31px;
+}
+
+#slide-in-share ul {
+    /*z-index:525;*/
+    /*list-style: none;*/
+    /*margin: 0;
+    padding: 0;
+    height: 100%;
+    background: transparent;
+    text-align: center;*/
+}
+
+#slide-in-share li {
+    /*z-index:600;*/
+    /*display: inline-block;
+    margin: 0 2px;
+    background: transparent;*/
+}
+
+.share-button {
+    background: #fff url(../content/web/fx/social-buttons.png) no-repeat 50% 50%;
+    border: 4px solid #a6a6a6;
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    margin-top: 17px;
+    -webkit-border-radius: 21px;
+    -moz-border-radius: 21px;
+    border-radius: 21px;
+    text-indent: -999em;
+    color: #a6a6a6;
+}
+
+    .share-button:hover {
+        border-color: #333;
+    }
+
+.share-facebook {
+    background-position: 50% -2px;
+}
+
+.share-twitter {
+    background-position: 50% -40px;
+}
+
+.share-tumblr {
+    background-position: 50% -78px;
+}
+
+.share-facebook:hover {
+    border-color: #3b5998;
+}
+
+.share-twitter:hover {
+    border-color: #00c0f7;
+}
+
+.share-tumblr:hover {
+    border-color: #2b4865;
+}
+

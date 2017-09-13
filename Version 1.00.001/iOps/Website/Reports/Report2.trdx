@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report Width="6.5in" Name="Report2" xmlns="http://schemas.telerik.com/reporting/2012/3.8">
+  <DataSources>
+    <SqlDataSource ConnectionString="JFKIOPSReporting" SelectCommand="SELECT&#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmID], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmType], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmGroup], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Priority], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmText], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Active], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Acked], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[TimeDelay], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmValue], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[ClearedValue], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmLimit], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AlarmDateTime], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[ClearedDateTime], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AckedDateTime], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[AckedUser], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Units], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Document], &#xD;&#xA;&#x9;[Term_4_PBB_Alarms].[Comment]&#xD;&#xA;FROM [Term_4_PBB_Alarms]" Name="sqlDataSource1" QueryDesignerState="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;DM xmlns:z=&quot;http://schemas.microsoft.com/2003/10/Serialization/&quot; xmlns:i=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://schemas.datacontract.org/2004/07/Telerik.Reporting.Design.QueryDesigner&quot;&gt;&lt;Es&gt;&lt;E z:Id=&quot;i1&quot;&gt;&lt;MBN&gt;Term_4_PBB_Alarms&lt;/MBN&gt;&lt;MBP z:Id=&quot;i2&quot; i:type=&quot;Namespace&quot;&gt;&lt;MBN&gt;&lt;/MBN&gt;&lt;MOC&gt;&lt;MB z:Ref=&quot;i1&quot; /&gt;&lt;/MOC&gt;&lt;/MBP&gt;&lt;MOC&gt;&lt;MB z:Id=&quot;i3&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmID&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i4&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmType&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i5&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmGroup&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i6&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Priority&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i7&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmText&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i8&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Active&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i9&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Acked&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i10&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;TimeDelay&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i11&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmValue&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i12&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;ClearedValue&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i13&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmLimit&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i14&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AlarmDateTime&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i15&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;ClearedDateTime&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i16&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AckedDateTime&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i17&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;AckedUser&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i18&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Units&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i19&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Document&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;MB z:Id=&quot;i20&quot; i:type=&quot;P&quot;&gt;&lt;MBN&gt;Comment&lt;/MBN&gt;&lt;MBP z:Ref=&quot;i1&quot; /&gt;&lt;PO&gt;true&lt;/PO&gt;&lt;/MB&gt;&lt;/MOC&gt;&lt;ER /&gt;&lt;/E&gt;&lt;/Es&gt;&lt;Fs /&gt;&lt;Ps&gt;&lt;P z:Ref=&quot;i3&quot; /&gt;&lt;P z:Ref=&quot;i4&quot; /&gt;&lt;P z:Ref=&quot;i5&quot; /&gt;&lt;P z:Ref=&quot;i6&quot; /&gt;&lt;P z:Ref=&quot;i7&quot; /&gt;&lt;P z:Ref=&quot;i8&quot; /&gt;&lt;P z:Ref=&quot;i9&quot; /&gt;&lt;P z:Ref=&quot;i10&quot; /&gt;&lt;P z:Ref=&quot;i11&quot; /&gt;&lt;P z:Ref=&quot;i12&quot; /&gt;&lt;P z:Ref=&quot;i13&quot; /&gt;&lt;P z:Ref=&quot;i14&quot; /&gt;&lt;P z:Ref=&quot;i15&quot; /&gt;&lt;P z:Ref=&quot;i16&quot; /&gt;&lt;P z:Ref=&quot;i17&quot; /&gt;&lt;P z:Ref=&quot;i18&quot; /&gt;&lt;P z:Ref=&quot;i19&quot; /&gt;&lt;P z:Ref=&quot;i20&quot; /&gt;&lt;/Ps&gt;&lt;Rs /&gt;&lt;/DM&gt;" />
+  </DataSources>
+  <Items>
+    <DetailSection Height="1in" Name="detailSection1">
+      <Items>
+        <Table DataSourceName="sqlDataSource1" Width="3.2in" Height="0.4in" Left="0in" Top="0in" Name="table1" StyleName="Apex.TableNormal">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="= Fields.AlarmType" Name="textBox5" StyleName="Apex.TableBody">
+                    <Style>
+                      <Font Name="Microsoft Sans Serif" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="= Fields.AlarmText" Name="textBox6" StyleName="Apex.TableBody">
+                    <Style>
+                      <Font Name="Microsoft Sans Serif" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="= Fields.AlarmDateTime" Name="textBox7" StyleName="Apex.TableBody">
+                    <Style>
+                      <Font Name="Microsoft Sans Serif" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="= Fields.ClearedDateTime" Name="textBox8" StyleName="Apex.TableBody">
+                    <Style>
+                      <Font Name="Microsoft Sans Serif" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="0.8in" />
+              <Column Width="0.8in" />
+              <Column Width="0.8in" />
+              <Column Width="0.8in" />
+            </Columns>
+            <Rows>
+              <Row Height="0.2in" />
+            </Rows>
+          </Body>
+          <Corner />
+          <RowGroups>
+            <TableGroup Name="Detail">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup>
+              <ReportItem>
+                <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="Alarm Type" Name="textBox1" StyleName="Apex.TableHeader">
+                  <Style>
+                    <Font Name="Microsoft Sans Serif" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup>
+              <ReportItem>
+                <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="Alarm Text" Name="textBox2" StyleName="Apex.TableHeader">
+                  <Style>
+                    <Font Name="Microsoft Sans Serif" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup>
+              <ReportItem>
+                <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="Alarm Date Time" Name="textBox3" StyleName="Apex.TableHeader">
+                  <Style>
+                    <Font Name="Microsoft Sans Serif" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup>
+              <ReportItem>
+                <TextBox Width="0.8in" Height="0.2in" Left="0in" Top="0in" Value="Cleared Date Time" Name="textBox4" StyleName="Apex.TableHeader">
+                  <Style>
+                    <Font Name="Microsoft Sans Serif" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+      </Items>
+    </DetailSection>
+    <PageHeaderSection Height="1in" Name="pageHeaderSection1">
+      <Items>
+        <TextBox Width="5.905511805in" Height="0.787401574in" Left="0in" Top="0in" Value="Report2" Name="ReportNameTextBox">
+          <Style>
+            <Font Name="Segoe UI" Size="14pt" Bold="True" />
+          </Style>
+        </TextBox>
+      </Items>
+    </PageHeaderSection>
+    <PageFooterSection Height="1in" Name="pageFooterSection1">
+      <Items>
+        <TextBox Width="1.574803148in" Height="0.393700787in" Left="4.925196852in" Top="0.606299213in" Value="Page: {PageNumber}" Name="ReportPageNumberTextBox">
+          <Style>
+            <Font Name="Segoe UI" />
+          </Style>
+        </TextBox>
+      </Items>
+    </PageFooterSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+    <StyleRule>
+      <Style Color="Black">
+        <BorderStyle Default="Solid" />
+        <BorderColor Default="Black" />
+        <BorderWidth Default="1px" />
+        <Font Name="book antiqua" Size="9pt" />
+      </Style>
+      <Selectors>
+        <StyleSelector Type="Table" StyleName="Apex.TableNormal" />
+      </Selectors>
+    </StyleRule>
+    <StyleRule>
+      <Style>
+        <BorderStyle Default="Solid" />
+        <BorderColor Default="Black" />
+        <BorderWidth Default="1px" />
+        <Font Name="book antiqua" Size="9pt" />
+      </Style>
+      <Selectors>
+        <DescendantSelector>
+          <Selectors>
+            <TypeSelector Type="Table" />
+            <StyleSelector Type="ReportItem" StyleName="Apex.TableBody" />
+          </Selectors>
+        </DescendantSelector>
+      </Selectors>
+    </StyleRule>
+    <StyleRule>
+      <Style BackgroundColor="105, 103, 109" Color="206, 185, 102" VerticalAlign="Middle">
+        <BorderStyle Default="Solid" />
+        <BorderColor Default="Black" />
+        <BorderWidth Default="1px" />
+        <Font Name="book antiqua" Size="10pt" />
+      </Style>
+      <Selectors>
+        <DescendantSelector>
+          <Selectors>
+            <TypeSelector Type="Table" />
+            <StyleSelector Type="ReportItem" StyleName="Apex.TableHeader" />
+          </Selectors>
+        </DescendantSelector>
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings>
+    <PageSettings PaperKind="Letter" Landscape="False" ColumnCount="1" ColumnSpacing="0in">
+      <Margins>
+        <MarginsU Left="1in" Right="1in" Top="1in" Bottom="1in" />
+      </Margins>
+    </PageSettings>
+  </PageSettings>
+</Report>

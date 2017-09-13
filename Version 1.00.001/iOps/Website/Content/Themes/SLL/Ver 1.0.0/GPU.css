@@ -1,0 +1,463 @@
+﻿.GPU-Window {
+    height: 860px;
+    background-image: url(Images/GPU-Jetpower-III-Rev01.png);
+    background-repeat: no-repeat;
+    background-size: 78% 90%;
+    background-position: 175px 0px;
+    margin: auto auto;
+    display: block;
+}
+
+.k-window {
+    z-index: 100 !important;
+}
+
+.k-window-titlebar {
+    background-color: #BFBFBF !important;
+}
+
+.k-window-title {
+    font-weight: bold !important;
+    margin-left: 10px;
+}
+
+/*changes background image for the Kendo Window icons*/
+#gpuWindowLink1 {
+    background-image: url('Images/leftArrow.gif')
+}
+
+#gpuWindowLink0 {
+    background-image: url('Images/upArrow.gif')
+}
+
+#gpuWindowLink2 {
+    background-image: url('Images/settings.gif')
+}
+
+#gateLinkButtonInGPUScreen {
+    position: absolute;
+    top: 1%;
+    left: 68%;
+}
+
+#pcaLinkButtonInGPUScreen {
+    position: absolute;
+    top: 1%;
+    left: 78%;
+}
+
+#gateLinkButtonInGPUScreen, #pcaLinkButtonInGPUScreen {
+     -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+    /*position: relative;
+    left: 34%;*/
+
+    /*color: blue;
+    position: relative;
+    top: 5px;
+    left: 15%;
+    font-size: 20px;
+    width: 128px;
+    background: transparent;*/
+}
+
+/*Kendo tooltip styles*/
+.k-widget.k-tooltip.k-popup.k-group.k-reset {
+    width: 20px;
+    height: 20px;
+    background: black;
+    color: white;
+}
+
+.gpuPageDividerLeft {
+    float:left
+}
+
+.gpuPageDividerRight {
+  width: 51%;
+  float: right;
+}
+
+#GPUWindow #btnAlarms {
+    position: absolute;
+    top: 84%;
+    left: 5%;
+    margin-top: 400px;
+}
+
+#GPUWindow #pointTableContainer .pointTableContainerCol {
+    width: 40%;
+} 
+
+#GPUWindow #pointTableContainer .pointTableContainerSeperator {
+    width: 20%;
+} 
+
+#GPUWindow #tblPointsLeft .pointsTableRowHeader, 
+#GPUWindow #tblPointsRight .pointsTableRowHeader {
+    background-color: #e3e3e3;
+    color: #2e2e2e;
+    height: 30px;
+}
+
+#GPUWindow #tblPointsLeft .pointsTableHeader, 
+#GPUWindow #tblPointsRight .pointsTableHeader {
+    text-align: center;
+}
+
+#GPUWindow #tblPointsLeft {
+ 
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    border-collapse: collapse;
+    width: 500px;
+    opacity: .8
+}
+#GPUWindow #tblPointsRight {
+    
+    margin-top: 400px;
+    top: 42%;
+    left: 80%;
+    border-collapse: collapse;
+    width: 500px;
+    opacity: .8
+}
+
+#GPUWindow #tblPointsLeft th,
+#GPUWindow #tblPointsLeft td,
+#GPUWindow #tblPointsRight th,
+#GPUWindow #tblPointsRight td {
+    border: 1px solid #c5c5c5;
+}
+
+#GPUWindow .pointsTable tr:nth-child(even) {
+    background-color:#f5f5f5;
+}
+
+#GPUWindow .pointsTable tr:nth-child(odd) {
+    background-color:#fff
+}
+
+#GPUWindow .pointsTableDataCells {
+    text-align: center;
+    width: 241px;
+    font-weight:bold;
+    height: 30px;
+}
+
+div.k-widget.k-window.KendoWindowToTop {
+    z-index: 500 !important;
+}
+
+#GPUAlarmWindow tr.AlarmRow, #GateWarningWindow tr.AlarmRow{
+	background-color: #f00 !important;
+	color: #fff !important;
+	font-weight: bold !important;
+	border-color: #fff !important;
+}
+#GPUAlarmWindow tr.AlarmRow a { color:#fff !important; }
+#GPUAlarmWindow tr.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#GPUAlarmWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#GPUAlarmWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#GPUAlarmWindow tr.WarningRow, #GateWarningWindow tr.WarningRow {
+	background-color: #ff0 !important;
+	color: #000 !important;
+	font-weight: normal !important;
+	border-color: #fff !important;
+}
+#GPUAlarmWindow tr.WarningRow a { color:#000 !important; }
+#GPUAlarmWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#GPUAlarmWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#GPUAlarmWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+#GPUWarningWindow tr.AlarmRow a { color:#fff !important; }
+#GPUWarningWindow.AlarmRow td[class*='sorting_'] { background-color: #c00 !important; }
+#GPUWarningWindow tr.AlarmRow:hover { background-color: #f66 !important; }
+#GPUWarningWindow tr.AlarmRow:hover td[class*='sorting_'] { background-color: #c66 !important; }
+
+#GPUWarningWindow tr.WarningRow a { color:#000 !important; }
+#GPUWarningWindow tr.WarningRow td[class*='sorting_'] { background-color: #cc0 !important; }
+#GPUWarningWindow tr.WarningRow:hover { background-color: #ff9 !important; }
+#GPUWarningWindow tr.WarningRow:hover td[class*='sorting_'] { background-color: #cc9 !important; }
+
+
+
+#GPUWindow .btnRed, #GPUAlarmWindow .btnRed, #GPUWarningWindow .btnRed {
+    -moz-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    -webkit-box-shadow: 3px 4px 0px 0px #FEA1A1;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #FEA1A1), color-stop(1, #B30602));
+    background: -moz-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -webkit-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -o-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: -ms-linear-gradient(top, #FEA1A1 10%, #B30602 100%);
+    background: linear-gradient(to bottom, #FEA1A1 10%, #B30602 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEA1A1', endColorstr='#B30602',GradientType=0);
+    background-color: #FEA1A1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 47px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+/*#GPUWindow .btnRed:hover, #GPUAlarmWindow .btnRed:hover, #GPUWarningWindow .btnRed:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #8b0d0d), color-stop(1, #FAB4B4));
+    background:-moz-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-webkit-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-o-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:-ms-linear-gradient(top, #8b0d0d 5%, #FAB4B4 100%);
+    background:linear-gradient(to bottom, #8b0d0d 5%, #FAB4B4 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8b0d0d', endColorstr='#FAB4B4',GradientType=0);
+    background-color:#8b0d0d;
+}*/
+
+#GPUWindow .btnRed:active, #GPUAlarmWindow .btnRed:active, #GPUWarningWindow .btnRed:active {
+    position:relative;
+    top:1px;
+}
+
+/* Red Button Layout */
+#GPUWindow .btnGreen, #GPUAlarmWindow .btnGreen, #GPUWarningWindow .btnGreen {
+    color: green;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+    
+}
+
+/*#GPUWindow .btnGreen:hover, #GPUAlarmWindow .btnGreen:hover, #GPUWarningWindow .btnGreen:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #568d39), color-stop(1, #E6EEAA));
+    background:-moz-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-webkit-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-o-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:-ms-linear-gradient(top, #568d39 5%, #E6EEAA 100%);
+    background:linear-gradient(to bottom, #568d39 5%, #E6EEAA 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#568d39', endColorstr='#E6EEAA',GradientType=0);
+    background-color:#568d39;
+}*/
+
+#GPUWindow .btnGreen:active, #GPUAlarmWindow .btnGreen:active, #GPUWarningWindow .btnGreen:active {
+    position:relative;
+    top:1px;
+}
+
+/* Blue button Layout */
+#GPUWindow .btnBlue, #GPUAlarmWindow .btnBlue, #GPUWarningWindow .btnBlue {
+    -moz-box-shadow: 3px 4px 0px 0px #dcecfb;
+    -webkit-box-shadow: 3px 4px 0px 0px #dcecfb;
+    box-shadow: -1px 3px 0px 0px #BBB8B8;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, #dcecfb), color-stop(1, #4aa0f7));
+    background: -moz-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -webkit-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -o-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: -ms-linear-gradient(top, #dcecfb 10%, #4aa0f7 100%);
+    background: linear-gradient(to bottom, #dcecfb 10%, #4aa0f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcecfb', endColorstr='#4aa0f7',GradientType=0);
+    background-color: #dcecfb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #7D5253;
+    display: inline-block;
+    cursor: default;
+    color: #FFFFFF;
+    font-family: arial;
+    font-size: 16px;
+    padding: 2px 34px;
+    margin: 1px 0px 3px 0px;
+    text-decoration: none;
+    text-shadow: 0px 1px 10px #5F142D;
+}
+
+/*#GPUWindow .btnBlue:hover, #GPUAlarmWindow .btnBlue:hover, #GPUWarningWindow .btnBlue:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4aa0f7), color-stop(1, #dcecfb));
+    background:-moz-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-webkit-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-o-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:-ms-linear-gradient(top, #4aa0f7 5%, #dcecfb 100%);
+    background:linear-gradient(to bottom, #4aa0f7 5%, #dcecfb 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4aa0f7', endColorstr='#dcecfb',GradientType=0);
+    background-color:#4aa0f7;
+}*/
+
+#GPUWindow .btnBlue:active, #GPUAlarmWindow .btnBlue:active, #GPUWarningWindow .btnBlue:active {
+    position:relative;
+    top:1px;
+}
+
+/*Hide*/
+#GPUWindow .btnInvisible, #GPUAlarmWindow .btnInvisible, #GPUWarningWindow .btnInvisible {
+    visibility:hidden
+}
+
+/* Gray Button Layout */
+#GPUWindow .btnGray, #GPUAlarmWindow .btnGray, #GPUWarningWindow .btnGray {
+    color: slategray;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background : transparent;
+}
+#GPUWindow .btnsBlue, #GPUAlarmWindow .btnsBlue {
+    color: blue;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+#GPUWindow .btnsRed, #GPUAlarmWindow .btnsRed {
+    color: red;
+    position: relative;
+    font-size: 16px;
+    font-family: arial;
+    width: 128px;
+    background: transparent;
+}
+
+/*#GPUWindow .btnGray:hover, #GPUAlarmWindow .btnGray:hover, #GPUWarningWindow .btnGray:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bbb1b1), color-stop(1, #ffffff));
+    background:-moz-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-webkit-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-o-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:-ms-linear-gradient(top, #bbb1b1 5%, #ffffff 100%);
+    background:linear-gradient(to bottom, #bbb1b1 5%, #ffffff 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bbb1b1', endColorstr='#ffffff',GradientType=0);
+    background-color:#bbb1b1;
+}*/
+
+#GPUWindow .btnGray:active, #GPUAlarmWindow .btnGray:active, #GPUWarningWindow .btnGray:active {
+    position:relative;
+    top:1px;
+}
+
+
+#GPUWindow .redFlashingBackground {
+    background-image: url('Images/red-black-flashing-image.gif');
+    color: #FFF;
+    -moz-border-radius: 22px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    font-family: arial;
+    font-size: 18px;
+    padding: 6px 16px;
+    margin: 1px auto;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    width: 280px;
+    height: 21px;
+}
+
+
+#GPUAlarmWindow .RingBellAlarmGrayBackground, #GPUWarningWindow .RingBellAlarmGrayBackground {
+    background-image: url('Images/RingBellButton-Gray-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+
+#GPUAlarmWindow .RingBellAlarmBadQualityBackground, #GPUWarningWindow .RingBellAlarmBadQualityBackground {
+    background-image: url('Images/RingBellButton-BadQuality-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+
+#GPUAlarmWindow .RingBellAlarmFlashingBackground, #GPUWarningWindow .RingBellAlarmFlashingBackground {
+    background-image: url('Images/RingBellButton-RedFlashing-64x64-rev1.00.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+    height: 32px;
+    margin: 2px;
+}
+#GPUWindow .gauge-container {
+    background: transparent url('Images/gauge/gauge-container-partial001.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    margin: 0 auto 10px auto;
+}
+
+#GPUWindow .gauge {
+    width: 190px;
+    height: 165px;
+    margin: 0 auto 0; 
+}
+
+#GPUWindow .gaugeLegend-Pointer1 {
+    background-color: #009900;
+    width: 190px;
+    height: 20px;
+    margin: 0 auto 0;
+    text-align: center;
+    font-weight: bolder;
+}
+#GPUWindow .gaugeLegend-Pointer2 {
+    background-color: #ff7a00;
+    width: 190px;
+    height: 20px;
+    margin: 0 auto 0;
+    text-align: center;
+    font-weight: bolder;
+}
+#GPUWindow .gaugeLegend-Pointer3 {
+    background-color: #ffc700;
+    width: 190px;
+    height: 20px;
+    margin: 0 auto 0;
+    text-align: center;
+    font-weight: bolder;
+}
+#GPUWindow .SegmentDisplay {
+  font-family: 'digital-7regular','Arial', sans-serif;
+  font-size: 23pt;
+  top: -20px;
+  position: relative;
+  color: #33AB0B;
+}

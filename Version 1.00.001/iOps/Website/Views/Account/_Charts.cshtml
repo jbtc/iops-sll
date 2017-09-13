@@ -1,0 +1,16 @@
+﻿
+    @{
+
+        var db = new iOps.Data.iopsWeatherEntities();
+        var dbData = db.Weathers.Where(w => w.CityID == "46848" && w.CloudName == "overcast clouds");
+
+        var myChart = new System.Web.Helpers.Chart(width: 600, height: 400);
+           myChart.AddTitle("Weather");
+            //  .AddSeries(chartType: "Pie",
+            //xValue: dbData, xField: "CityName",
+            //yValues: dbData, yFields: "TemperatureMax")
+           myChart.DataBindTable(dataSource: dbData, xField: "TemperatureAvg");
+           myChart.Write();
+    }
+   
+   

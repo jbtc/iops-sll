@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F668A08B-1888-468B-BA3F-9EE5513108CE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>iOps.Core</RootNamespace>
+    <AssemblyName>iOps.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Production\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessLogic\User.cs" />
+    <Compile Include="iOpsException.cs" />
+    <Compile Include="Model\ACPosition.cs">
+      <DependentUpon>FlightData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ACSpecification.cs">
+      <DependentUpon>FlightData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ControlData\ControlData.cs" />
+    <Compile Include="Model\Country.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DelEntity.cs" />
+    <Compile Include="Model\Feedback.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Flight.cs">
+      <DependentUpon>FlightData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FlightData.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightData.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FlightData.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FlightData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightData.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\History.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\IDel.cs" />
+    <Compile Include="Model\Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Model1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Model1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ModelExtensions\CountryExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\FeedbackExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\HistoryExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\OrganizationExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\Organizations_ContactInformationExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\SalutationExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\ScreenExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\SecurityGroupExtentions.cs" />
+    <Compile Include="Model\ModelExtensions\SecurityRoleExtentions.cs" />
+    <Compile Include="Model\ModelExtensions\SecurityTastExtentions.cs" />
+    <Compile Include="Model\ModelExtensions\UserExtensions.cs" />
+    <Compile Include="Model\ModelExtensions\Users_ContactInformationExtentions.cs" />
+    <Compile Include="Model\Entity.cs" />
+    <Compile Include="Model\Organization.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Organizations_ContactInformation.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Salutation.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Screen.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SecurityGroup.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SecurityRole.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SecurityTask.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLLReports.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SLLReports.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLLReports.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLLReports.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SLLReports.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_Network_Monitoring_Bool.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_1A_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_1A_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_1B_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_1B_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_2A_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_2A_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_2B_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_2B_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_3A_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_3A_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_3B_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_3B_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_4A_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_4A_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_4B_DockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_4B_UnDockTime.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_AlarmLogging.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_DailyAircraftDocked.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_DataLogging.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_DockTime_DataLogging.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_UnDockTime_DataLogging.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SLL_PBB_WarningLogging.cs">
+      <DependentUpon>SLLReports.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\User.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UsersXrefScreen.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Users_ContactInformation.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IDelRepo.cs" />
+    <Compile Include="Repository\IRepo.cs" />
+    <Compile Include="Repository\IUniRepo.cs" />
+    <Compile Include="Security\IFormsAuthentication.cs" />
+    <Compile Include="Service\ICrudService.cs" />
+    <Compile Include="Service\IFileManagerService.cs" />
+    <Compile Include="Service\IUserService.cs" />
+    <Compile Include="WindsorWireups.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <EntityDeploy Include="Model\Model1.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Model1.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="Model\FlightData.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FlightData.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\FlightData.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FlightData.edmx</DependentUpon>
+      <LastGenOutput>FlightData.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Model\FlightData.edmx.diagram">
+      <DependentUpon>FlightData.edmx</DependentUpon>
+    </None>
+    <None Include="Model\FlightData.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FlightData.edmx</DependentUpon>
+      <LastGenOutput>FlightData.cs</LastGenOutput>
+    </None>
+    <None Include="Model\Model1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model1.edmx</DependentUpon>
+      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Model\Model1.edmx.diagram">
+      <DependentUpon>Model1.edmx</DependentUpon>
+    </None>
+    <None Include="Model\Model1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model1.edmx</DependentUpon>
+      <LastGenOutput>Model1.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="Model\SLLReports.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SLLReports.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\SLLReports.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SLLReports.edmx</DependentUpon>
+      <LastGenOutput>SLLReports.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Model\SLLReports.edmx.diagram">
+      <DependentUpon>SLLReports.edmx</DependentUpon>
+    </None>
+    <None Include="Model\SLLReports.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SLLReports.edmx</DependentUpon>
+      <LastGenOutput>SLLReports.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\PagedList.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

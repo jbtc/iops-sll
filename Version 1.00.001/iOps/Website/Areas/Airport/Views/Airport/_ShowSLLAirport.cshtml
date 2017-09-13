@@ -1,0 +1,433 @@
+﻿<script type="text/javascript" src="~/OPCHTML/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/OPCHTML/js/lib/jquery.numberformatter-1.2.3.min.js"></script>
+<script>
+    $(document).ready(function () {
+        //$('#gateLinkid').css('visibility', 'hidden');
+        $("#AirportWindow").kendoWindow({
+            title: "SLL - Airport Overview",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false
+        });
+
+        //removes all buttons from kendo window
+        $('.k-window-titlebar').find('.k-window-actions').css('visibility', 'hidden');
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        };
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        };
+
+        var tags = [];
+
+        // set up moitoring of AC and Gate tags, and firing callback on data refresh
+        OPC.tags = [];
+        OPC_config.watch_tags = [];
+        OPC_config.tag_prefix = "Airport." + "@TempData["ClientAbbr"]" + ".Term1.Zone1.";
+        OPC_config.refresh_callback = opc_airport_callback;
+        OPC_config.watch_tags = tags;
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "AirportAlarms",
+                callback: updateAirportAlarms,
+                showInfo: false,
+                showHistory: false,
+                showSearch: false,
+                height: 200,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["1A_PBB_ALARMS", "1B_PBB_ALARMS", "2A_PBB_ALARMS", "2B_PBB_ALARMS", "3A_PBB_ALARMS","3B_PBB_ALARMS","4A_PBB_ALARMS","4B_PBB_ALARMS",
+                                 "1A_GPU_ALARMS", "1B_GPU_ALARMS", "2A_GPU_ALARMS", "2B_GPU_ALARMS", "3A_GPU_ALARMS","3B_GPU_ALARMS","4A_GPU_ALARMS","4B_GPU_ALARMS",
+                                 "1A_PCA_ALARMS", "1B_PCA_ALARMS", "2A_PCA_ALARMS", "2B_PCA_ALARMS", "3A_PCA_ALARMS","3B_PCA_ALARMS","4A_PCA_ALARMS","4B_PCA_ALARMS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "AirportWarnings",
+                callback: updateAirportWarnings,
+                showInfo: false,
+                showHistory: false,
+                showSearch: false,
+                height: 200,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["1A_PBB_WARNINGS", "1B_PBB_WARNINGS", "2A_PBB_WARNINGS", "2B_PBB_WARNINGS", "3A_PBB_WARNINGS", "3B_PBB_WARNINGS", "4A_PBB_WARNINGS", "4B_PBB_WARNINGS",
+                                 "1A_GPU_WARNINGS", "1B_GPU_WARNINGS", "2A_GPU_WARNINGS", "2B_GPU_WARNINGS", "3A_GPU_WARNINGS", "3B_GPU_WARNINGS", "4A_GPU_WARNINGS", "4B_GPU_WARNINGS",
+                                 "1A_PCA_WARNINGS", "1B_PCA_WARNINGS", "2A_PCA_WARNINGS", "2B_PCA_WARNINGS", "3A_PCA_WARNINGS", "3B_PCA_WARNINGS", "4A_PCA_WARNINGS", "4B_PCA_WARNINGS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+            {
+                alarmid: "AirportMasterAlarms",
+                callback: updateMasterAirportAlarms,
+                showInfo: false,
+                showHistory: false,
+                showSearch: false,
+                height: 200,
+                filter: {
+                    alarmtypes: ["Digital"],
+                    alarmgroups: ["1A_PBB_ALARMS", "1B_PBB_ALARMS", "2A_PBB_ALARMS", "2B_PBB_ALARMS", "3A_PBB_ALARMS","3B_PBB_ALARMS","4A_PBB_ALARMS","4B_PBB_ALARMS",
+                                 "1A_GPU_ALARMS", "1B_GPU_ALARMS", "2A_GPU_ALARMS", "2B_GPU_ALARMS", "3A_GPU_ALARMS","3B_GPU_ALARMS","4A_GPU_ALARMS","4B_GPU_ALARMS",
+                                 "1A_PCA_ALARMS", "1B_PCA_ALARMS", "2A_PCA_ALARMS", "2B_PCA_ALARMS", "3A_PCA_ALARMS","3B_PCA_ALARMS","4A_PCA_ALARMS","4B_PCA_ALARMS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            }
+        ];
+
+        for (var i = 1; i <= 8; i++) {
+            var gateNumber = Math.ceil(i / 2) + ((i % 2) == 1 ? "A" : "B");
+            var pre = "Gate" + gateNumber + ".";
+            tags.push(pre + "PBB.AIRCRAFTDOCKEDCALCULATION.Value");                  // aircraft is docked
+            tags.push(pre + "PBB.LoggedOn.Value");                  // show green
+            tags.push(pre + "PBB.AircraftSubType.Value")            // Show Jumbo Graphics
+            //tags.push(pre + "PBB.AUTOLEVELKEY.Value");                  // show green
+            //tags.push(pre + "PBB.OPERATEKEY.Value");                  // show green
+            //tags.push(pre + "PBB.PBB_IN_OPER_MODE.Value");                  // show green
+            //tags.push(pre + "PBB.Warning._HasWarnings.Value");            // show yellow
+            //tags.push(pre + "PBB.AUTOLEVELING.Value");                 // show orange
+            //tags.push(pre + "PBB.AUTOLEVELMODEFLAG.Value");                 // show orange
+            //tags.push(pre + "PBB.Alarm._HasAlarms.Value");                     // show red
+            tags.push("Airport.SLL.Term1.Zone1.RTUAutoOnLeadTime.Value");
+        };
+
+        $(".gate_fire").hide();
+        OPC.init(); //required for ajax calls in OPC
+
+        $('#menuItemUserAdmin').css('display', ('@TempData["AuthLevel"]' > 3 ? 'list-item' : 'none'));
+        $("#menuItemRTUAutoOnSP").css('display', ('@TempData["AuthLevel"]' > 3 ? 'list-item' : 'none'));
+    });
+
+    function get_value(tag) {
+        var tagTemp = tag + (tag.endsWith(".Value") ? "" : ".Value");
+        if (!OPC.tags[tagTemp.replace(".Value", "")].props["Value"].quality) {
+            return null;
+        }
+        return OPC.get_value(tagTemp);
+    }
+
+    function get_bool(tag) {
+        var tagTemp = tag + (tag.endsWith(".Value") ? "" : ".Value");
+        if (!OPC.tags[tagTemp.replace(".Value", "")].props["Value"].quality) {
+            return null;
+        }
+
+        var b = OPC.get_value(tagTemp);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    // Show and hide images based on gate/aircraft status
+    //   Wide Gate will be shown ONLY if both L and R gate DoorPositions are set to "Wide"
+    //   Aircraft will display only if AircraftSubType is set to Wide or Narrow for gate
+    //   Wide aircraft will display ONLY if both gates are showing "Wide" for AircraftSubType
+    function check_gate_images(gate) {
+        var pre = OPC_config.tag_prefix + "Gate" + gate + ".PBB.";
+        var airCraftType = get_value(pre + "AircraftSubType.Value");
+        airCraftType = airCraftType == null ? "NARROW" : airCraftType;
+        var show_wide = (airCraftType.toUpperCase().indexOf("WIDE") >= 0) ? true : false;
+        var show_ac = get_bool(pre + "AIRCRAFTDOCKEDCALCULATION.Value");            // aircraft is docked
+        var show_g = get_bool(pre + "LoggedOn.Value");              // show green
+        var show_o = get_bool(pre + "AIRCRAFTDOCKEDCALCULATION.Value");             // show orange
+
+        $("#gates_nc").toggle(!show_wide);
+
+        $("#Gate_" + gate + "_Plane").removeClass(function (index, css) {
+            return (css.match(/\bg[0-9]\S+/g) || []).join(' ');
+        });
+        $("#Gate_" + gate + "_Status").removeClass(function (index, css) {
+            return (css.match(/\bg[0-9]\S+/g) || []).join(' ');
+        });
+
+        if (show_ac != null && show_g != null && show_o != null) {   // removed csw20160211:  && show_r != null && show_y != null
+            $("#Gate_" + gate + "_Plane").addClass("img gate_plane g" + gate + (!show_ac ? "_no_ac" : "_ac" + (show_wide ? "_wide" : "")));
+            switch (true) {
+                case show_o:
+                    $("#Gate_" + gate + "_Status").addClass("img gate_status g" + gate + "_o" + (show_wide ? "_wide" : ""));
+                    break;
+                case show_g:
+                    $("#Gate_" + gate + "_Status").addClass("img gate_status g" + gate + "_g" + (show_wide ? "_wide" : ""));
+                    break;
+                default:
+                    $("#Gate_" + gate + "_Status").addClass("img gate_status g" + gate + "_idle" + (show_wide ? "_wide" : ""));
+                    break;
+            }
+            updateAirportGateWarnings(gate);
+            updateAirportGateAlarms(gate);
+        }
+        else {
+            $("#Gate_" + gate + "_Plane").addClass("img gate_plane g" + gate + "_no_ac");
+            $("#Gate_" + gate + "_Status").addClass("img gate_status g" + gate + "_bq" + (show_wide ? "_wide" : ""));
+        }
+    }
+
+    function opc_airport_callback(data) {
+        for (var i = 1; i <= 8; i++) {
+            var gateNumber = Math.ceil(i / 2) + ((i % 2) == 1 ? "A" : "B");
+            check_gate_images(gateNumber);
+        }
+    }
+
+    function CloseKendoAirport() {
+        if ($('#AirportWindow').is(':visible')) {
+            $('#AirportWindow').data('kendoWindow').destroy();
+        }
+    }
+
+    function GoZone(zoneNumber,icon) {
+        $.ajax({
+            url: 'Zones/Zones/ShowSLLZone',
+            type: "GET",
+            data: {
+                zoneNum: zoneNumber
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                CloseKendoAirport();
+                $('#main-body').html(data);
+                ChangeIcons(icon);
+            }
+        })
+    }
+
+    function GoZoneGate(zoneNumber, gateNumber,icon) {
+        $.ajax({
+            url: 'Gate/Gate/ShowGates',
+            type: "GET",
+            data: {
+                zoneNum: zoneNumber,
+                gateNum: gateNumber
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                CloseKendoAirport();
+                $('#main-body').html(data);
+                ChangeIcons(icon);
+            }
+        })
+    }
+
+    function updateMasterAirportAlarms() {
+        var PriorityCol = -1;
+        var alarmCnt = 0;
+        var warningCnt = 0;
+        PriorityCol = $('#AirportMasterAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#AirportMasterAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    alarmCnt = (cellData == 100) ? alarmCnt + 1 : alarmCnt;
+                    warningCnt = (cellData == 0) ? warningCnt + 1 : warningCnt;
+                }
+            });
+        }
+        $("#MasterAlarmCount").html(alarmCnt + " Active<br /> Alarms");
+        $("#MasterWarningCount").html(warningCnt + " Active<br /> Warnings");
+    };
+
+    function updateAirportAlarms() {
+        var PriorityCol = -1;
+
+        PriorityCol = $('#AirportAlarmWindow th:contains("Priority")').index();
+        if (PriorityCol > -1) {
+            $('#AirportAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    $('#AirportAlarmWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+    };
+
+    function updateAirportGateAlarms(gateNumber) {
+        var PriorityCol = -1;
+        var TextCol = -1;
+        var airCraftType = null;
+        var show_wide = false;
+        var alarmVal = false;
+
+        PriorityCol = $('#AirportAlarmWindow th:contains("Priority")').index();
+        TextCol = $('#AirportAlarmWindow th:contains("Text")').index();
+        if (PriorityCol > -1) {
+            $('#AirportAlarmWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    var cellTextData = $(this).find('td').eq(TextCol)[0].innerText;
+                    alarmVal = (alarmVal || cellTextData.indexOf(gateNumber) >= 0) ? true : false;
+                    $('#AirportAlarmWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        if (alarmVal) {
+            $("#Gate_" + gateNumber + "_Status").removeClass(function (index, css) {
+                return (css.match(/\bg[0-9]\S+/g) || []).join(' ');
+            });
+            airCraftType = get_value(OPC_config.tag_prefix + "Gate" + gateNumber + ".PBB.AircraftSubType.Value");
+            airCraftType = airCraftType == null ? "NARROW" : airCraftType;
+            show_wide = (airCraftType.toUpperCase().indexOf("WIDE") >= 0) ? true : false;
+            $("#Gate_" + gateNumber + "_Status").addClass("g" + gateNumber + "_r" + ((show_wide) ? "_wide" : ""));
+        }
+    };
+
+    function updateAirportWarnings() {
+        var PriorityCol = -1;
+
+        PriorityCol = $('#AirportWarningWindow th:contains("Priority")').index();
+        TextCol = $('#AirportWarningWindow th:contains("Text")').index();
+        if (PriorityCol > -1) {
+            $('#AirportWarningWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    $('#AirportWarningWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+     };
+
+    function updateAirportGateWarnings(gateNumber) {
+        var PriorityCol = -1;
+        var TextCol = -1;
+        var airCraftType = null;
+        var show_wide = false;
+        var warningVal = false;
+
+        PriorityCol = $('#AirportWarningWindow th:contains("Priority")').index();
+        TextCol = $('#AirportWarningWindow th:contains("Text")').index();
+        if (PriorityCol > -1) {
+            $('#AirportWarningWindow tr').not('thead tr').each(function (idx, row) {
+                if ($(this).children('td').length > 1) {
+                    var cellData = $(this).find('td').eq(PriorityCol)[0].innerText;
+                    var cellTextData = $(this).find('td').eq(TextCol)[0].innerText;
+                    warningVal = (warningVal || cellTextData.indexOf(gateNumber) >= 0) ? true : false;
+                    $('#AirportWarningWindow th:contains("Priority")').hide();
+                    $(this).find('td').eq(PriorityCol).hide();
+                    switch (cellData) {
+                        case '0':
+                            $(this).addClass("WarningRow");
+                            break;
+                        case '100':
+                            $(this).addClass("AlarmRow");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        if (warningVal) {
+            $("#Gate_" + gateNumber + "_Status").removeClass(function (index, css) {
+                return (css.match(/\bg[0-9]\S+/g) || []).join(' ');
+            });
+            airCraftType = get_value(OPC_config.tag_prefix + "Gate" + gateNumber + ".PBB.AircraftSubType.Value");
+            airCraftType = airCraftType == null ? "NARROW" : airCraftType;
+            show_wide = (airCraftType.toUpperCase().indexOf("WIDE") >= 0) ? true : false;
+            $("#Gate_" + gateNumber + "_Status").addClass("img gate_status g" + gateNumber + "_y" + ((show_wide) ? "_wide" : ""));
+        }
+    };
+
+</script>
+
+
+<div id="AirportWindow" class="Window-Container Airport-Window">
+    <div id="gates_container">
+        <img id="building" class="img" />
+        <img id="gates_nc" class="img" />
+        
+        <!-- gate alarm color overlays  -->
+        @for (var a = 1; a <= 8; a++)
+        {
+            var gateNumber = Math.Ceiling(((decimal)a / 2)) + ((a % 2) == 1 ? "A" : "B");
+            <img id="Gate_@(gateNumber)_Plane" class="img gate_plane" />
+            <img id="Gate_@(gateNumber)_Status" class="img gate_status" />
+        }
+
+        <!-- gate links  -->
+        <div id="gateLinkid" >
+            @for (var a = 1; a <= 8; a++)
+            {
+                var gateNumber = Math.Ceiling(((decimal)a / 2)) + ((a % 2) == 1 ? "A" : "B");
+                var parkPosition = (Math.Ceiling(((decimal)a / 2)) + 10) + ((a % 2) == 1 ? "L" : "R");
+                <a id="gate@(gateNumber)" class="gate_link" onclick='GoZoneGate("1", @(gateNumber), @(a))'>Gate @(gateNumber) (@(parkPosition))</a>
+            }
+        </div>        
+    </div>
+    <div id="AirportAlarmWindow">
+        <div id="AirportAlarms"></div>
+    </div>
+    <div id="AirportWarningWindow" style="display: none">
+        <div id="AirportWarnings"></div>
+    </div>
+</div>
+
+<div id="AirportMasterAlarmWindow" style="display: none">
+    <div id="AirportMasterAlarms"></div>
+</div>

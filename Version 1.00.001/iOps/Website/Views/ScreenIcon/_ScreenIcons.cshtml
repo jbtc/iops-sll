@@ -1,0 +1,136 @@
+﻿@using iOps.Core.Model;
+@using System.Xml.Linq;
+@{
+
+    var clientName = TempData["ClientName"].ToString();
+    var dbData = new iOps.Core.Model.iopsContext().Screens.Where(s => s.Name.StartsWith(clientName) && !s.IsDeleted).OrderBy(s => s.DefaultDisplayOrder);
+    var IsFirstScreen = true;
+    foreach (Screen screen in dbData)
+    {
+        XDocument xmlData = XDocument.Load(new StringReader(screen.ScreenLayout));
+        var ajaxUrl = xmlData.Element("Screen-Layout").Element("AjaxUrl").Value;
+        var ajaxData = xmlData.Element("Screen-Layout").Element("AjaxData").Value;
+        var tagPrefix = xmlData.Element("Screen-Layout").Element("TagPrefix").Value;
+        var iconClass = String.Format("screen-icon-{0} {1} {2}", screen.DefaultIconType, screen.DefaultDisplayOrder == 1 ? "FirstIcon" : "", IsFirstScreen ? "IconSelected" : "IconIdle");
+        var opcBkgAttrib = String.Format("{{\"type\":\"group\",\"all_f\": {{\"cls\":\"IconIdle\"}},\"bad_q\":{{\"cls\":\"IconIdle\"}},\"group\": [" +
+                                        "{{\"tag\":\"{0}Alarm._HasAlarms.Value\",\"config\":{{\"cls\":\"IconAlarm\"}}}}, " +
+                                        "{{\"tag\":\"{0}Warning._HasWarnings.Value\",\"config\":{{\"cls\":\"IconWarning\"}}}}], \"ignore_prefix\":true}}", tagPrefix);
+
+        <tr class="screen-ajax@(screen.DefaultDisplayOrder)" title="@(screen.DisplayName)" screen-number="@(screen.DefaultDisplayOrder)" ajax-url="@(ajaxUrl)" ajax-data="@(ajaxData)" tag-prefix="@(tagPrefix)">)
+            <td class='@(iconClass)' opc-tag-bkg='@(opcBkgAttrib)'></td>
+            <td class="screen-text@(screen.DefaultDisplayOrder)">@(screen.DisplayName)</td>
+        </tr>
+        IsFirstScreen = false;
+    }
+}
+
+<!--Because jquery syntax does not like razor tags, input will be used instead-->
+<input type="hidden" id="txtScreenNumber" value='@TempData["MaxScreens"]' />
+<script>
+    var slide = kendo.fx($("#slide-in-share")).slideIn("right"), visible = true;
+
+    $("#slide-in-handle").click(function (e) {
+        toggleSlide(e);
+    });
+
+    $('[class^="screen-icon"],[class^="screen-text"]').click(function (e) {
+        if (!visible) {
+            slide.duration(0).play();
+            //$('[class^="screen-icon"]').css('height', '25px');
+            $('[class^="screen-text"]').hide();
+            $("#slide-in-share").css("margin-left", "0px")
+            $("#slide-in-share").width("40px");
+            $("#slide-in-wrapper").width("40px");
+            visible = !visible;
+        }
+    })
+
+    $('[class^="screen-text"]').css('color', '#FFF');
+    $('[class^="screen-text"]').css('text-decoration', 'underline');
+    $('[class^="screen-text"]').css('cursor', 'pointer');
+    $('[class^="screen-text"]').css('vertical-align', 'bottom');
+
+    @*//render javascript for screen icon buttons
+    $.ajax({
+        url: '/ScreenIcon/WriteScreenAjaxCalls',
+        type: 'GET',
+        data: {
+            clientName: '@TempData["ClientName"]',
+            numberOfScreens: '@TempData["MaxScreens"]'
+        },
+        dataType: 'script'
+    })*@
+
+    function CloseKendoWindow() {
+        var gateWindow = $('#GateWindow').data('kendoWindow');
+        var zoneWindow = $('#ZonesWindow').data('kendoWindow');
+        var airportWindow = $('#AirportWindow').data('kendoWindow');
+        var pcaWindow = $('#PCAWindow').data('kendoWindow');
+        var gpuWindow = $('#GPUWindow').data('kendoWindow');
+        var signInWindow = $('#pageData').data('kendoWindow');
+        var gateAlarmWindow = $('#GateAlarmWindow').data('kendoWindow');
+        var gpuAlarmWindow = $('#GPUAlarmWindow').data('kendoWindow');
+        var pcaAlarmWindow = $('#PCAAlarmWindow').data('kendoWindow');
+        var gateWarningWindow = $('#GateWarningWindow').data('kendoWindow');
+        var gpuWarningWindow = $('#GPUWarningWindow').data('kendoWindow');
+        var pcaWarningWindow = $('#PCAWarningWindow').data('kendoWindow');
+        var serviceCounterWindow = $('#ServiceCountersWindow').data('kendoWindow');
+        var networkMonitorWindow = $('#NetworkMonitorWindow').data('kendoWindow');
+        var flightsWindow = $('#FlightsWindow').data('kendoWindow');
+
+        if (zoneWindow)
+            $('#ZonesWindow').data('kendoWindow').destroy();
+        if (gateWindow)
+            $('#GateWindow').data('kendoWindow').destroy();
+        if (airportWindow)
+            $('#AirportWindow').data('kendoWindow').destroy();
+        if (pcaWindow)
+            $('#PCAWindow').data('kendoWindow').destroy();
+        if (gpuWindow)
+            $('#GPUWindow').data('kendoWindow').destroy();
+        if (signInWindow)
+            $('#pageData').data('kendoWindow').destroy();
+        if (gateAlarmWindow)
+            $('#GateAlarmWindow').data('kendoWindow').destroy();
+        if (gpuAlarmWindow)
+            $('#GPUAlarmWindow').data('kendoWindow').destroy();
+        if (pcaAlarmWindow)
+            $('#PCAAlarmWindow').data('kendoWindow').destroy();
+        if (gateWarningWindow)
+            $('#GateWarningWindow').data('kendoWindow').destroy();
+        if (gpuWarningWindow)
+            $('#GPUWarningWindow').data('kendoWindow').destroy();
+        if (pcaWarningWindow)
+            $('#PCAWarningWindow').data('kendoWindow').destroy();
+        if (serviceCounterWindow)
+            $('#ServiceCountersWindow').data('kendoWindow').destroy();
+        if (networkMonitorWindow)
+            $('#NetworkMonitorWindow').data('kendoWindow').destroy();
+        if (flightsWindow)
+            $('#FlightsWindow').data('kendoWindow').destroy();
+    }
+
+    $('#tblScreenNav tr[class^="screen-ajax"]').click(function (e) {
+        debugger;
+        var ajaxUrl = $(this).attr('ajax-url');
+        var ajaxData = $(this).attr('ajax-data').replace(new RegExp(/[']/g),"\"");
+        var parseData = $.parseJSON(ajaxData.replace(/'/g, '"'));
+        var screenNumber = $(this).attr('screen-number');
+        $.ajax({
+            url: ajaxUrl,
+            type: 'GET',
+            contentType: 'text/html',
+            data: JSON.parse(ajaxData),
+            success: function (data) {
+                CloseKendoWindow();
+                $('#main-body').html(data);
+                ChangeIcons(screenNumber);
+            },
+            error: function (a, b, c) {
+                debugger;
+                var text = 'Error: ';
+            }
+        });
+    });
+
+</script>

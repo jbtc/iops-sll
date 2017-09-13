@@ -1,0 +1,42 @@
+﻿@using System.Globalization
+@model iOps.Data.iopsWeatherEntities
+@{
+    DateTime oldTime = DateTime.Now.AddMinutes(-35);
+    var weather = @Model.Weathers.Where(a => (a.CoordLat == "58.5908") && (a.CoordLong=="23.6154") && (a.InsertDate.Value > oldTime));
+}
+<div class="Header-Weather-Layout">
+    @*<script>
+            $.support.cors = true; //this enables CROSS-origin resource sharing (ajax calls outside the domain)
+            this.xhr = $.ajax({
+                crossDomain: true,
+                url: "http://api.openweathermap.org/data/2.5/weather",
+                type: "GET",
+                dataType: 'json',
+                data: {
+                    q: '77301,USA',
+                    APPID: 'd81e0071bcffb6f3fe80336c715cc4cb',
+                    units: 'imperial'
+                },
+            }).fail(function (xhr, textStatus, ex) {
+                alert(xhr.status);
+            }).done(function (data) {
+                var description = data.weather[0].description;
+                description = description.charAt(0).toUpperCase() + description.slice(1);
+                $('.Header-Weather-Layout').html("<table width='100%'><tr><td><img src='" + 'http://openweathermap.org/img/w/' + data.weather[0].icon + ".png' alt='" + description + "' height='45px' width='45px'></td><td>" + Math.round(data.main.temp) + "&deg;F</td><tr><td colspan='2' align='center' class='Header-Weather-Text'>"+description+"</td></tr></table>");
+                //$.each(data, function (key, value) {
+                //    $.each(value, function(key,value) {
+                //        console.log(key, value);
+                //    })
+                //});
+            });
+        </script>*@
+    @if (weather.Count() > 0)
+    {
+        @Html.Raw("<table width='100%'><tr><td><img src='" + "http://openweathermap.org/img/w/" + @weather.First().WeatherIcon + ".png' alt='" + @weather.First().WeatherValue + "' height='42px' width='42px'></td><td>" + Math.Round(Convert.ToDouble(@weather.First().TemperatureAvg)) + "&deg;F</td><tr><td colspan='2' align='center' class='Header-Weather-Text'>" + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(@weather.First().WeatherValue) + "</td></tr></table>")
+    }
+    else
+    {
+        @Html.Raw("<table width='100%' style='padding-top:10px;font-weight:bold'><tr><td>No current weather</td></tr></table>")
+    }
+</div>
+

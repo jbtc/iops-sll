@@ -1,0 +1,42 @@
+﻿<div id="Header" class="Header-FlexGroup FlexContainer Flex-Row">
+    <div class="Header-iOps-logo Header-iOps-logo-gradient FlexItem FlexItem-FlexOn">
+        <a href="@Url.Content("~")">
+            <div id="divLogoImage">
+            </div>
+        </a>
+    </div>
+    <div class="Header-FlexItemGroup FlexItem FlexItem-FlexOn">
+        @Html.Partial("~/Views/Header/_Statistics.cshtml")
+   </div>
+    <!--The Weather partial is now populated in ~/Views/Account/SignIn.cshtml-->
+    <div class="Header-Weather FlexItem FlexItem-FlexOn" id="WeatherPlaceHolder">
+        <table style='padding-top:10px;font-weight:bold;width:100%;text-align:center'>
+            <tr><td>-</td></tr>
+        </table>
+    </div>
+    <div class="Header-Clock FlexItem FlexItem-FlexOn">
+        @Html.Partial("~/Views/Header/_Clock.cshtml")
+    </div>
+    <div class="Header-iOps-slllogo Header-iOps-slllogo-gradient FlexItem FlexItem-FlexOn">
+        <div id="divsllLogoImage">
+        </div>
+    </div>
+    <div class="Header-DropDownMenu FlexItem FlexItem-FlexOn">
+        @Html.Partial("~/Views/Header/_MainMenu.cshtml")
+    </div>
+</div>
+<nav class="menu-main" style="visibility:hidden; display:none;">
+    <ul>
+        <li class="optional">@Html.ActionLink(Mui.Home, "Index", "Home")</li>
+        @*@if (User.IsInRole("admin"))
+        {
+            <li>@Html.ActionLink("Users", "Index", "User")</li>
+        }*@
+        <li>@Html.ActionLink("Feedback", "Index", "Feedback")</li>
+    </ul>
+</nav>
+@*<nav class="menu-login" style="visibility:hidden; display:none;">
+    <ul>
+        <li> @Html.Partial("login")</li>
+    </ul>
+</nav>*@

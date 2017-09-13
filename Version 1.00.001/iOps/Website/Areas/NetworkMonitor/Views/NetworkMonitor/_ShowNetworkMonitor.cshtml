@@ -1,0 +1,375 @@
+﻿<script>
+    $(document).ready(function () {
+        $("#NetworkMonitorWindow").kendoWindow({
+            title: "Network Monitor",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        //removes the default custom icon for the kendo window
+        $('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+
+        //adds an ID attribute to each custom icon to allow unique functionality
+        $('a.k-window-action.k-link').each(function (index) {
+            $(this).attr('id', 'networkMonitorWindowLink' + index);
+        });
+
+
+        //up arrow (Airport screen)
+        $('#networkMonitorWindowLink0').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate", gateNum = TempData["GateNumber"] })',
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseKendoNetworkMonitor();
+                    $('#main-body').html(data);
+                }
+            });
+        })
+
+        $('#gateLinkButtonInNetworkMonitorScreen, #gateLink').click(function (e) {
+            $.ajax({
+                url: '@Url.Action("ShowGates", "Gate", new { area = "Gate", gateNum = TempData["GateNumber"] })',
+                type: "GET",
+                contentType: 'text/html',
+                success: function (data) {
+                    CloseKendoNetworkMonitor();
+                    $('#main-body').html(data);
+                }
+            });
+        });
+
+    })
+
+    function CloseKendoNetworkMonitor() {
+        if ($('#NetworkMonitorWindow').is(':visible')) {
+            $('#NetworkMonitorWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function buildNetworkMonitor() {
+        var counters = [
+            { tag: ".E_Stop", label: "E-Stop", id: "E_Stop" },
+            { tag: ".AutolevelModeflag", label: "Autolevel", id: "AutolevelModeflag" },
+            { tag: ".ShoeConnected", label: "Autolevel (Backup)", id: "ShoeConnected" },
+            { tag: ".CanopyDown", label: "Canopy", id: "CanopyDown" },
+            { tag: ".Vertical Movement Count", label: "Vertical Movement", id: "VerticalMovementCount" },
+            { tag: ".Horizontal Movement Count", label: "Horizontal Movement", id: "HorizontalMovementCount" },
+            { tag: ".ServiceDoorInterlockFlag", label: "Front Shutter/Doors", id: "ServiceDoorInterlockFlag" },
+            { tag: "_S", label: "Sensor/Photo Cells", id: "SensorPhotoCells" },
+            { tag: "_R", label: "Roof Top AC Units", id: "RooftopACUnits" },
+            { tag: ".MainConNotEnergized Count", label: "Power to Bridge", id: "MainConNotEnergizedCount" },
+            { tag: "_U", label: "UPS Power Supply", id: "UPSPowerSupply" },
+            { tag: ".RemoteLightingInd", label: "Bridge Lighting", id: "RemoteLightingInd" },
+            { tag: ".SmokeDetector", label: "Fire Alarm System", id: "SmokeDetector" },
+            { tag: ".VDGSInterlock", label: "VDGS Interlock", id: "VDGSInterlock" },
+            { tag: ".PCAir_Pit_Interlock", label: "PCA Pit", id: "PCAir_Pit_Interlock" },
+            { tag: ".Hz400_Pit_Interlock", label: "400hz Pit", id: "Hz400_Pit_Interlock" }
+        ];
+
+        tbl = $("#tblPoints.tblNetworkMonitor");
+        for (var i = 0; i < counters.length; i++) {
+            var c = counters[i];
+            tbl.append($("<tr><td>" + c.label + "</td><td id='" + c.id + "_count' opc-tag-txt='{\"tag\":\"" + c.tag + "\.ValueCountTotal\"}'>--</td>" +
+                            "<td id='" + c.id + "_ts' opc-tag-txt='{\"tag\":\"" + c.tag + ".Timestamp\"}'>--</td>" +
+                            "<td class=\"pointsTableDataCells\"><button id=\"" + c.id + "\" class=\"btn btnGray\" opc-tag-set='{\"tag\":\"" + c.tag + " Reset.Value\", \"config\":{\"evt\":\"click\", \"set\":\"value\", \"set_value\":\"True\"}}'>Reset</button>" +
+                            "</td></tr>"));
+        }
+
+        $("#btnScResetAll").click(function () {
+            for (var i = 0; i < counters.length; i++) {
+                var c = counters[i];
+                if (c.tag != "") { OPC.set_value(c.tag + " Reset.Value", "True"); }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // set up gate prefix
+        OPC_config.tag_prefix = "SLL Network Monitoring.";
+        OPC.init(); //re-initialize HTML HMI engine after updating prefix
+    });
+
+</script>
+<!--Because jquery syntax does not like razor tags, input will be used instead-->
+<input type="hidden" id="txtScreenNumber" value='@TempData["CIDMaxScreens"]' />
+<div id="NetworkMonitorWindow" class="Window-Container NetworkMonitor-Window">
+    <div class="networkMonitorPageDividerLeft">
+        <table>
+            <tr>
+                <td>
+                    <table class="pointsTable tblNetworkMonitor" id="tblPoints">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader" style="text-align:left;">Description</th>
+                            <th class="pointsTableHeader" style="text-align:left;">Device ID</th>
+                            <th class="pointsTableHeader" style="text-align:left">Status</th>
+                            <th class="pointsTableHeader" style="text-align:left">Round Trip Time</th>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device001_Description" opc-tag-txt='{"tag":"FOC001- Cluster SYNC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device001_ID" opc-tag-txt='{"tag":"FOC001- Cluster SYNC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device001_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC001- Cluster SYNC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC001- Cluster SYNC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device001_RTT" opc-tag-txt='{"tag":"FOC001- Cluster SYNC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device002_Description" opc-tag-txt='{"tag":"FOC001-Heartbeat._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device002_ID" opc-tag-txt='{"tag":"FOC001-Heartbeat._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device002_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC001-Heartbeat.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC001-Heartbeat.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device002_RTT" opc-tag-txt='{"tag":"FOC001-Heartbeat.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device003_Description" opc-tag-txt='{"tag":"FOC001-VSYNC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device003_ID" opc-tag-txt='{"tag":"FOC001-VSYNC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device003_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC001-VSYNC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC001-VSYNC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device003_RTT" opc-tag-txt='{"tag":"FOC001-VSYNC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device004_Description" opc-tag-txt='{"tag":"FOC002-Cluster SYNC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device004_ID" opc-tag-txt='{"tag":"FOC002-Cluster SYNC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device004_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC002-Cluster SYNC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC002-Cluster SYNC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device004_RTT" opc-tag-txt='{"tag":"FOC002-Cluster SYNC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device005_Description" opc-tag-txt='{"tag":"FOC002-Heartbeat._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device005_ID" opc-tag-txt='{"tag":"FOC002-Heartbeat._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device005_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC002-Heartbeat.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC002-Heartbeat.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device005_RTT" opc-tag-txt='{"tag":"FOC002-Heartbeat.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device006_Description" opc-tag-txt='{"tag":"FOC002-VSYNC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device006_ID" opc-tag-txt='{"tag":"FOC002-VSYNC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device006_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FOC002-VSYNC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"FOC002-VSYNC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device006_RTT" opc-tag-txt='{"tag":"FOC002-VSYNC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device007_Description" opc-tag-txt='{"tag":"Gate 1A CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device007_ID" opc-tag-txt='{"tag":"Gate 1A CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device007_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 1A CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 1A CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device007_RTT" opc-tag-txt='{"tag":"Gate 1A CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device008_Description" opc-tag-txt='{"tag":"Gate 1A PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device008_ID" opc-tag-txt='{"tag":"Gate 1A PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device008_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 1A PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 1A PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device008_RTT" opc-tag-txt='{"tag":"Gate 1A PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device009_Description" opc-tag-txt='{"tag":"Gate 1B CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device009_ID" opc-tag-txt='{"tag":"Gate 1B CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device009_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 1B CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 1B CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device009_RTT" opc-tag-txt='{"tag":"Gate 1B CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device010_Description" opc-tag-txt='{"tag":"Gate 1B PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device010_ID" opc-tag-txt='{"tag":"Gate 1B PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device010_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 1B PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 1B PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device010_RTT" opc-tag-txt='{"tag":"Gate 1B PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device011_Description" opc-tag-txt='{"tag":"Gate 2A CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device011_ID" opc-tag-txt='{"tag":"Gate 2A CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device011_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 2A CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 2A CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device011_RTT" opc-tag-txt='{"tag":"Gate 2A CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device012_Description" opc-tag-txt='{"tag":"Gate 2A PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device012_ID" opc-tag-txt='{"tag":"Gate 2A PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device012_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 2A PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 2A PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device012_RTT" opc-tag-txt='{"tag":"Gate 2A PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device013_Description" opc-tag-txt='{"tag":"Gate 2B CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device013_ID" opc-tag-txt='{"tag":"Gate 2B CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device013_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 2B CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 2B CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device013_RTT" opc-tag-txt='{"tag":"Gate 2B CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device014_Description" opc-tag-txt='{"tag":"Gate 2B PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device014_ID" opc-tag-txt='{"tag":"Gate 2B PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device014_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 2B PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 2B PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device014_RTT" opc-tag-txt='{"tag":"Gate 2B PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device015_Description" opc-tag-txt='{"tag":"Gate 3A CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device015_ID" opc-tag-txt='{"tag":"Gate 3A CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device015_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 3A CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 3A CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device015_RTT" opc-tag-txt='{"tag":"Gate 3A CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device016_Description" opc-tag-txt='{"tag":"Gate 3A PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device016_ID" opc-tag-txt='{"tag":"Gate 3A PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device016_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 3A PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 3A PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device016_RTT" opc-tag-txt='{"tag":"Gate 3A PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device017_Description" opc-tag-txt='{"tag":"Gate 3B CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device017_ID" opc-tag-txt='{"tag":"Gate 3B CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device017_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 3B CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 3B CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device017_RTT" opc-tag-txt='{"tag":"Gate 3B CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device018_Description" opc-tag-txt='{"tag":"Gate 3B PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device018_ID" opc-tag-txt='{"tag":"Gate 3B PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device018_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 3B PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 3B PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device018_RTT" opc-tag-txt='{"tag":"Gate 3B PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device019_Description" opc-tag-txt='{"tag":"Gate 4A CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device019_ID" opc-tag-txt='{"tag":"Gate 4A CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device019_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 4A CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 4A CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device019_RTT" opc-tag-txt='{"tag":"Gate 4A CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device020_Description" opc-tag-txt='{"tag":"Gate 4A PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device020_ID" opc-tag-txt='{"tag":"Gate 4A PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device020_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 4A PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 4A PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device020_RTT" opc-tag-txt='{"tag":"Gate 4A PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device021_Description" opc-tag-txt='{"tag":"Gate 4B CCTV._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device021_ID" opc-tag-txt='{"tag":"Gate 4B CCTV._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device021_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 4B CCTV.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 4B CCTV.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device021_RTT" opc-tag-txt='{"tag":"Gate 4B CCTV.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device022_Description" opc-tag-txt='{"tag":"Gate 4B PLC._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device022_ID" opc-tag-txt='{"tag":"Gate 4B PLC._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device022_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"Gate 4B PLC.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"Gate 4B PLC.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device022_RTT" opc-tag-txt='{"tag":"Gate 4B PLC.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device023_Description" opc-tag-txt='{"tag":"SLL1HVFOC001._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device023_ID" opc-tag-txt='{"tag":"SLL1HVFOC001._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device023_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"SLL1HVFOC001.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"SLL1HVFOC001.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device023_RTT" opc-tag-txt='{"tag":"SLL1HVFOC001.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td class="pointsTableDataCells" id="device024_Description" opc-tag-txt='{"tag":"SLL1HVFOC002._System._Description.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells" id="device024_ID" opc-tag-txt='{"tag":"SLL1HVFOC002._System._DeviceId.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                            <td class="pointsTableDataCells">
+                                <button id="device024_Status" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnRed"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"SLL1HVFOC002.Status.Value","config":{"cls":"btnGreen"}}]}'
+                                        opc-tag-txt='{"tag":"SLL1HVFOC002.Status.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"No Connection","bool_t":"Connected"}}}'>Loading...
+                                </button>
+                            </td>
+                            <td class="pointsTableDataCells" id="device024_RTT" opc-tag-txt='{"tag":"SLL1HVFOC002.RoundTripTime.Value", "config":{"bad_q":"Bad Data"}}'>Loading...</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

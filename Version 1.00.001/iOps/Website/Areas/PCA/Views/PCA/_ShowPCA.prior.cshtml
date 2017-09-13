@@ -1,0 +1,829 @@
+﻿<script>
+    function get_value(tag) {
+        return OPC.get_value(tag);
+
+        //return OPC.get_value(OPC_config.tag_prefix + tag);
+    }
+    function get_bool(tag) {
+        var b = OPC.get_value(tag);
+        //var b = OPC.get_value(OPC_config.tag_prefix + tag);
+        if (b && b == "True") return true;
+        if (b && b == "False") return false;
+        return null;
+    }
+
+    function createGauges() {
+        $("#gaugeTEMP").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#66aaf7",
+            }],
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 140,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 0,
+                        to: 35,
+                        color: "#c20000"
+                    }, {
+                        from: 35,
+                        to: 65,
+                        color: "#ffd400"
+                    }, {
+                        from: 65,
+                        to: 90,
+                        color: "#00c000"
+                    }, {
+                        from: 90,
+                        to: 105,
+                        color: "#ffd400"
+                    }, {
+                        from: 105,
+                        to: 140,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugePRESSSUC").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#ffc700",
+            }],
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 180,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 80,
+                        to: 120,
+                        color: "#00c000"
+                    }, {
+                        from: 120,
+                        to: 150,
+                        color: "#ffd400"
+                    }, {
+                        from: 150,
+                        to: 180,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        })
+        $("#gaugePRESSHEAD").kendoRadialGauge({
+            pointer: [{
+                value: 0,
+                color: "#009900",
+                cap: { size: 0.15 }
+            }, {
+                value: 0,
+                color: "#ff7a00",
+                cap: { size: 0.1 }
+            }, {
+                value: 0,
+                color: "#ffc700",
+            }],
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 180,
+                labels: {
+                    position: "outside"
+                },
+                ranges: [
+                    {
+                        from: 80,
+                        to: 120,
+                        color: "#00c000"
+                    }, {
+                        from: 120,
+                        to: 150,
+                        color: "#ffd400"
+                    }, {
+                        from: 150,
+                        to: 180,
+                        color: "#c20000"
+                    }
+                ]
+
+            }
+        })
+    }
+
+    function opc_callback(data) {
+        Update_Tagged_Controls();
+    }
+
+    function Update_Tagged_Controls() {
+        var pre = OPC_config.tag_prefix;
+        var gauge = $("#gaugeTEMP").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "TEMPDISCH.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "TEMPAMB.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "TEMPCABIN.Value")));
+
+        gauge = $("#gaugePRESSSUC").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "PRESSSUCPRI1.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "PRESSSUCSEC1.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "PRESSSUCSEC2.Value")));
+
+        gauge = $("#gaugePRESSHEAD").data("kendoRadialGauge");
+        gauge.pointers[0].value(parseInt(get_value(pre + "PRESSHEADPRI1.Value")));
+        gauge.pointers[1].value(parseInt(get_value(pre + "PRESSHEADSEC1.Value")));
+        gauge.pointers[2].value(parseInt(get_value(pre + "PRESSHEADSEC2.Value")));
+    }
+
+    var tags = [];
+    $(document).ready(function () {
+        OPC_config.Token = "7e61b230-481d-4551-b24b-ba9046e3d8f2";
+        OPC_config.ServerURL = "http://10.28.100.3:58725";
+        //OPC_config.tag_prefix = 'Airport-JFK.Airport.' + @TempData["ClientAbbr"] + '.Term4.Zone' + @TempData["ZoneNumber"] + '.Gate-' + @TempData["GateNumber"] + '.PCA.';
+        @*OPC_config.tag_prefix = '\\\\opc.iopsnow.com\\RemoteSCADAHosting.Airport-' + '@TempData["ClientAbbr"]' + '.Airport.CID.Term1.Zone' + '@TempData["ZoneNumber"]' + '.Gate C-' + '@TempData["GateNumber"]' + '.PCA.';*@
+        OPC_config.tag_prefix = '\\\\opc.iopsnow.com\\RemoteSCADAHosting.Airport-CID.Airport.CID.Term1.Zone1.GateC' + '@TempData["GateNumber"]' + '.PCA.';
+        OPC_config.alarm_bindings = [
+            {
+                alarmid: "GateAlarms",
+                callback: update_alarms,
+                showInfo: true,
+                showHistory: false,
+                filter: {
+                    alarmtypes: ["High High", "High", "Low", "Low Low", "Digital", "ROC"],
+                    alarmgroups: ["@TempData["GateNumber"]" + "_PCA_ALARMS"]
+                },
+                columns: [
+                    { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+                    { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+                    { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+                    { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+                    { name: "Text", text: "Text", type: "string", visible: true },
+                    { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+                    { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+                ]
+            },
+    {
+        alarmid: "GateWarnings",
+        callback: update_warnings,
+        showInfo: true,
+        showHistory: false,
+        filter: {
+            alarmtypes: ["High High", "High", "Low", "Low Low", "Digital", "ROC"],
+            alarmgroups: ["@TempData["GateNumber"]" + "_PCA_WARNINGS"]
+        },
+        columns: [
+            { name: "AlarmID", text: "Alarm ID", type: "string", visible: false },
+            { name: "AlarmDateTime", text: "Alarm Date/Time", type: "datetime", visible: true, sort: 'desc', width: '130px', searchable: false },
+            { name: "Active", text: "Active", type: "boolean", visible: true, width: '50px', align: 'center' },
+            { name: "AlarmValue", text: "Alarm Value", type: "string", visible: false, align: 'right' },
+            { name: "Text", text: "Text", type: "string", visible: true },
+            { name: "AlarmType", text: "Alarm Type", type: "string", visible: true },
+            { name: "Priority", text: "Priority", type: "string", visible: true, width: '50px', align: 'right' }
+        ]
+    }
+        ];
+        OPC_config.refresh_callback = opc_callback;
+        OPC_config.max_tags_per_msg = 25;
+        OPC_config.watch_tags = tags;
+        tags.push("TEMPDISCH.Value");                  // aircraft is docked
+        tags.push("TEMPAMB.Value");                  // show green
+        tags.push("TEMPCABIN.Value");            // show yellow
+        tags.push("PRESSSUCSEC1.Value");                 // show orange
+        tags.push("PRESSSUCSEC2.Value");                 // show orange
+        tags.push("PRESSSUCPRI1.Value");                 // show orange
+        tags.push("PRESSHEADPRI1.Value");                     // show red
+        tags.push("PRESSHEADSEC1.Value");                     // show red
+        tags.push("PRESSHEADSEC2.Value");                     // show red
+        OPC.init(); //required for ajax calls in OPC
+    });
+
+    $(document).ready(function () {
+        createGauges();
+        $("#PCAWindow").kendoWindow({
+            title: "Gate @TempData["GateNumber"] - PCA",
+            draggable: false,
+            modal: false,
+            width: $("#splitter").width() - 244,
+            height: $(".splitter-main").height() - 33,
+            position: {
+                top: $("#Header").height() + 2,
+                left: 246
+            },
+            resizable: false,
+            actions: ["Custom", "Custom", "Custom"]
+        });
+
+        //delete the SignIn kendoWindow once loaded
+        if ($('#pageData').is(':visible')) {
+            $('#pageData').data('kendoWindow').destroy();
+        }
+
+        //if the splitter is already collapsed, expand the main window
+        if ($('.splitter-stats').width() < 200) {
+            $('body').find('.k-window').css('width', '+=200');
+            $('body').find('.k-window').css('left', '-=200');
+        }
+
+        var pcaAlarmWindow = $('#PCAAlarmWindow');
+        var btnAlarms = $('#btnAlarms').bind('click', function () {
+            pcaAlarmWindow.data('kendoWindow').open();
+        });
+
+        if (!pcaAlarmWindow.data('kendoWindow')) {
+            pcaAlarmWindow.kendoWindow({
+                width: '400px',
+                height: '650px',
+                animation: false,
+                modal: false,
+                draggable: true,
+                title: 'Gate @TempData["GateNumber"] - PCA Alarms',
+                visible: false,
+                actions: ["Close"],
+                open: function (e) {
+                    this.wrapper.css({
+                        top: 100,
+                        left: 250
+                    });
+                }
+            })
+        }
+    })
+
+    //if the splitter is already collapsed, expand the main window
+    if ($('.splitter-stats').width() < 200) {
+        $('body').find('.k-window').css('width', '+=200');
+        $('body').find('.k-window').css('left', '-=200');
+    }
+
+    function CloseKendoPCA() {
+
+        if ($('#PCAWindow').is(':visible')) {
+            $('#PCAWindow').data('kendoWindow').destroy();
+            return false;
+        }
+    }
+
+    function ClosePCAAlarmWindow() {
+        $('#PCAAlarmWindow').data('kendoWindow').destroy();
+        return false;
+    }
+
+    //removes the default custom icon for the kendo window
+    $('#PCAWindow').parent().find('a.k-window-action.k-link').find('span').css("background-image", "url('#')");
+
+    //adds an ID attribute to each custom icon to allow unique functionality
+    $('#PCAWindow').parent().find('a.k-window-action.k-link').each(function (index) {
+        $(this).attr('id', 'pcaWindowLink' + index);
+    });
+
+    //left arrow click (go to GPU)
+    $('#pcaWindowLink0').click(function (e) {
+        $.ajax({
+            url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+            type: "GET",
+            data: {
+                gateNum: "@TempData["GateNumber"]",
+                zoneNum: "@TempData["ZoneNumber"]"
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                ClosePCAAlarmWindow();
+                CloseKendoPCA();
+                $('#main-body').html(data);
+            }
+        });
+    });
+
+    //up arrow (go back to the Gates screen)
+    //by default, user will be shown gate 1 (get clarified)
+    $('#pcaWindowLink1').click(function (e) {
+        $.ajax({
+            url: '@Url.Action("ShowGates", "Gate", new { area = "Gate" })',
+            type: "GET",
+            data: {
+                gateNum: "@TempData["GateNumber"]",
+                zoneNum: "@TempData["ZoneNumber"]"
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                ClosePCAAlarmWindow();
+                CloseKendoPCA();
+                $('#main-body').html(data);
+            }
+        });
+    });
+
+    $('#pcaWindowLink2').click(function (e) {
+        e.preventDefault();
+    });
+
+    $('#gateLinkButtonInPCAScreen').click(function (e) {
+        $.ajax({
+            url: '@Url.Action("ShowGates","Gate",new {area = "Gate"})',
+            type: "GET",
+            data: {
+                gateNum: '@TempData["GateNumber"]',
+                zoneNum: "@TempData["ZoneNumber"]"
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                ClosePCAAlarmWindow();
+                CloseKendoPCA();
+                $('#main-body').html(data);
+            }
+        });
+    });
+
+    $('#pcaLinkButtonInPCAScreen').click(function (e) {
+        $.ajax({
+            url: '@Url.Action("ShowGPU", "GPU", new { area = "GPU" })',
+            type: "GET",
+            data: {
+                gateNum: '@TempData["GateNumber"]',
+                zoneNum: "@TempData["ZoneNumber"]"
+            },
+            contentType: 'text/html',
+            success: function (data) {
+                ClosePCAAlarmWindow();
+                CloseKendoPCA();
+                $('#main-body').html(data);
+            }
+        });
+    });
+
+    $('#PCAAlarmWindow').kendoWindow({
+        width: '400px',
+        height: '650px',
+        animation: false,
+        modal: false,
+        draggable: true,
+        title: 'Gate 1 - PCA Alarms',
+        visible: false
+    });
+
+    $('#btnAlarms').click(function () {
+        $('#PCAAlarmWindow').data('kendoWindow').open();
+        $('#PCAAlarmWindow').closest(".k-window").css({ top: 90, left: 250 });
+
+        //add custom background image to custom kendo button
+        var pcaAlarmWindow = $('#PCAAlarmWindow').data('kendoWindow');
+        var buttonWrapper = pcaAlarmWindow.wrapper.find('.k-i-custom');
+        buttonWrapper.css({ 'background': "url('/Content/Themes/CID/Ver 1.0.0/Images/awe_icons.png') -38px -31px no-repeat", "cursor": "pointer" });
+        buttonWrapper.attr('id', 'btnAlarmClose');
+    });
+
+    //because the ID btnAlarmClose was added dynamically, jquery event delegation
+    //must be used to register the event handler
+    $(document).on('click', '#btnAlarmClose', function () {
+        if ($('#PCAAlarmWindow').is(':visible')) {
+            $('#PCAAlarmWindow').data('kendoWindow').close();
+            return false;
+        }
+    });
+
+    @*$(document).ready(function(){
+        // set up gate prefix
+        // OPC_config.serverURL = "http://localhost:58725";
+        //OPC_config.token = '7e61b230-481d-4551-b24b-ba9046e3d8f2';
+        //OPC_config.serverURL = 'http://69.60.110.8:58725';
+        //OPC_config.serverURL = 'http://opc.iopsnow.com:58725';
+        OPC_config.tag_prefix = '\\\\opc.iopsnow.com\\RemoteSCADAHosting.Airport-CID.Airport.CID.Term1.Zone1.Gate C-' + @TempData["GateNumber"] + '.PCA.';
+        //alert(OPC_config.tag_prefix);
+        OPC_config.refresh_callback = refresh_update;
+        OPC_config.max_tags_per_msg = 25;
+        // TODO: add horizontal/vertical movement tags to OPC_config.watch_tags array
+        OPC.init(); //re-initialize HTML HMI engine after updating prefix
+            });*@
+
+</script>
+
+<div id="PCAWindow" class="Window-Container PCA-Window">
+    <div class="pcaPageDividerLeft">
+        
+
+                    <table class="pointsTable" id="tblPointsLeft">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader">Point</th>
+                            <th class="pointsTableHeader">Value</th>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPCAONTitle" opc-tag-txt='{"tag":"PCAON.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPCAON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCAON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPCAON" opc-tag-txt='{"tag":"PCAON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnMODEOFOPERATIONTitle' opc-tag-txt='{"tag":"MODEOFOPERATION.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnMODEOFOPERATION"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"MODEOFOPERATION.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnMODEOFOPERATION" opc-tag-txt='{"tag":"MODEOFOPERATION.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnAIRCRAFTSELECTIONTitle' opc-tag-txt='{"tag":"AIRCRAFTSELECTION.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnAIRCRAFTSELECTION"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"AIRCRAFTSELECTION.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnAIRCRAFTSELECTION" opc-tag-txt='{"tag":"AIRCRAFTSELECTION.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnTEMPAMBTitle' opc-tag-txt='{"tag":"TEMPAMB.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPAMB"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPAMB.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnTEMPAMB" opc-tag-txt='{"tag":"TEMPAMB.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnTEMPDISCHTitle' opc-tag-txt='{"tag":"TEMPDISCH.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPDISCH"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPDISCH.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnTEMPDISCH" opc-tag-txt='{"tag":"TEMPDISCH.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='spnTEMPCABINTitle' opc-tag-txt='{"tag":"TEMPCABIN.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPCABIN"
+                                        opc-tag-bkg='
+                                            {"type":"group",
+                                                "all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},
+                                                "group":[
+                                                    {"tag":"TEMPCABIN.Value","config":{"cls":"btnGreen"}}
+                                                ]
+                                            }'>
+                                    <span id="spnTEMPCABIN" opc-tag-txt='{"tag":"TEMPCABIN.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADPRI1Title" opc-tag-txt='{"tag":"PRESSHEADPRI1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI" opc-tag-txt='{"tag":"PRESSHEADPRI1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCPRI1Title" opc-tag-txt='{"tag":"PRESSSUCPRI1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI1" opc-tag-txt='{"tag":"PRESSSUCPRI1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADPRI2Title" opc-tag-txt='{"tag":"PRESSHEADPRI2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI2" opc-tag-txt='{"tag":"PRESSHEADPRI2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCPRI2Title" opc-tag-txt='{"tag":"PRESSSUCPRI2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI2" opc-tag-txt='{"tag":"PRESSSUCPRI2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADSEC1Title" opc-tag-txt='{"tag":"PRESSHEADSEC1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC1" opc-tag-txt='{"tag":"PRESSHEADSEC1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCSEC1Title" opc-tag-txt='{"tag":"PRESSSUCSEC1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC1" opc-tag-txt='{"tag":"PRESSSUCSEC1.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADSEC2Title" opc-tag-txt='{"tag":"PRESSHEADSEC2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADSEC2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC2" opc-tag-txt='{"tag":"PRESSHEADSEC2.Value","config":{"formats":{"bad_q":"Bad Data","int":"0","string":"{0}"},"offset":0}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnFANCONDFRONTPRITitle" opc-tag-txt='{"tag":"FANCONDFRONTPRI.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFANCONDFRONTPRI" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDFRONTPRI.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDFRONTPRI" opc-tag-txt='{"tag":"FANCONDFRONTPRI.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnFANCONDREARPRITitle" opc-tag-txt='{"tag":"FANCONDREARPRI.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFANCONDREARPRI" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDREARPRI.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDREARPRI" opc-tag-txt='{"tag":"FANCONDREARPRI.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnFANCONDFRONTSECTitle" opc-tag-txt='{"tag":"FANCONDFRONTSEC.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFANCONDFRONTSEC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDFRONTSEC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDFRONTSEC" opc-tag-txt='{"tag":"FANCONDFRONTSEC.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnFANCONDREARSECTitle" opc-tag-txt='{"tag":"FANCONDREARSEC.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFANCONDREARSEC" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FANCONDREARSEC.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFANCONDREARSEC" opc-tag-txt='{"tag":"FANCONDREARSEC.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                      
+                        @*<tr>
+                            <td><span id="spnBRIDGEAIRONTitle" opc-tag-txt='{"tag":"BRIDGEAIRON.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnBRIDGEAIRON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BRIDGEAIRON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBRIDGEAIRON" opc-tag-txt='{"tag":"BRIDGEAIRON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnBRIDGEAIRONTitle" opc-tag-txt='{"tag":"BRIDGEAIRON.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnBRIDGEAIRON" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BRIDGEAIRON.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBRIDGEAIRON" opc-tag-txt='{"tag":"BRIDGEAIRON.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPCA_INTRLCKTitle" opc-tag-txt='{"tag":"PCA_INTRLCK.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPCA_INTRLCK" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCA_INTRLCK.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPCA_INTRLCK" opc-tag-txt='{"tag":"PCA_INTRLCK.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Deactivated","bool_t":"Activated"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+                        @*<tr>
+                            <td><span id="spnHEAT1Title" opc-tag-txt='{"tag":"HEAT1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHEAT1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT1" opc-tag-txt='{"tag":"HEAT1.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnHEAT2Title" opc-tag-txt='{"tag":"HEAT2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHEAT2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT2" opc-tag-txt='{"tag":"HEAT2.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnHEAT3Title" opc-tag-txt='{"tag":"HEAT3.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHEAT3" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT3.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT3" opc-tag-txt='{"tag":"HEAT3.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnHEAT4Title" opc-tag-txt='{"tag":"HEAT4.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHEAT4" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT4.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT4" opc-tag-txt='{"tag":"HEAT4.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+                        @*<tr>
+                            <td><span id="spnHEAT5Title" opc-tag-txt='{"tag":"HEAT5.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnHEAT5" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT5.Value","config":{"cls":"btnGreen"}}]}'><span id="spnHEAT5" opc-tag-txt='{"tag":"HEAT5.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+                        
+                        <tr>
+                            <td><span id="spnPUMPCONDTitle" opc-tag-txt='{"tag":"PUMPCOND.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPUMPCOND" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PUMPCOND.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPUMPCOND" opc-tag-txt='{"tag":"PUMPCOND.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnBLOWERTitle" opc-tag-txt='{"tag":"BLOWER.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnBLOWER" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"BLOWER.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBLOWER" opc-tag-txt='{"tag":"BLOWER.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnMODEOVERNIGHTTitle" opc-tag-txt='{"tag":"MODEOVERNIGHT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnMODEOVERNIGHT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"MODEOVERNIGHT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnMODEOVERNIGHT" opc-tag-txt='{"tag":"MODEOVERNIGHT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                            <td><span id="spnPRESSHEADPRI2Title" opc-tag-txt='{"tag":"PRESSHEADPRI2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI2" opc-tag-txt='{"tag":"PRESSHEADPRI2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr id="rowALMPRESSHEADSEC2Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSHEADSEC2.Value","config":{"bad_q":true,"trigger":"on_true"}}'>
+                            <td><span id="spnALMPRESSHEADSEC2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSHEADSEC2.Description"}'>Loading...</span></td>
+                            <td>
+                                <div id="divALMPRESSHEADSEC2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSHEADSEC2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCPRI2Title" opc-tag-txt='{"tag":"PRESSSUCPRI2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCPRI2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI2" opc-tag-txt='{"tag":"PRESSSUCPRI2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCSEC2Title" opc-tag-txt='{"tag":"PRESSSUCSEC2.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCSEC2" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC2.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC2" opc-tag-txt='{"tag":"PRESSSUCSEC2.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnMODEACFTTitle" opc-tag-txt='{"tag":"MODEACFT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnMODEACFT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"MODEACFT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnMODEACFT" opc-tag-txt='{"tag":"MODEACFT.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRECOOLPBTitle" opc-tag-txt='{"tag":"PRECOOLPB.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRECOOLPB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"HEAT5.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRECOOLPB" opc-tag-txt='{"tag":"HEAT5.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnFORCEDAIRHEATTitle" opc-tag-txt='{"tag":"FORCEDAIRHEAT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnFORCEDAIRHEAT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"FORCEDAIRHEAT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnFORCEDAIRHEAT" opc-tag-txt='{"tag":"FORCEDAIRHEAT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"Off","bool_t":"On"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCSEC1Title" opc-tag-txt='{"tag":"PRESSSUCSEC1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCSEC1" opc-tag-txt='{"tag":"PRESSSUCSEC1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSSUCPRI1Title" opc-tag-txt='{"tag":"PRESSSUCPRI1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSSUCPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSSUCPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSSUCPRI1" opc-tag-txt='{"tag":"PRESSSUCPRI1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADPRI1Title" opc-tag-txt='{"tag":"PRESSHEADPRI1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADPRI1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADPRI1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADPRI1" opc-tag-txt='{"tag":"PRESSHEADPRI1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnPRESSHEADSEC1Title" opc-tag-txt='{"tag":"PRESSHEADSEC1.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPRESSHEADSEC1" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PRESSHEADSEC1.Value","config":{"cls":"btnGreen"}}]}'><span id="spnPRESSHEADSEC1" opc-tag-txt='{"tag":"PRESSHEADSEC1.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+                        <tr>
+                            <td><span id="spnDIRTYFILTERTitle" opc-tag-txt='{"tag":"DIRTYFILTER.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnDIRTYFILTER" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGreen"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"DIRTYFILTER.Value","config":{"cls":"btnRed"}}]}'><span id="spnDIRTYFILTER" opc-tag-txt='{"tag":"DIRTYFILTER.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"OK","bool_t":"Clean Filter","float":"0.000","int":"0","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                            <td><span id="spnPCAMAINTTitle" opc-tag-txt='{"tag":"PCAMAINT.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnPCAMAINT" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"PCAMAINT.Value","config":{"cls":"btnGreen"}}]}'><span id="spnBLOPCAMAINTWER" opc-tag-txt='{"tag":"PCAMAINT.Value","config":{"formats":{"bad_q":"Bad Data","bool_f":"False","bool_t":""}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+                        @*<tr>
+                            <td><span id="spnTEMPDISCHTitle" opc-tag-txt='{"tag":"TEMPDISCH.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPDISCH" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPDISCH.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPDISCH" opc-tag-txt='{"tag":"TEMPDISCH.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnTEMPAMBTitle" opc-tag-txt='{"tag":"TEMPAMB.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPAMB" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPAMB.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPAMB" opc-tag-txt='{"tag":"TEMPAMB.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="spnTEMPCABINTitle" opc-tag-txt='{"tag":"TEMPCABIN.Description"}'>Loading...</span></td>
+                            <td class="pointsTableDataCells">
+                                <button id="btnTEMPCABIN" opc-tag-bkg='{"type":"group","all_f":{"cls":"btnGray"},"bad_q":{"cls":"btnGray"},"group":[{"tag":"TEMPCABIN.Value","config":{"cls":"btnGreen"}}]}'><span id="spnTEMPCABIN" opc-tag-txt='{"tag":"TEMPCABIN.Value","config":{"formats":{"bad_q":"Bad Data","string":"{0}"}}}'>Loading...</span></button>
+                            </td>
+                        </tr>*@
+
+                    </table>
+                    <table class="pointsTable" id="tblPointsRight">
+                        <tr class="pointsTableRowHeader">
+                            <th class="pointsTableHeader">Tempurature</th>
+                            <th class="pointsTableHeader">Pressure Suction</th>
+                            <th class="pointsTableHeader">Pressure Head</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="gaugeTEMP-container" class="gauge-container">
+                                    <div id="gaugeTEMP" class="gauge"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="gaugePRESSSUC-container" class="gauge-container">
+                                    <div id="gaugePRESSSUC" class="gauge"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="gaugePRESSHEAD-container" class="gauge-container">
+                                    <div id="gaugePRESSHEAD" class="gauge"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+        <button id="btnAlarms" opc-tag-bkg='{
+                            "type":"group",
+                            "all_f":{"cls":"btnInvisible"},
+                            "bad_q":{"cls":"btnGray"},
+                            "group":[
+                                {"tag":"Alarm._HasAlarms.Value","config": {"cls":"redFlashingBackground"}}
+                            ]}' opc-tag-txt='{"tag":"Alarm._Count.Value","config":{"formats":{"bad_q":"Click here to view alarms (Bad Data)","string":"Click here to view alarms ({0})"}}}'>
+            Click here to view alarms
+        </button>
+    </div>
+    <div class="pcaPageDividerRight">
+        <button id="gateLinkButtonInPCAScreen">Go to Gate</button>
+        <button id="pcaLinkButtonInPCAScreen">Go to GPU</button>
+    </div>
+</div>
+<div id="PCAAlarmWindow">
+    <table id="tblAlarms" class="alarmTable">
+        <tr class="rowHeader">
+            <th class="alarmTableHeader">Point</th>
+            <th class="alarmTableHeader">Status</th>
+        </tr>
+
+        <tr id="rowALMCOMPSEC1Alarm" opc-tag-vis='{"tag":"Alarm.ALMCOMPSEC1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMCOMPSEC1AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMCOMPSEC1.Description"}'>Loading...</span></td><td><div id="divALMCOMPSEC1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMCOMPSEC1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMCOMPSEC2Alarm" opc-tag-vis='{"tag":"Alarm.ALMCOMPSEC2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMCOMPSEC2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMCOMPSEC2.Description"}'>Loading...</span></td><td><div id="divALMCOMPSEC2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMCOMPSEC2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMFANCONDFRONTSECAlarm" opc-tag-vis='{"tag":"Alarm.ALMFANCONDFRONTSEC.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMFANCONDFRONTSECAlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMFANCONDFRONTSEC.Description"}'>Loading...</span></td><td><div id="divALMFANCONDFRONTSECAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMFANCONDFRONTSEC.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMFANCONDREARSECAlarm" opc-tag-vis='{"tag":"Alarm.ALMFANCONDREARSEC.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMFANCONDREARSECAlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMFANCONDREARSEC.Description"}'>Loading...</span></td><td><div id="divALMFANCONDREARSECAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMFANCONDREARSEC.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMHEAT3Alarm" opc-tag-vis='{"tag":"Alarm.ALMHEAT3.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMHEAT3AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMHEAT3.Description"}'>Loading...</span></td><td><div id="divALMHEAT3Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMHEAT3.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMHEAT4Alarm" opc-tag-vis='{"tag":"Alarm.ALMHEAT4.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMHEAT4AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMHEAT4.Description"}'>Loading...</span></td><td><div id="divALMHEAT4Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMHEAT4.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMHEAT5Alarm" opc-tag-vis='{"tag":"Alarm.ALMHEAT5.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMHEAT5AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMHEAT5.Description"}'>Loading...</span></td><td><div id="divALMHEAT5Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMHEAT5.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPHASEMONAlarm" opc-tag-vis='{"tag":"Alarm.ALMPHASEMON.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPHASEMONAlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPHASEMON.Description"}'>Loading...</span></td><td><div id="divALMPHASEMONAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPHASEMON.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSHEADPRI1Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSHEADPRI1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSHEADPRI1AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSHEADPRI1.Description"}'>Loading...</span></td><td><div id="divALMPRESSHEADPRI1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSHEADPRI1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSHEADPRI2Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSHEADPRI2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSHEADPRI2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSHEADPRI2.Description"}'>Loading...</span></td><td><div id="divALMPRESSHEADPRI2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSHEADPRI2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSHEADSEC1Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSHEADSEC1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSHEADSEC1AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSHEADSEC1.Description"}'>Loading...</span></td><td><div id="divALMPRESSHEADSEC1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSHEADSEC1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSSUCPRI1Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSSUCPRI1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSSUCPRI1AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSSUCPRI1.Description"}'>Loading...</span></td><td><div id="divALMPRESSSUCPRI1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSSUCPRI1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSSUCPRI2Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSSUCPRI2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSSUCPRI2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSSUCPRI2.Description"}'>Loading...</span></td><td><div id="divALMPRESSSUCPRI2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSSUCPRI2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSSUCSEC1Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSSUCSEC1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSSUCSEC1AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSSUCSEC1.Description"}'>Loading...</span></td><td><div id="divALMPRESSSUCSEC1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSSUCSEC1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPRESSSUCSEC2Alarm" opc-tag-vis='{"tag":"Alarm.ALMPRESSSUCSEC2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPRESSSUCSEC2AlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPRESSSUCSEC2.Description"}'>Loading...</span></td><td><div id="divALMPRESSSUCSEC2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPRESSSUCSEC2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowALMPUMPCONDAlarm" opc-tag-vis='{"tag":"Alarm.ALMPUMPCOND.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnALMPUMPCONDAlarmTitle" opc-tag-txt='{"tag":"Alarm.ALMPUMPCOND.Description"}'>Loading...</span></td><td><div id="divALMPUMPCONDAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ALMPUMPCOND.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowAUTOFAILESTOPAlarm" opc-tag-vis='{"tag":"Alarm.AUTOFAILESTOP.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnAUTOFAILESTOPAlarmTitle" opc-tag-txt='{"tag":"Alarm.AUTOFAILESTOP.Description"}'>Loading...</span></td><td><div id="divAUTOFAILESTOPAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.AUTOFAILESTOP.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowBLOWERVFDAlarm" opc-tag-vis='{"tag":"Alarm.BLOWERVFD.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnBLOWERVFDAlarmTitle" opc-tag-txt='{"tag":"Alarm.BLOWERVFD.Description"}'>Loading...</span></td><td><div id="divBLOWERVFDAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.BLOWERVFD.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowCOMPPRI1Alarm" opc-tag-vis='{"tag":"Alarm.COMPPRI1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnCOMPPRI1AlarmTitle" opc-tag-txt='{"tag":"Alarm.COMPPRI1.Description"}'>Loading...</span></td><td><div id="divCOMPPRI1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.COMPPRI1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowCOMPPRI2Alarm" opc-tag-vis='{"tag":"Alarm.COMPPRI2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnCOMPPRI2AlarmTitle" opc-tag-txt='{"tag":"Alarm.COMPPRI2.Description"}'>Loading...</span></td><td><div id="divCOMPPRI2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.COMPPRI2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowESTOPAlarm" opc-tag-vis='{"tag":"Alarm.ESTOP.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnESTOPAlarmTitle" opc-tag-txt='{"tag":"Alarm.ESTOP.Description"}'>Loading...</span></td><td><div id="divESTOPAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.ESTOP.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowFANCONDFRONTPRIAlarm" opc-tag-vis='{"tag":"Alarm.FANCONDFRONTPRI.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnFANCONDFRONTPRIAlarmTitle" opc-tag-txt='{"tag":"Alarm.FANCONDFRONTPRI.Description"}'>Loading...</span></td><td><div id="divFANCONDFRONTPRIAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.FANCONDFRONTPRI.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowFANCONDREARPRIAlarm" opc-tag-vis='{"tag":"Alarm.FANCONDREARPRI.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnFANCONDREARPRIAlarmTitle" opc-tag-txt='{"tag":"Alarm.FANCONDREARPRI.Description"}'>Loading...</span></td><td><div id="divFANCONDREARPRIAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.FANCONDREARPRI.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowHEAT1Alarm" opc-tag-vis='{"tag":"Alarm.HEAT1.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnHEAT1AlarmTitle" opc-tag-txt='{"tag":"Alarm.HEAT1.Description"}'>Loading...</span></td><td><div id="divHEAT1Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.HEAT1.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowHEAT2Alarm" opc-tag-vis='{"tag":"Alarm.HEAT2.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnHEAT2AlarmTitle" opc-tag-txt='{"tag":"Alarm.HEAT2.Description"}'>Loading...</span></td><td><div id="divHEAT2Alarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.HEAT2.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowPCAIRFAULTAlarm" opc-tag-vis='{"tag":"Alarm.PCAIRFAULT.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnPCAIRFAULTAlarmTitle" opc-tag-txt='{"tag":"Alarm.PCAIRFAULT.Description"}'>Loading...</span></td><td><div id="divPCAIRFAULTAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.PCAIRFAULT.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowSMOKEDETAlarm" opc-tag-vis='{"tag":"Alarm.SMOKEDET.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnSMOKEDETAlarmTitle" opc-tag-txt='{"tag":"Alarm.SMOKEDET.Description"}'>Loading...</span></td><td><div id="divSMOKEDETAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.SMOKEDET.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowTEMPAMBAlarm" opc-tag-vis='{"tag":"Alarm.TEMPAMB.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnTEMPAMBAlarmTitle" opc-tag-txt='{"tag":"Alarm.TEMPAMB.Description"}'>Loading...</span></td><td><div id="divTEMPAMBAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.TEMPAMB.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowTEMPCABINAlarm" opc-tag-vis='{"tag":"Alarm.TEMPCABIN.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnTEMPCABINAlarmTitle" opc-tag-txt='{"tag":"Alarm.TEMPCABIN.Description"}'>Loading...</span></td><td><div id="divTEMPCABINAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.TEMPCABIN.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+        <tr id="rowTEMPDISCHAlarm" opc-tag-vis='{"tag":"Alarm.TEMPDISCH.Value","config":{"bad_q":true,"trigger":"on_true"}}'><td><span id="spnTEMPDISCHAlarmTitle" opc-tag-txt='{"tag":"Alarm.TEMPDISCH.Description"}'>Loading...</span></td><td><div id="divTEMPDISCHAlarm" opc-tag-bkg='{"type":"group","all_f":{"cls":"RingBellAlarmGrayBackground"},"bad_q":{"cls":"RingBellAlarmBadQualityBackground"},"group":[{"tag":"Alarm.TEMPDISCH.Value","config":{"cls":"RingBellAlarmFlashingBackground"}}]}'></div></td></tr>
+
+    </table>
+</div>
+
+
+        networkNode: "RemoteSCADAHosting.69.60.110.8.RemoteSCADAHost.Airport-CID"
+	        
